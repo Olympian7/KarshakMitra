@@ -28,7 +28,6 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Toaster } from '@/components/ui/toaster';
 import { getProfile, saveProfile, FarmProfile } from '@/services/profile';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -287,7 +286,6 @@ export default function ProfilePage() {
           <FarmProfileForm />
         </main>
       </div>
-      <Toaster />
     </div>
   );
 }

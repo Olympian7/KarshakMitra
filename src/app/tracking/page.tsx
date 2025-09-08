@@ -26,7 +26,6 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { getActivities, Activity } from '@/services/activity';
 import { logActivityFlow } from '@/ai/flows/activity-flow';
 import { useToast } from '@/hooks/use-toast';
-import { Toaster } from '@/components/ui/toaster';
 
 function ActivityTimeline() {
   const [activities, setActivities] = React.useState<Activity[]>([]);
@@ -272,7 +271,6 @@ export default function TrackingPage() {
           {isClient ? <ActivityTimeline /> : <p>Loading...</p>}
         </main>
       </div>
-       <Toaster />
     </div>
   );
 }

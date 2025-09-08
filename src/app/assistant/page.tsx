@@ -10,6 +10,7 @@ import {
   MessageCircle,
   Send,
   User,
+  Languages,
 } from 'lucide-react';
 import React, { useState, useRef, useEffect } from 'react';
 
@@ -23,6 +24,9 @@ interface Message {
   id: string;
   text: string;
   sender: 'user' | 'assistant';
+  malayalamText?: string;
+  englishText?: string;
+  currentLang?: 'ml' | 'en';
 }
 
 function AssistantChat() {
@@ -46,6 +50,9 @@ function AssistantChat() {
         id: 'init',
         text: "Hello! I am your Karshak Mitra assistant. How can I help you today? You can ask me about the weather, market prices, or government schemes.",
         sender: 'assistant',
+        malayalamText: "നമസ്കാരം! ഞാൻ നിങ്ങളുടെ കർഷക മിത്ര അസിസ്റ്റൻ്റ് ആണ്. ഇന്ന് ഞാൻ നിങ്ങളെ എങ്ങനെ സഹായിക്കണം? കാലാവസ്ഥ, വിപണി വില, അല്ലെങ്കിൽ സർക്കാർ പദ്ധതികൾ എന്നിവയെക്കുറിച്ച് നിങ്ങൾക്ക് എന്നോട് ചോദിക്കാം.",
+        englishText: "Hello! I am your Karshak Mitra assistant. How can I help you today? You can ask me about the weather, market prices, or government schemes.",
+        currentLang: 'en',
       },
     ]);
   }, []);
@@ -67,8 +74,11 @@ function AssistantChat() {
       const result = await assistantFlow({ query: input });
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: result.response,
+        text: result.malayalamResponse,
         sender: 'assistant',
+        malayalamText: result.malayalamResponse,
+        englishText: result.englishResponse,
+        currentLang: 'ml',
       };
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
@@ -89,6 +99,20 @@ function AssistantChat() {
       handleSend();
     }
   };
+  
+  const handleTranslate = (messageId: string) => {
+    setMessages(messages.map(msg => {
+      if (msg.id === messageId && msg.sender === 'assistant') {
+        const newLang = msg.currentLang === 'ml' ? 'en' : 'ml';
+        return {
+          ...msg,
+          currentLang: newLang,
+          text: newLang === 'ml' ? msg.malayalamText! : msg.englishText!,
+        };
+      }
+      return msg;
+    }));
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -108,13 +132,23 @@ function AssistantChat() {
               </Avatar>
             )}
             <div
-              className={`rounded-lg px-4 py-2 max-w-[80%] ${
+              className={`rounded-lg px-4 py-2 max-w-[80%] relative group ${
                 message.sender === 'user'
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-muted'
               }`}
             >
               <p className="text-sm">{message.text}</p>
+               {message.sender === 'assistant' && (
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => handleTranslate(message.id)}
+                  >
+                  <Languages className="h-4 w-4" />
+                </Button>
+              )}
             </div>
              {message.sender === 'user' && (
               <Avatar className="h-8 w-8">
