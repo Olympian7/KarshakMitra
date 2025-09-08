@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
-import { LanguageProvider } from '@/context/language-context';
+import { Providers } from '@/components/providers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -12,6 +11,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Karshak Mitra',
   description: "An AI-powered personal farming assistant for Kerala's farmers.",
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
@@ -22,10 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
-        <LanguageProvider>
-          {children}
-          <Toaster />
-        </LanguageProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
