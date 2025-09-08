@@ -18,7 +18,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import AppShell from '@/components/app-shell';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { translations } from '@/lib/translations';
 import { useLanguage } from '@/context/language-context';
 
@@ -26,6 +26,13 @@ import { useLanguage } from '@/context/language-context';
 export default function DashboardContent({ weather, marketTrends, govSchemes, recentActivities }: any) {
   const { language } = useLanguage();
   const t = translations[language];
+  const [activityDate, setActivityDate] = useState('');
+
+  useEffect(() => {
+    if (recentActivities.length > 0) {
+      setActivityDate(new Date(recentActivities[0].date).toLocaleDateString());
+    }
+  }, [recentActivities]);
 
   return (
     <AppShell title={t.dashboard} activePage="dashboard">
@@ -97,7 +104,7 @@ export default function DashboardContent({ weather, marketTrends, govSchemes, re
                   <ClipboardList className="h-6 w-6 text-muted-foreground mt-1" />
                   <div>
                     <p className="font-medium">{recentActivities[0].text}</p>
-                    <p className="text-sm text-muted-foreground">{new Date(recentActivities[0].date).toLocaleDateString()}</p>
+                    {activityDate && <p className="text-sm text-muted-foreground">{activityDate}</p>}
                   </div>
                 </div>
               ) : (

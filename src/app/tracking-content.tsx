@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   ClipboardList,
   Mic,
@@ -29,15 +29,16 @@ function ActivityTimeline() {
   const { language } = useLanguage();
   const t = translations[language];
   const { toast } = useToast();
-  const [activities, setActivities] = React.useState<Activity[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [isRecording, setIsRecording] = React.useState(false);
-  const [newActivityText, setNewActivityText] = React.useState('');
-  const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
-  const audioChunksRef = React.useRef<Blob[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [newActivityText, setNewActivityText] = useState('');
+  const [lastActivityDate, setLastActivityDate] = useState('N/A');
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
-  const fetchActivities = React.useCallback(async () => {
+  const fetchActivities = useCallback(async () => {
     setIsLoading(true);
     try {
       const fetchedActivities = await getActivities();
@@ -55,9 +56,17 @@ function ActivityTimeline() {
     }
   }, [toast]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchActivities();
   }, [fetchActivities]);
+
+  useEffect(() => {
+    if (activities.length > 0) {
+      setLastActivityDate(new Date(activities[0].date).toLocaleDateString());
+    } else {
+      setLastActivityDate('N/A');
+    }
+  }, [activities]);
 
   const handleLogActivity = async (text: string) => {
     if (!text.trim()) return;
@@ -127,8 +136,6 @@ function ActivityTimeline() {
       }
     }
   };
-
-  const lastActivityDate = activities.length > 0 ? new Date(activities[0].date).toLocaleDateString() : 'N/A';
 
   return (
     <div className="grid gap-6 md:grid-cols-3">
