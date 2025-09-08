@@ -84,6 +84,8 @@ export const translations = {
       totalActivities: 'Total Activities',
       lastEntry: 'Last Entry',
       keepLogging: 'Keep logging to see your progress.',
+      typeActivityHere: 'Type your activity note here...',
+      logging: 'Logging...',
     },
     ml: {
       // App Shell & Navigation
@@ -170,6 +172,8 @@ export const translations = {
       totalActivities: 'ആകെ പ്രവർത്തനങ്ങൾ',
       lastEntry: 'അവസാന എൻട്രി',
       keepLogging: 'നിങ്ങളുടെ പുരോഗതി കാണാൻ ലോഗിംഗ് തുടരുക.',
+      typeActivityHere: 'നിങ്ങളുടെ പ്രവർത്തന കുറിപ്പ് ഇവിടെ ടൈപ്പ് ചെയ്യുക...',
+      logging: 'ലോഗിംഗ് ചെയ്യുന്നു...',
     },
   };
   

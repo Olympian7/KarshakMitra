@@ -23,6 +23,7 @@ import AppShell from '@/components/app-shell';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
+import { Textarea } from '@/components/ui/textarea';
 
 function ActivityTimeline() {
   const { language } = useLanguage();
@@ -32,6 +33,7 @@ function ActivityTimeline() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isRecording, setIsRecording] = React.useState(false);
+  const [newActivityText, setNewActivityText] = React.useState('');
   const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
   const audioChunksRef = React.useRef<Blob[]>([]);
 
@@ -69,6 +71,7 @@ function ActivityTimeline() {
         title: t.activityLogged,
         description: newActivity.text,
       });
+      setNewActivityText(''); // Clear the textarea
     } catch (error) {
       console.error('Error logging activity:', error);
       toast({
@@ -80,6 +83,11 @@ function ActivityTimeline() {
       setIsSubmitting(false);
     }
   };
+  
+  const handleTextSubmit = () => {
+      handleLogActivity(newActivityText);
+  };
+
 
   const handleMicClick = async () => {
     if (isRecording) {
@@ -142,7 +150,7 @@ function ActivityTimeline() {
             <span className="sr-only">{isRecording ? t.stopRecording : t.logActivity}</span>
           </Button>
         </CardHeader>
-        <CardContent className="flex-1 overflow-y-auto min-h-[400px]">
+        <CardContent className="flex-1 overflow-y-auto min-h-[350px]">
           {isLoading ? (
             <div className="space-y-4">
               <Skeleton className="h-12 w-full" />
@@ -167,6 +175,20 @@ function ActivityTimeline() {
             </div>
           )}
         </CardContent>
+         <CardFooter className="border-t pt-6">
+            <div className="flex w-full items-start gap-4">
+              <Textarea
+                placeholder={t.typeActivityHere}
+                value={newActivityText}
+                onChange={(e) => setNewActivityText(e.target.value)}
+                className="flex-1"
+                disabled={isSubmitting}
+              />
+              <Button onClick={handleTextSubmit} disabled={isSubmitting || !newActivityText.trim()}>
+                {isSubmitting ? t.logging : t.logActivity}
+              </Button>
+            </div>
+          </CardFooter>
       </Card>
       </div>
       <div className="space-y-6">
