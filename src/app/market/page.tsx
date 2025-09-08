@@ -24,6 +24,8 @@ import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { Skeleton } from '@/components/ui/skeleton';
 
+// This page remains a client component because it uses the useLanguage hook for translations.
+// Data is fetched on the client side.
 export default function MarketPage() {
   const { language } = useLanguage();
   const t = translations[language];

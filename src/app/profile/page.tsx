@@ -28,6 +28,7 @@ const chartData = [
   { name: 'Other', value: 10 },
 ];
 
+// This page remains a client component because it handles user interactions like form input and saving data.
 function FarmProfileForm() {
     const { language } = useLanguage();
     const t = translations[language];

@@ -25,6 +25,7 @@ import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { Textarea } from '@/components/ui/textarea';
 
+// This page remains a client component as it's highly interactive (recording audio, submitting forms).
 function ActivityTimeline() {
   const { language } = useLanguage();
   const t = translations[language];

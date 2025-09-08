@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { CloudSun, ClipboardList } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,52 +17,42 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import AppShell from '@/components/app-shell';
-import React, { useEffect, useState } from 'react';
-import { getWeatherForecast, WeatherData } from '@/services/weather';
-import { getMarketTrends, MarketTrend } from '@/services/market';
-import { getGovSchemes, GovScheme } from '@/services/govSchemes';
-import { getActivities, Activity } from '@/services/activity';
-import { useLanguage } from '@/context/language-context';
+import React from 'react';
+import { getWeatherForecast } from '@/services/weather';
+import { getMarketTrends } from '@/services/market';
+import { getGovSchemes } from '@/services/govSchemes';
+import { getActivities } from '@/services/activity';
 import { translations } from '@/lib/translations';
-import { Skeleton } from '@/components/ui/skeleton';
+import { LanguageProvider, useLanguage } from '@/context/language-context';
 
-export default function Dashboard() {
+// This is a server component, so we can fetch data directly.
+// We wrap the content in a client component to access the language context.
+export default async function Dashboard() {
+  const weatherData = await getWeatherForecast();
+  const marketData = await getMarketTrends();
+  const schemesData = await getGovSchemes();
+  const activitiesData = await getActivities();
+
+  const marketTrends = marketData.slice(0, 3);
+  const govSchemes = schemesData.slice(0, 2);
+  const recentActivities = activitiesData.slice(0, 1);
+
+  return (
+    <LanguageProvider>
+      <DashboardContent
+        weather={weatherData}
+        marketTrends={marketTrends}
+        govSchemes={govSchemes}
+        recentActivities={recentActivities}
+      />
+    </LanguageProvider>
+  );
+}
+
+// A client component is needed to use the useLanguage hook.
+function DashboardContent({ weather, marketTrends, govSchemes, recentActivities }: any) {
   const { language } = useLanguage();
   const t = translations[language];
-
-  const [weather, setWeather] = useState<WeatherData | null>(null);
-  const [marketTrends, setMarketTrends] = useState<MarketTrend[]>([]);
-  const [govSchemes, setGovSchemes] = useState<GovScheme[]>([]);
-  const [recentActivities, setRecentActivities] = useState<Activity[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const [
-          weatherData,
-          marketData,
-          schemesData,
-          activitiesData,
-        ] = await Promise.all([
-          getWeatherForecast(),
-          getMarketTrends(),
-          getGovSchemes(),
-          getActivities(),
-        ]);
-        setWeather(weatherData);
-        setMarketTrends(marketData.slice(0, 3));
-        setGovSchemes(schemesData.slice(0, 2));
-        setRecentActivities(activitiesData.slice(0, 1));
-      } catch (error) {
-        console.error("Failed to fetch dashboard data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
 
   return (
     <AppShell title={t.dashboard} activePage="dashboard">
@@ -79,14 +67,7 @@ export default function Dashboard() {
               <CloudSun className="h-6 w-6 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {isLoading ? (
-                <div className="space-y-2">
-                  <Skeleton className="h-10 w-24" />
-                  <Skeleton className="h-4 w-32" />
-                  <Skeleton className="h-4 w-28" />
-                  <Skeleton className="h-4 w-36" />
-                </div>
-              ) : weather ? (
+              {weather ? (
                 <>
                   <div className="text-4xl font-bold">{weather.temperature}°C</div>
                   <p className="text-sm text-muted-foreground">
@@ -117,21 +98,12 @@ export default function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {isLoading ? (
-                    Array.from({ length: 3 }).map((_, i) => (
-                      <TableRow key={i}>
-                        <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                        <TableCell className="text-right"><Skeleton className="h-4 w-12 ml-auto" /></TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    marketTrends.map((crop) => (
-                      <TableRow key={`${crop.name}-${crop.variety}`}>
-                        <TableCell>{crop.name}</TableCell>
-                        <TableCell className="text-right">₹{crop.price.toFixed(2)}</TableCell>
-                      </TableRow>
-                    ))
-                  )}
+                  {marketTrends.map((crop: any) => (
+                    <TableRow key={`${crop.name}-${crop.variety}`}>
+                      <TableCell>{crop.name}</TableCell>
+                      <TableCell className="text-right">₹{crop.price.toFixed(2)}</TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </CardContent>
@@ -147,12 +119,7 @@ export default function Dashboard() {
               </Link>
             </CardHeader>
             <CardContent>
-              {isLoading ? (
-                <div className="space-y-2">
-                  <Skeleton className="h-5 w-full" />
-                   <Skeleton className="h-4 w-1/3" />
-                </div>
-              ) : recentActivities.length > 0 ? (
+              {recentActivities.length > 0 ? (
                 <div className="flex items-start gap-4">
                   <ClipboardList className="h-6 w-6 text-muted-foreground mt-1" />
                   <div>
@@ -176,21 +143,12 @@ export default function Dashboard() {
               </Link>
             </CardHeader>
             <CardContent className="grid gap-4">
-              {isLoading ? (
-                Array.from({ length: 2 }).map((_, i) => (
-                  <div key={i} className="border border-border/50 p-3 rounded-lg space-y-2">
-                    <Skeleton className="h-5 w-3/4" />
-                    <Skeleton className="h-4 w-full" />
-                  </div>
-                ))
-              ) : (
-                govSchemes.map((scheme) => (
-                  <div key={scheme.id} className="border border-border/50 p-3 rounded-lg">
-                    <h3 className="font-semibold">{scheme.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{scheme.description.slice(0, 100)}...</p>
-                  </div>
-                ))
-              )}
+              {govSchemes.map((scheme: any) => (
+                <div key={scheme.id} className="border border-border/50 p-3 rounded-lg">
+                  <h3 className="font-semibold">{scheme.title}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">{scheme.description.slice(0, 100)}...</p>
+                </div>
+              ))}
             </CardContent>
           </Card>
         </div>
