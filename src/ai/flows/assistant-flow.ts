@@ -49,17 +49,29 @@ const assistantPrompt = ai.definePrompt({
   User query: {{{query}}}`,
 });
 
-export async function assistantFlow(input: AssistantInput): Promise<AssistantOutput> {
-  const llmResponse = await ai.generate({
-    prompt: assistantPrompt,
-    input,
-  });
-  
-  const output = llmResponse.output;
-  if (!output) {
-      return { response: 'Sorry, I could not process your request.', language: 'english' };
+const assistantFlowRunner = ai.defineFlow(
+  {
+    name: 'assistantFlow',
+    inputSchema: AssistantInputSchema,
+    outputSchema: AssistantOutputSchema,
+  },
+  async (input) => {
+    const llmResponse = await ai.generate({
+      prompt: assistantPrompt,
+      input,
+    });
+    
+    const output = llmResponse.output;
+    if (!output) {
+        return { response: 'Sorry, I could not process your request.', language: 'english' };
+    }
+    return output;
   }
-  return output;
+);
+
+
+export async function assistantFlow(input: AssistantInput): Promise<AssistantOutput> {
+  return assistantFlowRunner(input);
 }
 
 
