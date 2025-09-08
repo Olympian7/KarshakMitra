@@ -26,14 +26,27 @@ const AssistantOutputSchema = z.object({
 export type AssistantOutput = z.infer<typeof AssistantOutputSchema>;
 
 
-// Main assistant flow (now with fixed responses)
+// Main assistant flow (now with more fixed responses)
 async function assistantFlow(input: AssistantInput): Promise<AssistantOutput> {
   const query = input.query.toLowerCase();
-  let response = "I'm sorry, I can only provide information about the weather right now. Please ask me about the weather.";
+  let response = "I'm sorry, I'm not sure how to help with that. You can ask me about the weather, market prices, or government schemes.";
   
-  if (query.includes('weather')) {
+  if (query.includes('weather') || query.includes('climate')) {
     response = "The skies are clear and the sun is smiling down on the paddy fields! It's a perfect day for farming, with a gentle breeze coming from the coast.";
+  } else if (query.includes('market') || query.includes('price') || query.includes('trends')) {
+    response = "You can find the latest market prices for all major crops in Kerala on the 'Market Trends' page. It's a great tool to help you decide the best time to sell.";
+  } else if (query.includes('scheme') || query.includes('government') || query.includes('subsidy')) {
+    response = "The 'Government Schemes' page has a detailed list of all available programs, their benefits, and eligibility. I highly recommend checking it out!";
+  } else if (query.includes('crop') || query.includes('plant') || query.includes('disease') || query.includes('pest')) {
+    response = "For specific crop advice, please make sure your Farm Profile is up to date. The more details you provide, the better I can assist you in the future when my AI capabilities are fully enabled.";
+  } else if (query.includes('log') || query.includes('activity') || query.includes('diary')) {
+    response = "You can log your daily farm activities using the microphone on the 'Activity Tracking' page. It's a great way to keep a digital diary of your hard work.";
+  } else if (query.includes('hello') || query.includes('hi') || query.includes('namaste')) {
+    response = "Hello! How can I assist you with your farming needs today?";
+  } else if (query.includes('how are you')) {
+    response = "I am doing well, thank you for asking! I'm ready to help you with any farm-related questions you have.";
   }
+
 
   // We default to English for the fixed responses.
   return Promise.resolve({ response, language: 'english' });
@@ -44,6 +57,12 @@ export { assistantFlow };
 
 
 // Text-to-speech flow
+const TextToSpeechInputSchema = z.object({
+    text: z.string(),
+    voice: z.enum(['english', 'malayalam']).default('english'),
+});
+export type TextToSpeechInput = z.infer<typeof TextToSpeechInputSchema>;
+
 async function toWav(
   pcmData: Buffer,
   channels = 1,
@@ -67,18 +86,20 @@ async function toWav(
   });
 }
 
-export async function textToSpeechFlow(text: string): Promise<string> {
+export async function textToSpeechFlow(input: TextToSpeechInput): Promise<string> {
+  const voiceName = input.voice === 'malayalam' ? 'Sayna' : 'Algenib'; // Sayna for Malayalam, Algenib for English
+
   const { media } = await ai.generate({
     model: 'googleai/gemini-2.5-flash-preview-tts',
     config: {
       responseModalities: ['AUDIO'],
        speechConfig: {
           voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Algenib' }, // A suitable voice
+            prebuiltVoiceConfig: { voiceName },
           },
         },
     },
-    prompt: text,
+    prompt: input.text,
   });
 
   if (!media || !media.url) {
