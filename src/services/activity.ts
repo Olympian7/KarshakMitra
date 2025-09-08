@@ -10,7 +10,7 @@ export type Activity = {
 };
 
 // Starting with some mock data to make the timeline look populated.
-const mockActivities: Activity[] = [
+let mockActivities: Activity[] = [
     {
         id: '3',
         date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
@@ -34,7 +34,13 @@ export async function getActivities(): Promise<Activity[]> {
   await new Promise(resolve => setTimeout(resolve, 500));
   
   // Return mock data sorted by most recent
-  return mockActivities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  try {
+    const activities = mockActivities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return JSON.parse(JSON.stringify(activities)); // Simulate a clean fetch
+  } catch (e) {
+    // If there's any error (e.g., in a real DB call), return an empty array
+    return [];
+  }
 }
 
 export async function addActivity(text: string): Promise<Activity> {
@@ -42,7 +48,7 @@ export async function addActivity(text: string): Promise<Activity> {
     await new Promise(resolve => setTimeout(resolve, 500));
 
     const newActivity: Activity = {
-        id: (mockActivities.length + 1).toString(),
+        id: (mockActivities.length + 1).toString() + Date.now(), // More unique ID
         date: new Date().toISOString(),
         text: text,
     };

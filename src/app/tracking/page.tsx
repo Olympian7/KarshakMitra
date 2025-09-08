@@ -35,11 +35,11 @@ function ActivityTimeline() {
   const audioChunksRef = React.useRef<Blob[]>([]);
   const { toast } = useToast();
 
-  const fetchActivities = async () => {
+  const fetchActivities = React.useCallback(async () => {
     setIsLoading(true);
     try {
       const fetchedActivities = await getActivities();
-      setActivities(fetchedActivities);
+      setActivities(fetchedActivities || []); // Ensure we have an array
     } catch (error) {
       console.error('Error fetching activities:', error);
       toast({
@@ -47,14 +47,15 @@ function ActivityTimeline() {
         title: 'Error',
         description: 'Failed to load activities.',
       });
+      setActivities([]); // Set to empty array on error
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
 
   React.useEffect(() => {
     fetchActivities();
-  }, []);
+  }, [fetchActivities]);
 
   const handleLogActivity = async (text: string) => {
     if (!text.trim()) return;
@@ -62,7 +63,8 @@ function ActivityTimeline() {
     setIsLoading(true);
     try {
       const newActivity = await logActivityFlow({ note: text });
-      setActivities((prev) => [newActivity, ...prev]);
+      // After logging, refetch all activities to ensure consistency
+      await fetchActivities();
       toast({
         title: 'Activity Logged',
         description: newActivity.text,

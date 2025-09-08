@@ -174,7 +174,6 @@ function FarmProfileForm() {
                         width={400} 
                         height={400} 
                         className="object-cover w-full h-full"
-                        data-ai-hint="farm aerial"
                         />
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">A satellite view of your farm's location.</p>
