@@ -19,36 +19,122 @@ const AssistantOutputSchema = z.object({
 export type AssistantOutput = z.infer<typeof AssistantOutputSchema>;
 
 
+const responses = [
+  // App Functionality & Greetings
+  {
+    keywords: ['hello', 'hi', 'നമസ്കാരം', 'hey'],
+    malayalamResponse: "നമസ്കാരം! ഇന്ന് നിങ്ങളുടെ കൃഷിയിൽ ഞാൻ എങ്ങനെ സഹായിക്കണം?",
+    englishResponse: "Hello! How can I assist you with your farming today?",
+  },
+  {
+    keywords: ['how are you', 'സുഖമാണോ', 'whatsup'],
+    malayalamResponse: "എനിക്ക് സുഖമാണ്, ചോദിച്ചതിന് നന്ദി! നിങ്ങളുടെ ഏത് കാർഷിക ചോദ്യങ്ങൾക്കും സഹായിക്കാൻ തയ്യാറാണ്.",
+    englishResponse: "I'm doing well, thank you for asking! I'm ready to help with any of your farming questions.",
+  },
+  {
+    keywords: ['log', 'activity', 'diary', 'രേഖപ്പെടുത്തുക'],
+    malayalamResponse: "നിങ്ങളുടെ എല്ലാ കാർഷിക പ്രവർത്തനങ്ങളും 'ആക്റ്റിവിറ്റി ട്രാക്കിംഗ്' പേജിൽ രേഖപ്പെടുത്താം. നിങ്ങളുടെ കഠിനാധ്വാനത്തിന്റെ രേഖകൾ സൂക്ഷിക്കാൻ ഇത് ഒരു മികച്ച മാർഗമാണ്!",
+    englishResponse: "You can log all your farming activities on the 'Activity Tracking' page. It's a great way to keep a record of your hard work!",
+  },
+  // Weather
+  {
+    keywords: ['weather', 'climate', 'കാലാവസ്ഥ', 'മഴ', 'rain'],
+    malayalamResponse: "ആകാശം തെളിഞ്ഞതും സൂര്യൻ പ്രകാശിക്കുന്നതുമാണ്! കേരളത്തിലെ കൃഷിക്ക് മനോഹരമായ ഒരു ദിവസമാണിന്ന്. താപനില കൃത്യമാണ്, നിങ്ങളെ തണുപ്പിക്കാൻ ഒരു ഇളം കാറ്റുമുണ്ട്.",
+    englishResponse: "The sky is clear and the sun is shining! It's a beautiful day for farming in Kerala. The temperature is just right, and there's a gentle breeze to keep you cool.",
+  },
+  // Market Prices
+  {
+    keywords: ['market', 'price', 'trends', 'വിപണി', 'വില', 'rate'],
+    malayalamResponse: "എല്ലാ പ്രധാന വിളകളുടെയും ഏറ്റവും പുതിയ വിപണി വില 'മാർക്കറ്റ് ട്രെൻഡ്സ്' പേജിൽ നിങ്ങൾക്ക് കണ്ടെത്താം. ഞാൻ നിങ്ങളെ അവിടേക്ക് കൊണ്ടുപോകണോ?",
+    englishResponse: "You can find the latest market prices for all major crops on the 'Market Trends' page. Would you like me to guide you there?",
+  },
+  // Government Schemes
+  {
+    keywords: ['scheme', 'government', 'subsidy', 'പദ്ധതി', 'loan', 'ലോൺ'],
+    malayalamResponse: "നിരവധി പ്രയോജനകരമായ സർക്കാർ പദ്ധതികൾ ലഭ്യമാണ്. 'സർക്കാർ പദ്ധതികൾ' പേജിൽ നിങ്ങൾക്ക് വിശദമായ വിവരങ്ങളും അപേക്ഷാ ലിങ്കുകളും കണ്ടെത്താം.",
+    englishResponse: "There are several beneficial government schemes available. You can find detailed information and application links on the 'Government Schemes' page.",
+  },
+  // Crop & Pest Advice
+  {
+    keywords: ['crop', 'plant', 'disease', 'pest', 'വിള', 'രോഗം', 'കീടം'],
+    malayalamResponse: "വിളകളെക്കുറിച്ചോ കീടങ്ങളെക്കുറിച്ചോ പ്രത്യേക ഉപദേശത്തിനായി, നിങ്ങളുടെ ഫാം പ്രൊഫൈൽ അപ്ഡേറ്റ് ചെയ്തിട്ടുണ്ടെന്ന് ഉറപ്പാക്കുക. ഭാവിയിൽ, നിങ്ങളുടെ പ്രൊഫൈലിനെ അടിസ്ഥാനമാക്കി വ്യക്തിഗത ശുപാർശകൾ നൽകാൻ എനിക്ക് കഴിയും!",
+    englishResponse: "For specific advice on crops or pests, please ensure your Farm Profile is updated. In the future, I'll be able to provide personalized recommendations based on your profile!",
+  },
+  // Soil
+  {
+    keywords: ['soil', 'മണ്ണ്', 'fertilizer', 'വളം'],
+    malayalamResponse: "മണ്ണിന്റെ ആരോഗ്യം മെച്ചപ്പെടുത്തുന്നതിന് ജൈവവളങ്ങൾ ഉപയോഗിക്കുന്നത് വളരെ നല്ലതാണ്. നിങ്ങളുടെ മണ്ണിന്റെ തരം 'ഫാം പ്രൊഫൈൽ' പേജിൽ രേഖപ്പെടുത്തുന്നത് വ്യക്തിഗത ഉപദേശം നൽകാൻ സഹായിക്കും.",
+    englishResponse: "Using organic manure is excellent for improving soil health. Recording your soil type on the 'Farm Profile' page can help me give you personalized advice.",
+  },
+  // Irrigation
+  {
+    keywords: ['water', 'irrigation', 'വെള്ളം', 'ജലസേചനം', 'നനയ്ക്കുക'],
+    malayalamResponse: "ജലസേചനത്തിനായി തുള്ളിനന (drip irrigation) പോലുള്ള രീതികൾ ഉപയോഗിക്കുന്നത് വെള്ളം ലാഭിക്കാൻ സഹായിക്കും. വേനൽക്കാലത്ത് രാവിലെയും വൈകുന്നേരവും നനയ്ക്കുന്നതാണ് ഏറ്റവും ഉചിതം.",
+    englishResponse: "Using methods like drip irrigation can help save water. During summer, it's best to water your plants in the early morning or late evening.",
+  },
+  // Paddy (Rice)
+  {
+    keywords: ['paddy', 'rice', 'നെല്ല്', 'വയൽ'],
+    malayalamResponse: "നെൽകൃഷിക്ക്, നിലം നന്നായി തയ്യാറാക്കുകയും വെള്ളം കെട്ടിനിർത്തുകയും ചെയ്യേണ്ടത് അത്യാവശ്യമാണ്. മുണ്ടകൻ, വിരിപ്പ് തുടങ്ങിയ കൃഷിരീതികളെക്കുറിച്ച് കൂടുതൽ അറിയണമെന്നുണ്ടോ?",
+    englishResponse: "For paddy cultivation, proper field preparation and water management are crucial. Would you like to know more about cultivation seasons like Mundakan or Virippu?",
+  },
+  // Coconut
+  {
+    keywords: ['coconut', 'തെങ്ങ്', 'തേങ്ങ'],
+    malayalamResponse: "തെങ്ങുകൾക്ക് നല്ല സൂര്യപ്രകാശവും നീർവാർച്ചയുള്ള മണ്ണും ആവശ്യമാണ്. ആറുമാസത്തിലൊരിക്കൽ തടം തുറന്ന് വളം ചേർക്കുന്നത് വിളവ് വർദ്ധിപ്പിക്കാൻ സഹായിക്കും. കൊമ്പൻചെല്ലി, ചെമ്പൻചെല്ലി എന്നിവയുടെ ആക്രമണം ശ്രദ്ധിക്കുക.",
+    englishResponse: "Coconut trees require plenty of sunlight and well-drained soil. Applying fertilizer every six months can increase the yield. Watch out for pests like the Rhinoceros beetle and Red palm weevil.",
+  },
+  // Banana
+  {
+    keywords: ['banana', 'വാഴ', 'പഴം'],
+    malayalamResponse: "വാഴകൃഷിക്ക് ജൈവാംശം കൂടുതലുള്ള മണ്ണാണ് ഏറ്റവും നല്ലത്. പിണ്ടിപ്പുഴു, മാണവണ്ടിൻ്റെ ആക്രമണം തടയാൻ കൃത്യസമയത്ത് മരുന്ന് തളിക്കുന്നത് നല്ലതാണ്. കാറ്റിൽ നിന്നും സംരക്ഷണം നൽകാൻ ശ്രദ്ധിക്കുക.",
+    englishResponse: "Bananas grow best in soil rich in organic matter. Timely application of pesticides can prevent stem borer and corm weevil attacks. Ensure they are protected from strong winds.",
+  },
+  // Rubber
+  {
+    keywords: ['rubber', 'റബ്ബർ'],
+    malayalamResponse: "റബ്ബർ മരങ്ങൾക്ക് ആദ്യത്തെ കുറച്ച് വർഷങ്ങളിൽ പ്രത്യേക ശ്രദ്ധ ആവശ്യമാണ്. പട്ടമരപ്പ് രോഗം വരാതിരിക്കാൻ ശ്രദ്ധിക്കുക, ടാപ്പിംഗ് ശാസ്ത്രീയമായ രീതിയിൽ ചെയ്യുക.",
+    englishResponse: "Rubber trees need special care during their initial years. Be cautious about Bark Rot disease and follow scientific methods for tapping.",
+  },
+  // Spices
+  {
+    keywords: ['pepper', 'cardamom', 'കുരുമുളക്', 'ഏലം', 'spices', 'സുഗന്ധവ്യഞ്ജനങ്ങൾ'],
+    malayalamResponse: "കുരുമുളക്, ഏലം തുടങ്ങിയ സുഗന്ധവ്യഞ്ജന വിളകൾക്ക് ഭാഗികമായ തണലും നല്ല നീർവാർച്ചയും ആവശ്യമാണ്. ദ്രുതവാട്ടം പോലുള്ള രോഗങ്ങൾക്കെതിരെ ജാഗ്രത പുലർത്തുക.",
+    englishResponse: "Spices like pepper and cardamom require partial shade and good drainage. Be vigilant against diseases like Quick Wilt.",
+  },
+  // Vegetables
+  {
+    keywords: ['vegetable', 'പച്ചക്കറി', 'തക്കാളി', 'വെണ്ട'],
+    malayalamResponse: "വീട്ടുവളപ്പിലെ പച്ചക്കറി കൃഷിക്ക് ജൈവ കീടനാശിനികൾ ഉപയോഗിക്കുന്നതാണ് ഏറ്റവും സുരക്ഷിതം. ഓരോ വിളയ്ക്കും ആവശ്യമായ വളവും വെള്ളവും വ്യത്യസ്തമായിരിക്കും.",
+    englishResponse: "For home vegetable gardens, it's safest to use organic pesticides. The fertilizer and water requirements vary for each crop.",
+  }
+];
+
+
 export async function assistantFlow(input: AssistantInput): Promise<AssistantOutput> {
   const query = input.query.toLowerCase();
-  let malayalamResponse = "ക്ഷമിക്കണം, എനിക്ക് കാലാവസ്ഥ, വിപണി വില, സർക്കാർ പദ്ധതികൾ, വിളകളെക്കുറിച്ചുള്ള ഉപദേശങ്ങൾ എന്നിവയെക്കുറിച്ച് മാത്രമേ വിവരം നൽകാൻ കഴിയൂ. ഇവയിലേതിൽ ഞാൻ നിങ്ങളെ സഹായിക്കണം?";
-  let englishResponse = "Sorry, I can only provide information on weather, market prices, government schemes, and crop advice. How can I help you with one of these?";
+  
+  const defaultResponse = {
+    malayalamResponse: "ക്ഷമിക്കണം, എനിക്ക് കൃത്യമായി മനസ്സിലായില്ല. കാലാവസ്ഥ, വിപണി വില, സർക്കാർ പദ്ധതികൾ, അല്ലെങ്കിൽ വിളകളെക്കുറിച്ചുള്ള ഉപദേശങ്ങൾ എന്നിവയെക്കുറിച്ച് ചോദിക്കാമോ?",
+    englishResponse: "Sorry, I didn't quite understand. Could you please ask about weather, market prices, government schemes, or crop advice?",
+  };
 
-  if (query.includes('weather') || query.includes('climate') || query.includes('കാലാവസ്ഥ')) {
-    malayalamResponse = "ആകാശം തെളിഞ്ഞതും സൂര്യൻ പ്രകാശിക്കുന്നതുമാണ്! കേരളത്തിലെ കൃഷിക്ക് മനോഹരമായ ഒരു ദിവസമാണിന്ന്. താപനില കൃത്യമാണ്, നിങ്ങളെ തണുപ്പിക്കാൻ ഒരു ഇളം കാറ്റുമുണ്ട്.";
-    englishResponse = "The sky is clear and the sun is shining! It's a beautiful day for farming in Kerala. The temperature is just right, and there's a gentle breeze to keep you cool.";
-  } else if (query.includes('market') || query.includes('price') || query.includes('trends') || query.includes('വിപണി') || query.includes('വില')) {
-    malayalamResponse = "എല്ലാ പ്രധാന വിളകളുടെയും ഏറ്റവും പുതിയ വിപണി വില 'മാർക്കറ്റ് ട്രെൻഡ്സ്' പേജിൽ നിങ്ങൾക്ക് കണ്ടെത്താം. ഞാൻ നിങ്ങളെ അവിടേക്ക് കൊണ്ടുപോകണോ?";
-    englishResponse = "You can find the latest market prices for all major crops on the 'Market Trends' page. Would you like me to guide you there?";
-  } else if (query.includes('scheme') || query.includes('government') || query.includes('subsidy') || query.includes('പദ്ധതി')) {
-    malayalamResponse = "നിരവധി പ്രയോജനകരമായ സർക്കാർ പദ്ധതികൾ ലഭ്യമാണ്. 'സർക്കാർ പദ്ധതികൾ' പേജിൽ നിങ്ങൾക്ക് വിശദമായ വിവരങ്ങളും അപേക്ഷാ ലിങ്കുകളും കണ്ടെത്താം.";
-    englishResponse = "There are several beneficial government schemes available. You can find detailed information and application links on the 'Government Schemes' page.";
-  } else if (query.includes('crop') || query.includes('plant') || query.includes('disease') || query.includes('pest') || query.includes('വിള') || query.includes('രോഗം')) {
-    malayalamResponse = "വിളകളെക്കുറിച്ചോ കീടങ്ങളെക്കുറിച്ചോ പ്രത്യേക ഉപദേശത്തിനായി, നിങ്ങളുടെ ഫാം പ്രൊഫൈൽ അപ്ഡേറ്റ് ചെയ്തിട്ടുണ്ടെന്ന് ഉറപ്പാക്കുക. ഭാവിയിൽ, നിങ്ങളുടെ പ്രൊഫൈലിനെ അടിസ്ഥാനമാക്കി വ്യക്തിഗത ശുപാർശകൾ നൽകാൻ എനിക്ക് കഴിയും!";
-    englishResponse = "For specific advice on crops or pests, please ensure your Farm Profile is updated. In the future, I'll be able to provide personalized recommendations based on your profile!";
-  } else if (query.includes('log') || query.includes('activity') || query.includes('diary') || query.includes('രേഖപ്പെടുത്തുക')) {
-    malayalamResponse = "നിങ്ങളുടെ എല്ലാ കാർഷിക പ്രവർത്തനങ്ങളും 'ആക്റ്റിവിറ്റി ട്രാക്കിംഗ്' പേജിൽ രേഖപ്പെടുത്താം. നിങ്ങളുടെ കഠിനാധ്വാനത്തിന്റെ രേഖകൾ സൂക്ഷിക്കാൻ ഇത് ഒരു മികച്ച മാർഗമാണ്!";
-    englishResponse = "You can log all your farming activities on the 'Activity Tracking' page. It's a great way to keep a record of your hard work!";
-  } else if (query.includes('hello') || query.includes('hi') || query.includes('നമസ്കാരം')) {
-    malayalamResponse = "നമസ്കാരം! ഇന്ന് നിങ്ങളുടെ കൃഷിയിൽ ഞാൻ എങ്ങനെ സഹായിക്കണം?";
-    englishResponse = "Hello! How can I assist you with your farming today?";
-  } else if (query.includes('how are you') || query.includes('സുഖമാണോ')) {
-    malayalamResponse = "എനിക്ക് സുഖമാണ്, ചോദിച്ചതിന് നന്ദി! നിങ്ങളുടെ ഏത് കാർഷിക ചോദ്യങ്ങൾക്കും സഹായിക്കാൻ തയ്യാറാണ്.";
-    englishResponse = "I'm doing well, thank you for asking! I'm ready to help with any of your farming questions.";
+  for (const res of responses) {
+    for (const keyword of res.keywords) {
+      if (query.includes(keyword)) {
+        // Simulate a short delay to feel more natural
+        await new Promise(resolve => setTimeout(resolve, 300));
+        return {
+          malayalamResponse: res.malayalamResponse,
+          englishResponse: res.englishResponse,
+        };
+      }
+    }
   }
 
-  // Simulate a short delay to feel more natural
+  // If no keyword is matched, return the default response
   await new Promise(resolve => setTimeout(resolve, 300));
-
-  return { malayalamResponse, englishResponse };
+  return defaultResponse;
 }
+
+    
