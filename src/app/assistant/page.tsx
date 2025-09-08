@@ -11,8 +11,6 @@ import {
   Mic,
   Send,
   User,
-  Volume2,
-  Languages,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,7 +21,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { assistantFlow, textToSpeechFlow, translateFlow } from '@/ai/flows/assistant-flow';
+import { assistantFlow } from '@/ai/flows/assistant-flow';
 import React from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -33,10 +31,6 @@ import { Toaster } from '@/components/ui/toaster';
 type Message = {
   role: 'user' | 'assistant';
   text: string;
-  audioUrl?: string;
-  language?: 'english' | 'malayalam';
-  translatedText?: string;
-  isTranslated?: boolean;
 };
 
 function AssistantChat() {
@@ -46,7 +40,6 @@ function AssistantChat() {
   const [isRecording, setIsRecording] = React.useState(false);
   const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
   const audioChunksRef = React.useRef<Blob[]>([]);
-  const audioPlayerRef = React.useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
 
   const handleSendMessage = async (text: string) => {
@@ -59,29 +52,20 @@ function AssistantChat() {
 
     try {
       const assistantResult = await assistantFlow({ query: text });
-      const audioUrl = await textToSpeechFlow(assistantResult.response);
 
       setMessages([
         ...newMessages,
         {
           role: 'assistant',
           text: assistantResult.response,
-          audioUrl,
-          language: assistantResult.language,
         },
       ]);
-
-      if (audioUrl) {
-        const audio = new Audio(audioUrl);
-        audioPlayerRef.current = audio;
-        audio.play();
-      }
     } catch (error) {
       console.error('Error with assistant flow:', error);
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to get a response from the assistant. Have you set your API Key?',
+        description: 'Failed to get a response from the assistant.',
       });
     } finally {
       setIsLoading(false);
@@ -125,51 +109,6 @@ function AssistantChat() {
     }
   };
 
-  const playAudio = (audioUrl?: string) => {
-    if (audioPlayerRef.current) {
-      audioPlayerRef.current.pause();
-      audioPlayerRef.current = null;
-    }
-
-    if (audioUrl) {
-      const audio = new Audio(audioUrl);
-      audioPlayerRef.current = audio;
-      audio.play();
-    }
-  };
-
-  const handleTranslate = async (index: number) => {
-    const message = messages[index];
-    if (message.role !== 'assistant' || !message.language) return;
-
-    if (message.translatedText) {
-        const newMessages = [...messages];
-        newMessages[index].isTranslated = !newMessages[index].isTranslated;
-        setMessages(newMessages);
-        return;
-    }
-
-    setIsLoading(true);
-    try {
-        const targetLanguage = message.language === 'english' ? 'malayalam' : 'english';
-        const translated = await translateFlow({ text: message.text, targetLanguage });
-        
-        const newMessages = [...messages];
-        newMessages[index].translatedText = translated;
-        newMessages[index].isTranslated = true;
-        setMessages(newMessages);
-
-    } catch (error) {
-        console.error('Translation error:', error);
-        toast({
-            variant: 'destructive',
-            title: 'Error',
-            description: 'Failed to translate the message.',
-        });
-    } finally {
-        setIsLoading(false);
-    }
-  };
 
   return (
     <Card className="flex-1 flex flex-col">
@@ -201,27 +140,7 @@ function AssistantChat() {
                       : 'bg-muted'
                   }`}
                 >
-                  <p>{msg.isTranslated ? msg.translatedText : msg.text}</p>
-                   {msg.role === 'assistant' && msg.audioUrl && (
-                    <div className="flex items-center gap-2 mt-2">
-                        <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6"
-                        onClick={() => playAudio(msg.audioUrl)}
-                        >
-                        <Volume2 className="h-4 w-4" />
-                        </Button>
-                        <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6"
-                        onClick={() => handleTranslate(index)}
-                        >
-                        <Languages className="h-4 w-4" />
-                        </Button>
-                    </div>
-                  )}
+                  <p>{msg.text}</p>
                 </div>
                  {msg.role === 'user' && (
                   <Avatar>
