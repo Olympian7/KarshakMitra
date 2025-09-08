@@ -128,7 +128,7 @@ export default async function MarketPage() {
           </Button>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <Card className="border-primary">
+          <Card>
             <CardHeader>
               <CardTitle>Latest Crop Prices</CardTitle>
               <CardDescription>

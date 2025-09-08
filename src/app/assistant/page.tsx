@@ -169,7 +169,7 @@ function AssistantChat() {
   };
 
   return (
-    <Card className="flex-1 flex flex-col border-primary">
+    <Card className="flex-1 flex flex-col">
       <CardHeader>
         <CardTitle>Chat</CardTitle>
         <CardDescription>

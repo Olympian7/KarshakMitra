@@ -120,7 +120,7 @@ function ActivityTimeline() {
   };
 
   return (
-    <Card className="border-primary w-full flex-1 flex flex-col">
+    <Card className="w-full flex-1 flex flex-col">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle>Activity Log</CardTitle>

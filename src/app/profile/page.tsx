@@ -48,7 +48,7 @@ function FarmProfileForm() {
     };
 
   return (
-    <Card className="border-primary">
+    <Card>
       <CardHeader>
         <CardTitle>Your Farm Profile</CardTitle>
         <CardDescription>

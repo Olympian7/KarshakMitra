@@ -136,7 +136,7 @@ export default async function Dashboard() {
             </h1>
           </div>
           <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-2">
-            <Card className="border-primary">
+            <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle>Today's Weather</CardTitle>
                 <CloudSun className="h-6 w-6 text-accent" />
@@ -151,7 +151,7 @@ export default async function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card className="border-primary">
+            <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle>Market Snapshot</CardTitle>
                 <Link href="/market">
@@ -180,7 +180,7 @@ export default async function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card className="lg:col-span-2 border-primary">
+            <Card className="lg:col-span-2">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle>Featured Government Schemes</CardTitle>
                  <Link href="/schemes">
@@ -191,7 +191,7 @@ export default async function Dashboard() {
               </CardHeader>
               <CardContent className="grid gap-4 md:grid-cols-2">
                 {govSchemes.map((scheme) => (
-                  <div key={scheme.id} className="border border-primary/50 p-4 rounded-lg">
+                  <div key={scheme.id} className="border border-border/50 p-4 rounded-lg">
                     <h3 className="font-semibold">{scheme.title}</h3>
                     <p className="text-sm text-muted-foreground mt-1">{scheme.description.slice(0,100)}...</p>
                   </div>
