@@ -13,6 +13,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { assistantFlow } from '@/ai/flows/assistant-flow';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useLanguage } from '@/context/language-context';
+import { translations } from '@/lib/translations';
 
 interface Message {
   id: string;
@@ -24,6 +26,9 @@ interface Message {
 }
 
 function AssistantChat() {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -39,17 +44,23 @@ function AssistantChat() {
   
   // Set an initial welcome message
   useEffect(() => {
-    setMessages([
-      {
-        id: 'init',
-        text: "Hello! I am your Karshak Mitra assistant. How can I help you today? You can ask me about the weather, market prices, or government schemes.",
-        sender: 'assistant',
-        malayalamText: "നമസ്കാരം! ഞാൻ നിങ്ങളുടെ കർഷക മിത്ര അസിസ്റ്റൻ്റ് ആണ്. ഇന്ന് ഞാൻ നിങ്ങളെ എങ്ങനെ സഹായിക്കണം? കാലാവസ്ഥ, വിപണി വില, അല്ലെങ്കിൽ സർക്കാർ പദ്ധതികൾ എന്നിവയെക്കുറിച്ച് നിങ്ങൾക്ക് എന്നോട് ചോദിക്കാം.",
-        englishText: "Hello! I am your Karshak Mitra assistant. How can I help you today? You can ask me about the weather, market prices, or government schemes.",
-        currentLang: 'en',
-      },
-    ]);
-  }, []);
+    const welcomeMessage = {
+      id: 'init',
+      text: t.assistantWelcome,
+      sender: 'assistant' as const,
+      malayalamText: translations.ml.assistantWelcome,
+      englishText: translations.en.assistantWelcome,
+      currentLang: language,
+    };
+    
+    setMessages(prev => {
+        if (prev.length > 0 && prev[0].id === 'init') {
+            return [{ ...welcomeMessage, text: language === 'ml' ? welcomeMessage.malayalamText : welcomeMessage.englishText }];
+        }
+        return [welcomeMessage];
+    });
+
+  }, [language, t.assistantWelcome]);
 
 
   const handleSend = async () => {
@@ -68,18 +79,18 @@ function AssistantChat() {
       const result = await assistantFlow({ query: input });
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: result.malayalamResponse,
+        text: language === 'ml' ? result.malayalamResponse : result.englishResponse,
         sender: 'assistant',
         malayalamText: result.malayalamResponse,
         englishText: result.englishResponse,
-        currentLang: 'ml',
+        currentLang: language,
       };
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Error getting response from assistant:', error);
        const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: "Sorry, I'm having trouble connecting. Please try again later.",
+        text: t.assistantError,
         sender: 'assistant',
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -139,6 +150,7 @@ function AssistantChat() {
                   size="icon" 
                   className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={() => handleTranslate(message.id)}
+                  title={t.translate}
                   >
                   <Languages className="h-4 w-4" />
                 </Button>
@@ -173,7 +185,7 @@ function AssistantChat() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Ask your assistant..."
+            placeholder={t.askYourAssistant}
             className="pr-12"
             disabled={isLoading}
           />
@@ -194,8 +206,11 @@ function AssistantChat() {
 
 
 export default function AssistantPage() {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   return (
-    <AppShell title="Conversational Assistant" activePage="assistant">
+    <AppShell title={t.conversationalAssistant} activePage="assistant">
       <main className="flex flex-1 flex-col bg-muted/20 h-full">
         <AssistantChat />
       </main>

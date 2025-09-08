@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Bar, BarChart as RechartsBarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from '@/components/ui/use-toast';
 import { getProfile, saveProfile, FarmProfile } from '@/services/profile';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import AppShell from '@/components/app-shell';
 import { BarChart, Lightbulb } from 'lucide-react';
+import { useLanguage } from '@/context/language-context';
+import { translations } from '@/lib/translations';
 
 const chartData = [
   { name: 'Rice', value: 45 },
@@ -27,12 +29,16 @@ const chartData = [
 ];
 
 function FarmProfileForm() {
+    const { language } = useLanguage();
+    const t = translations[language];
+
     const [profile, setProfile] = React.useState<FarmProfile | null>(null);
     const [isLoading, setIsLoading] = React.useState(true);
-    const { toast } = useToast();
+    const [isSaving, setIsSaving] = React.useState(false);
 
     React.useEffect(() => {
         const fetchProfile = async () => {
+            setIsLoading(true);
             try {
                 const data = await getProfile();
                 setProfile(data);
@@ -47,7 +53,7 @@ function FarmProfileForm() {
             }
         };
         fetchProfile();
-    }, [toast]);
+    }, []);
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (!profile) return;
@@ -59,21 +65,21 @@ function FarmProfileForm() {
         e.preventDefault();
         if (!profile) return;
 
-        setIsLoading(true);
+        setIsSaving(true);
         try {
             await saveProfile(profile);
             toast({
-                title: "Profile Saved!",
-                description: "Your farm profile has been updated successfully.",
+                title: t.profileSavedTitle,
+                description: t.profileSavedDesc,
             });
         } catch (error) {
              toast({
                 variant: 'destructive',
-                title: "Save Failed",
-                description: "Could not save your profile changes.",
+                title: t.profileSaveFailedTitle,
+                description: t.profileSaveFailedDesc,
             });
         } finally {
-            setIsLoading(false);
+            setIsSaving(false);
         }
     };
     
@@ -120,56 +126,54 @@ function FarmProfileForm() {
     }
     
     if (!profile) {
-        return <p>Could not load profile.</p>
+        return <p>{t.couldNotLoadProfile}</p>
     }
 
   return (
     <div className="grid md:grid-cols-3 gap-6 items-start">
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>Your Farm Profile</CardTitle>
-            <CardDescription>
-              Keep your farm's information up-to-date for tailored advice.
-            </CardDescription>
+            <CardTitle>{t.yourFarmProfile}</CardTitle>
+            <CardDescription>{t.farmProfileDesc}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="farmerName">Farmer Name</Label>
-                  <Input id="farmerName" value={profile.farmerName} onChange={handleChange} placeholder="Enter your name" />
+                  <Label htmlFor="farmerName">{t.farmerName}</Label>
+                  <Input id="farmerName" value={profile.farmerName} onChange={handleChange} placeholder={t.enterYourName} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="farmName">Farm Name</Label>
-                  <Input id="farmName" value={profile.farmName} onChange={handleChange} placeholder="Enter your farm's name" />
+                  <Label htmlFor="farmName">{t.farmName}</Label>
+                  <Input id="farmName" value={profile.farmName} onChange={handleChange} placeholder={t.enterFarmName} />
                 </div>
                  <div className="space-y-2">
-                  <Label htmlFor="location">Location</Label>
+                  <Label htmlFor="location">{t.location}</Label>
                   <Input id="location" value={profile.location} onChange={handleChange} placeholder="e.g., Kuttanad, Kerala" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="farmSize">Farm Size (in acres)</Label>
+                  <Label htmlFor="farmSize">{t.farmSize}</Label>
                   <Input id="farmSize" type="number" value={profile.farmSize} onChange={handleChange} placeholder="e.g., 15" />
                 </div>
                  <div className="space-y-2">
-                  <Label htmlFor="soilType">Soil Type</Label>
+                  <Label htmlFor="soilType">{t.soilType}</Label>
                   <Input id="soilType" value={profile.soilType} onChange={handleChange} placeholder="e.g., Alluvial Soil" />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="mainCrops">Main Crops Grown</Label>
-                <Textarea id="mainCrops" value={profile.mainCrops} onChange={handleChange} placeholder="List your primary crops, separated by commas" />
+                <Label htmlFor="mainCrops">{t.mainCrops}</Label>
+                <Textarea id="mainCrops" value={profile.mainCrops} onChange={handleChange} placeholder={t.mainCropsPlaceholder} />
               </div>
 
-              <Button type="submit" disabled={isLoading}>{isLoading ? 'Saving...' : 'Save Profile'}</Button>
+              <Button type="submit" disabled={isSaving}>{isSaving ? t.saving : t.saveProfile}</Button>
             </form>
           </CardContent>
         </Card>
         <div className="space-y-6">
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle>Crop Distribution</CardTitle>
+                    <CardTitle>{t.cropDistribution}</CardTitle>
                     <BarChart className="h-5 w-5 text-accent" />
                 </CardHeader>
                 <CardContent>
@@ -198,12 +202,12 @@ function FarmProfileForm() {
             </Card>
              <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle>AI-Powered Insight</CardTitle>
+                    <CardTitle>{t.aiPoweredInsight}</CardTitle>
                     <Lightbulb className="h-5 w-5 text-accent" />
                 </CardHeader>
                 <CardContent>
                    <p className="text-sm text-muted-foreground">
-                        Based on your location in <span className="font-semibold text-foreground">{profile.location}</span> and <span className="font-semibold text-foreground">{profile.soilType}</span> soil, consider planting a cover crop like cowpea after your rice harvest to improve soil nitrogen levels naturally.
+                        {t.aiInsightText1} <span className="font-semibold text-foreground">{profile.location}</span> {t.aiInsightText2} <span className="font-semibold text-foreground">{profile.soilType}</span> {t.aiInsightText3}
                    </p>
                 </CardContent>
             </Card>
@@ -214,8 +218,10 @@ function FarmProfileForm() {
 
 
 export default function ProfilePage() {
+  const { language } = useLanguage();
+  const t = translations[language];
   return (
-    <AppShell title="Farm Profile" activePage="profile">
+    <AppShell title={t.farmProfile} activePage="profile">
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <FarmProfileForm />
         </main>

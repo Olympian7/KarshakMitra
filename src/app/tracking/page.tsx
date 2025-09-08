@@ -18,18 +18,22 @@ import {
 } from '@/components/ui/card';
 import { getActivities, Activity } from '@/services/activity';
 import { logActivityFlow } from '@/ai/flows/activity-flow';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from '@/components/ui/use-toast';
 import AppShell from '@/components/app-shell';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useLanguage } from '@/context/language-context';
+import { translations } from '@/lib/translations';
 
 function ActivityTimeline() {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   const [activities, setActivities] = React.useState<Activity[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isRecording, setIsRecording] = React.useState(false);
   const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
   const audioChunksRef = React.useRef<Blob[]>([]);
-  const { toast } = useToast();
 
   const fetchActivities = React.useCallback(async () => {
     setIsLoading(true);
@@ -47,7 +51,7 @@ function ActivityTimeline() {
     } finally {
       setIsLoading(false);
     }
-  }, [toast]);
+  }, []);
 
   React.useEffect(() => {
     fetchActivities();
@@ -62,7 +66,7 @@ function ActivityTimeline() {
       // After logging, refetch all activities to ensure consistency
       await fetchActivities();
       toast({
-        title: 'Activity Logged',
+        title: t.activityLogged,
         description: newActivity.text,
       });
     } catch (error) {
@@ -70,7 +74,7 @@ function ActivityTimeline() {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to log the activity.',
+        description: t.failedToLogActivity,
       });
     } finally {
       setIsSubmitting(false);
@@ -95,7 +99,7 @@ function ActivityTimeline() {
           const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
           // In a real app, you'd send this blob to a speech-to-text API.
           // For this demo, we'll use a placeholder and let the user type.
-          const transcribedText = prompt("Please type your activity note:", "Watered the coconut trees in the west field.");
+          const transcribedText = prompt(t.promptForActivity);
           if (transcribedText) {
             await handleLogActivity(transcribedText);
           }
@@ -104,13 +108,13 @@ function ActivityTimeline() {
 
         mediaRecorderRef.current.start();
         setIsRecording(true);
-        toast({ title: 'Recording...', description: 'Click the mic again to stop.' });
+        toast({ title: t.recording, description: t.stopRecording });
       } catch (error) {
         console.error('Error accessing microphone:', error);
         toast({
           variant: 'destructive',
-          title: 'Microphone Access Denied',
-          description: 'Please enable microphone permissions in your browser.',
+          title: t.micAccessDenied,
+          description: t.enableMic,
         });
       }
     }
@@ -124,10 +128,8 @@ function ActivityTimeline() {
       <Card className="w-full flex-1 flex flex-col">
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle>Activity Log</CardTitle>
-            <CardDescription>
-              A timeline of all your farming activities.
-            </CardDescription>
+            <CardTitle>{t.activityLog}</CardTitle>
+            <CardDescription>{t.activityLogDesc}</CardDescription>
           </div>
           <Button
             onClick={handleMicClick}
@@ -137,7 +139,7 @@ function ActivityTimeline() {
             className="rounded-full h-12 w-12 flex-shrink-0"
           >
             <Mic className="h-6 w-6" />
-            <span className="sr-only">{isRecording ? 'Stop Recording' : 'Log Activity'}</span>
+            <span className="sr-only">{isRecording ? t.stopRecording : t.logActivity}</span>
           </Button>
         </CardHeader>
         <CardContent className="flex-1 overflow-y-auto min-h-[400px]">
@@ -160,7 +162,7 @@ function ActivityTimeline() {
                 </div>
               ))}
               {activities.length === 0 && !isLoading && (
-                <p>No activities logged yet. Click the microphone to add your first one!</p>
+                <p>{t.noActivitiesLogged}</p>
               )}
             </div>
           )}
@@ -170,26 +172,26 @@ function ActivityTimeline() {
       <div className="space-y-6">
           <Card>
             <CardHeader>
-                <CardTitle>Activity Summary</CardTitle>
+                <CardTitle>{t.activitySummary}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <ListChecks className="h-5 w-5 text-accent"/>
-                      <span className="text-sm text-muted-foreground">Total Activities</span>
+                      <span className="text-sm text-muted-foreground">{t.totalActivities}</span>
                     </div>
                     <span className="font-semibold">{isLoading ? <Skeleton className="h-5 w-8" /> : activities.length}</span>
                 </div>
                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <CalendarDays className="h-5 w-5 text-accent"/>
-                      <span className="text-sm text-muted-foreground">Last Entry</span>
+                      <span className="text-sm text-muted-foreground">{t.lastEntry}</span>
                     </div>
                     <span className="font-semibold">{isLoading ? <Skeleton className="h-5 w-20" /> : lastActivityDate}</span>
                 </div>
             </CardContent>
             <CardFooter>
-              <p className="text-xs text-muted-foreground">Keep logging to see your progress.</p>
+              <p className="text-xs text-muted-foreground">{t.keepLogging}</p>
             </CardFooter>
           </Card>
       </div>
@@ -200,13 +202,15 @@ function ActivityTimeline() {
 
 export default function TrackingPage() {
   const [isClient, setIsClient] = React.useState(false);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   React.useEffect(() => {
     setIsClient(true);
   }, []);
   
   return (
-    <AppShell title="Activity Tracking" activePage="tracking">
+    <AppShell title={t.activityTracking} activePage="tracking">
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           {isClient ? <ActivityTimeline /> : 
              <Card>

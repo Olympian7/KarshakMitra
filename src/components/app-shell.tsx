@@ -7,10 +7,13 @@ import {
   LineChart,
   MessageCircle,
   User,
+  Languages
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useLanguage } from '@/context/language-context';
+import { translations } from '@/lib/translations';
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -18,16 +21,19 @@ type AppShellProps = {
   activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market';
 };
 
-const navItems = [
-  { id: 'dashboard', href: '/', icon: Home, label: 'Dashboard' },
-  { id: 'assistant', href: '/assistant', icon: MessageCircle, label: 'Conversational Assistant' },
-  { id: 'profile', href: '/profile', icon: User, label: 'Farm Profile' },
-  { id: 'tracking', href: '/tracking', icon: ClipboardList, label: 'Activity Tracking' },
-  { id: 'schemes', href: '/schemes', icon: Landmark, label: 'Government Schemes' },
-  { id: 'market', href: '/market', icon: LineChart, label: 'Market Trends' },
-];
-
 export default function AppShell({ children, title, activePage }: AppShellProps) {
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
+
+  const navItems = [
+    { id: 'dashboard', href: '/', icon: Home, label: t.dashboard },
+    { id: 'assistant', href: '/assistant', icon: MessageCircle, label: t.conversationalAssistant },
+    { id: 'profile', href: '/profile', icon: User, label: t.farmProfile },
+    { id: 'tracking', href: '/tracking', icon: ClipboardList, label: t.activityTracking },
+    { id: 'schemes', href: '/schemes', icon: Landmark, label: t.governmentSchemes },
+    { id: 'market', href: '/market', icon: LineChart, label: t.marketTrends },
+  ];
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 md:block">
@@ -84,7 +90,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
               </Avatar>
               <div>
                   <p className="font-semibold text-sm">Narayanan</p>
-                  <p className="text-xs text-muted-foreground">Farmer</p>
+                  <p className="text-xs text-muted-foreground">{t.farmer}</p>
               </div>
             </div>
            </div>
@@ -97,6 +103,10 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
               {title}
             </h1>
           </div>
+          <Button variant="outline" size="icon" className="h-8 w-8" onClick={toggleLanguage}>
+            <Languages className="h-4 w-4" />
+            <span className="sr-only">Toggle Language</span>
+          </Button>
           <Button variant="outline" size="icon" className="h-8 w-8">
             <Bell className="h-4 w-4" />
             <span className="sr-only">Toggle notifications</span>
