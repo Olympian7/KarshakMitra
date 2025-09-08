@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import {
   Bell,
@@ -6,9 +8,11 @@ import {
   Home,
   Landmark,
   LineChart,
+  Mic,
+  Send,
   User,
+  Volume2,
 } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -17,15 +21,121 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { assistantFlow, textToSpeechFlow } from '@/ai/flows/assistant-flow';
+import React, { useState, useRef, useEffect } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
+type Message = {
+  role: 'user' | 'assistant';
+  text: string;
+  audioUrl?: string;
+};
 
 export default function AssistantPage() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
+  const { toast } = useToast();
+
+  const handleSendMessage = async (text: string) => {
+    if (!text.trim()) return;
+
+    const newMessages: Message[] = [...messages, { role: 'user', text }];
+    setMessages(newMessages);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const assistantResponse = await assistantFlow({ query: text });
+      const audioUrl = await textToSpeechFlow(assistantResponse);
+
+      setMessages([
+        ...newMessages,
+        { role: 'assistant', text: assistantResponse, audioUrl },
+      ]);
+
+      if (audioUrl) {
+        const audio = new Audio(audioUrl);
+        audioPlayerRef.current = audio;
+        audio.play();
+      }
+    } catch (error) {
+      console.error('Error with assistant flow:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to get a response from the assistant.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleMicClick = async () => {
+    if (isRecording) {
+      mediaRecorderRef.current?.stop();
+      setIsRecording(false);
+    } else {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorderRef.current = new MediaRecorder(stream);
+        audioChunksRef.current = [];
+
+        mediaRecorderRef.current.ondataavailable = (event) => {
+          audioChunksRef.current.push(event.data);
+        };
+
+        mediaRecorderRef.current.onstop = async () => {
+          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+          // Note: The Genkit model will handle transcription from audio to text.
+          // For this prototype, we'll use a placeholder for the transcribed text.
+          // In a real implementation, you'd send the audioBlob to a speech-to-text service.
+          const transcribedText = "Placeholder for transcribed audio"; // Replace with actual transcription
+          await handleSendMessage(transcribedText);
+           // Stop all media tracks to turn off the mic icon in the browser tab
+          stream.getTracks().forEach(track => track.stop());
+        };
+
+        mediaRecorderRef.current.start();
+        setIsRecording(true);
+      } catch (error) {
+        console.error('Error accessing microphone:', error);
+        toast({
+          variant: 'destructive',
+          title: 'Microphone Access Denied',
+          description: 'Please enable microphone permissions in your browser.',
+        });
+      }
+    }
+  };
+
+  const playAudio = (audioUrl?: string) => {
+    if (audioPlayerRef.current) {
+      audioPlayerRef.current.pause();
+      audioPlayerRef.current = null;
+    }
+
+    if (audioUrl) {
+      const audio = new Audio(audioUrl);
+      audioPlayerRef.current = audio;
+      audio.play();
+    }
+  };
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-primary-foreground md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <svg
+               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -96,7 +206,7 @@ export default function AssistantPage() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col h-screen">
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           <div className="w-full flex-1">
             <h1 className="text-lg font-semibold md:text-2xl">
@@ -108,18 +218,93 @@ export default function AssistantPage() {
             <span className="sr-only">Toggle notifications</span>
           </Button>
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Coming Soon</CardTitle>
-              <CardDescription>
-                This feature is under construction.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>The Conversational Assistant will provide a voice-enabled chatbot for a natural, friendly experience.</p>
-            </CardContent>
-          </Card>
+        <main className="flex-1 flex flex-col gap-4 p-4 lg:gap-6 lg:p-6 overflow-hidden">
+           <Card className="flex-1 flex flex-col">
+              <CardHeader>
+                <CardTitle>Chat</CardTitle>
+                <CardDescription>
+                  Ask me anything about your farm, weather, or market prices.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col overflow-hidden">
+                <ScrollArea className="flex-1 pr-4">
+                  <div className="space-y-4">
+                    {messages.map((msg, index) => (
+                      <div
+                        key={index}
+                        className={`flex items-start gap-3 ${
+                          msg.role === 'user' ? 'justify-end' : ''
+                        }`}
+                      >
+                        {msg.role === 'assistant' && (
+                          <Avatar>
+                            <AvatarFallback>KM</AvatarFallback>
+                          </Avatar>
+                        )}
+                        <div
+                          className={`rounded-lg px-4 py-2 max-w-[80%] ${
+                            msg.role === 'user'
+                              ? 'bg-primary text-primary-foreground'
+                              : 'bg-muted'
+                          }`}
+                        >
+                          <p>{msg.text}</p>
+                           {msg.role === 'assistant' && msg.audioUrl && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 mt-2"
+                              onClick={() => playAudio(msg.audioUrl)}
+                            >
+                              <Volume2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                         {msg.role === 'user' && (
+                          <Avatar>
+                            <AvatarFallback>U</AvatarFallback>
+                          </Avatar>
+                        )}
+                      </div>
+                    ))}
+                     {isLoading && (
+                        <div className="flex items-start gap-3">
+                            <Avatar>
+                                <AvatarFallback>KM</AvatarFallback>
+                            </Avatar>
+                            <div className="rounded-lg px-4 py-2 bg-muted max-w-[80%]">
+                                <p>Thinking...</p>
+                            </div>
+                        </div>
+                    )}
+                  </div>
+                </ScrollArea>
+                <div className="mt-4 flex items-center gap-2">
+                  <Input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage(input)}
+                    placeholder="Type your message or use the microphone..."
+                    disabled={isLoading}
+                  />
+                  <Button
+                    onClick={() => handleSendMessage(input)}
+                    disabled={isLoading || !input.trim()}
+                    aria-label="Send Message"
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    onClick={handleMicClick}
+                    disabled={isLoading}
+                    variant={isRecording ? 'destructive' : 'outline'}
+                    aria-label={isRecording ? 'Stop Recording' : 'Start Recording'}
+                  >
+                    <Mic className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
         </main>
       </div>
     </div>
