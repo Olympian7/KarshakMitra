@@ -16,6 +16,8 @@ body {
     --popover-foreground: 222.2 84% 4.9%;
     --primary: 215 28% 40%; /* Slate Blue */
     --primary-foreground: 210 40% 98%;
+    --primary-gradient-start: 215 28% 40%;
+    --primary-gradient-end: 215 28% 50%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
@@ -39,6 +41,8 @@ body {
     --popover-foreground: 210 40% 98%;
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
+    --primary-gradient-start: 210 40% 98%;
+    --primary-gradient-end: 210 40% 88%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
