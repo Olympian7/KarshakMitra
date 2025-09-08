@@ -11,7 +11,6 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Karshak Mitra',
   description: "An AI-powered personal farming assistant for Kerala's farmers.",
-  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
