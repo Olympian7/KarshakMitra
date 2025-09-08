@@ -23,11 +23,11 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { assistantFlow, textToSpeechFlow, translateFlow, AssistantInput, AssistantOutput, TranslateInput } from '@/ai/flows/assistant-flow';
+import { assistantFlow, textToSpeechFlow, translateFlow } from '@/ai/flows/assistant-flow';
 import React, { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 type Message = {
   role: 'user' | 'assistant';
@@ -38,7 +38,7 @@ type Message = {
   isTranslated?: boolean;
 };
 
-export default function AssistantPage() {
+function AssistantChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +66,7 @@ export default function AssistantPage() {
           role: 'assistant',
           text: assistantResult.response,
           audioUrl,
-          language: assistantResult.language
+          language: assistantResult.language,
         },
       ]);
 
@@ -103,12 +103,8 @@ export default function AssistantPage() {
 
         mediaRecorderRef.current.onstop = async () => {
           const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-          // Note: The Genkit model will handle transcription from audio to text.
-          // For this prototype, we'll use a placeholder for the transcribed text.
-          // In a real implementation, you'd send the audioBlob to a speech-to-text service.
-          const transcribedText = "Placeholder for transcribed audio"; // Replace with actual transcription
+          const transcribedText = "Placeholder for transcribed audio"; 
           await handleSendMessage(transcribedText);
-           // Stop all media tracks to turn off the mic icon in the browser tab
           stream.getTracks().forEach(track => track.stop());
         };
 
@@ -142,7 +138,6 @@ export default function AssistantPage() {
     const message = messages[index];
     if (message.role !== 'assistant' || !message.language) return;
 
-    // If already translated, just toggle back
     if (message.translatedText) {
         const newMessages = [...messages];
         newMessages[index].isTranslated = !newMessages[index].isTranslated;
@@ -150,7 +145,6 @@ export default function AssistantPage() {
         return;
     }
 
-    // If not translated, call the flow
     setIsLoading(true);
     try {
         const targetLanguage = message.language === 'english' ? 'malayalam' : 'english';
@@ -173,6 +167,113 @@ export default function AssistantPage() {
     }
   };
 
+  return (
+    <Card className="flex-1 flex flex-col border-primary">
+      <CardHeader>
+        <CardTitle>Chat</CardTitle>
+        <CardDescription>
+          Ask me anything about your farm, weather, or market prices.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex-1 flex flex-col overflow-hidden">
+        <ScrollArea className="flex-1 pr-4">
+          <div className="space-y-4">
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`flex items-start gap-3 ${
+                  msg.role === 'user' ? 'justify-end' : ''
+                }`}
+              >
+                {msg.role === 'assistant' && (
+                  <Avatar>
+                    <AvatarFallback>KM</AvatarFallback>
+                  </Avatar>
+                )}
+                <div
+                  className={`rounded-lg px-4 py-2 max-w-[80%] ${
+                    msg.role === 'user'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted'
+                  }`}
+                >
+                  <p>{msg.isTranslated ? msg.translatedText : msg.text}</p>
+                   {msg.role === 'assistant' && msg.audioUrl && (
+                    <div className="flex items-center gap-2 mt-2">
+                        <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => playAudio(msg.audioUrl)}
+                        >
+                        <Volume2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => handleTranslate(index)}
+                        >
+                        <Languages className="h-4 w-4" />
+                        </Button>
+                    </div>
+                  )}
+                </div>
+                 {msg.role === 'user' && (
+                  <Avatar>
+                    <AvatarFallback>U</AvatarFallback>
+                  </Avatar>
+                )}
+              </div>
+            ))}
+             {isLoading && (
+                <div className="flex items-start gap-3">
+                    <Avatar>
+                        <AvatarFallback>KM</AvatarFallback>
+                    </Avatar>
+                    <div className="rounded-lg px-4 py-2 bg-muted max-w-[80%]">
+                        <p>Thinking...</p>
+                    </div>
+                </div>
+            )}
+          </div>
+        </ScrollArea>
+        <div className="mt-4 flex items-center gap-2">
+          <Input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage(input)}
+            placeholder="Type your message or use the microphone..."
+            disabled={isLoading}
+          />
+          <Button
+            onClick={() => handleSendMessage(input)}
+            disabled={isLoading || !input.trim()}
+            aria-label="Send Message"
+          >
+            <Send className="h-4 w-4" />
+          </Button>
+          <Button
+            onClick={handleMicClick}
+            disabled={isLoading}
+            variant={isRecording ? 'destructive' : 'outline'}
+            aria-label={isRecording ? 'Stop Recording' : 'Start Recording'}
+          >
+            <Mic className="h-4 w-4" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+
+export default function AssistantPage() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -271,102 +372,7 @@ export default function AssistantPage() {
           </Button>
         </header>
         <main className="flex-1 flex flex-col gap-4 p-4 lg:gap-6 lg:p-6 overflow-hidden">
-           <Card className="flex-1 flex flex-col border-primary">
-              <CardHeader>
-                <CardTitle>Chat</CardTitle>
-                <CardDescription>
-                  Ask me anything about your farm, weather, or market prices.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex-1 flex flex-col overflow-hidden">
-                <ScrollArea className="flex-1 pr-4">
-                  <div className="space-y-4">
-                    {messages.map((msg, index) => (
-                      <div
-                        key={index}
-                        className={`flex items-start gap-3 ${
-                          msg.role === 'user' ? 'justify-end' : ''
-                        }`}
-                      >
-                        {msg.role === 'assistant' && (
-                          <Avatar>
-                            <AvatarFallback>KM</AvatarFallback>
-                          </Avatar>
-                        )}
-                        <div
-                          className={`rounded-lg px-4 py-2 max-w-[80%] ${
-                            msg.role === 'user'
-                              ? 'bg-primary text-primary-foreground'
-                              : 'bg-muted'
-                          }`}
-                        >
-                          <p>{msg.isTranslated ? msg.translatedText : msg.text}</p>
-                           {msg.role === 'assistant' && msg.audioUrl && (
-                            <div className="flex items-center gap-2 mt-2">
-                                <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-6 w-6"
-                                onClick={() => playAudio(msg.audioUrl)}
-                                >
-                                <Volume2 className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-6 w-6"
-                                onClick={() => handleTranslate(index)}
-                                >
-                                <Languages className="h-4 w-4" />
-                                </Button>
-                            </div>
-                          )}
-                        </div>
-                         {msg.role === 'user' && (
-                          <Avatar>
-                            <AvatarFallback>U</AvatarFallback>
-                          </Avatar>
-                        )}
-                      </div>
-                    ))}
-                     {isLoading && (
-                        <div className="flex items-start gap-3">
-                            <Avatar>
-                                <AvatarFallback>KM</AvatarFallback>
-                            </Avatar>
-                            <div className="rounded-lg px-4 py-2 bg-muted max-w-[80%]">
-                                <p>Thinking...</p>
-                            </div>
-                        </div>
-                    )}
-                  </div>
-                </ScrollArea>
-                <div className="mt-4 flex items-center gap-2">
-                  <Input
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage(input)}
-                    placeholder="Type your message or use the microphone..."
-                    disabled={isLoading}
-                  />
-                  <Button
-                    onClick={() => handleSendMessage(input)}
-                    disabled={isLoading || !input.trim()}
-                    aria-label="Send Message"
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    onClick={handleMicClick}
-                    disabled={isLoading}
-                    variant={isRecording ? 'destructive' : 'outline'}
-                    aria-label={isRecording ? 'Stop Recording' : 'Start Recording'}
-                  >
-                    <Mic className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+           {isClient ? <AssistantChat /> : null}
         </main>
       </div>
     </div>
