@@ -24,10 +24,11 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { assistantFlow, textToSpeechFlow, translateFlow } from '@/ai/flows/assistant-flow';
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Toaster } from '@/components/ui/toaster';
 
 type Message = {
   role: 'user' | 'assistant';
@@ -39,13 +40,13 @@ type Message = {
 };
 
 function AssistantChat() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
+  const [messages, setMessages] = React.useState<Message[]>([]);
+  const [input, setInput] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isRecording, setIsRecording] = React.useState(false);
+  const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
+  const audioChunksRef = React.useRef<Blob[]>([]);
+  const audioPlayerRef = React.useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
 
   const handleSendMessage = async (text: string) => {
@@ -80,7 +81,7 @@ function AssistantChat() {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to get a response from the assistant.',
+        description: 'Failed to get a response from the assistant. Have you set your API Key?',
       });
     } finally {
       setIsLoading(false);
@@ -269,9 +270,9 @@ function AssistantChat() {
 
 
 export default function AssistantPage() {
-  const [isClient, setIsClient] = useState(false);
+  const [isClient, setIsClient] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setIsClient(true);
   }, []);
 
@@ -375,6 +376,7 @@ export default function AssistantPage() {
            {isClient ? <AssistantChat /> : null}
         </main>
       </div>
+      <Toaster />
     </div>
   );
 }
