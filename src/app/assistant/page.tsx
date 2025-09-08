@@ -12,6 +12,7 @@ import {
   Send,
   User,
   Volume2,
+  Languages,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -22,7 +23,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { assistantFlow, textToSpeechFlow } from '@/ai/flows/assistant-flow';
+import { assistantFlow, textToSpeechFlow, translateFlow, AssistantInput, AssistantOutput, TranslateInput } from '@/ai/flows/assistant-flow';
 import React, { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -32,6 +33,9 @@ type Message = {
   role: 'user' | 'assistant';
   text: string;
   audioUrl?: string;
+  language?: 'english' | 'malayalam';
+  translatedText?: string;
+  isTranslated?: boolean;
 };
 
 export default function AssistantPage() {
@@ -53,12 +57,17 @@ export default function AssistantPage() {
     setIsLoading(true);
 
     try {
-      const assistantResponse = await assistantFlow({ query: text });
-      const audioUrl = await textToSpeechFlow(assistantResponse);
+      const assistantResult = await assistantFlow({ query: text });
+      const audioUrl = await textToSpeechFlow(assistantResult.response);
 
       setMessages([
         ...newMessages,
-        { role: 'assistant', text: assistantResponse, audioUrl },
+        {
+          role: 'assistant',
+          text: assistantResult.response,
+          audioUrl,
+          language: assistantResult.language
+        },
       ]);
 
       if (audioUrl) {
@@ -128,6 +137,42 @@ export default function AssistantPage() {
       audio.play();
     }
   };
+
+  const handleTranslate = async (index: number) => {
+    const message = messages[index];
+    if (message.role !== 'assistant' || !message.language) return;
+
+    // If already translated, just toggle back
+    if (message.translatedText) {
+        const newMessages = [...messages];
+        newMessages[index].isTranslated = !newMessages[index].isTranslated;
+        setMessages(newMessages);
+        return;
+    }
+
+    // If not translated, call the flow
+    setIsLoading(true);
+    try {
+        const targetLanguage = message.language === 'english' ? 'malayalam' : 'english';
+        const translated = await translateFlow({ text: message.text, targetLanguage });
+        
+        const newMessages = [...messages];
+        newMessages[index].translatedText = translated;
+        newMessages[index].isTranslated = true;
+        setMessages(newMessages);
+
+    } catch (error) {
+        console.error('Translation error:', error);
+        toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: 'Failed to translate the message.',
+        });
+    } finally {
+        setIsLoading(false);
+    }
+  };
+
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -255,16 +300,26 @@ export default function AssistantPage() {
                               : 'bg-muted'
                           }`}
                         >
-                          <p>{msg.text}</p>
+                          <p>{msg.isTranslated ? msg.translatedText : msg.text}</p>
                            {msg.role === 'assistant' && msg.audioUrl && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-6 w-6 mt-2"
-                              onClick={() => playAudio(msg.audioUrl)}
-                            >
-                              <Volume2 className="h-4 w-4" />
-                            </Button>
+                            <div className="flex items-center gap-2 mt-2">
+                                <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                onClick={() => playAudio(msg.audioUrl)}
+                                >
+                                <Volume2 className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                onClick={() => handleTranslate(index)}
+                                >
+                                <Languages className="h-4 w-4" />
+                                </Button>
+                            </div>
                           )}
                         </div>
                          {msg.role === 'user' && (
