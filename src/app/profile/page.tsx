@@ -169,7 +169,7 @@ function FarmProfileForm() {
             <CardContent>
                 <div className="aspect-square w-full rounded-md overflow-hidden border border-border/50">
                     <Image 
-                        src="https://picsum.photos/400/400" 
+                        src="https://source.unsplash.com/400x400/?farm,aerial" 
                         alt="Farm minimap" 
                         width={400} 
                         height={400} 
