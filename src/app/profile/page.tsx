@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -9,8 +10,10 @@ import {
   LineChart,
   MessageCircle,
   User,
+  MapPin,
 } from 'lucide-react';
 import React from 'react';
+import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -82,23 +85,33 @@ function FarmProfileForm() {
     
     if (isLoading && !profile) {
         return (
-             <Card>
-                <CardHeader>
-                    <Skeleton className="h-8 w-1/2" />
-                    <Skeleton className="h-4 w-3/4" />
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
-                        <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
-                        <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
-                        <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
-                        <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
-                    </div>
-                     <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-20 w-full" /></div>
-                    <Skeleton className="h-10 w-24" />
-                </CardContent>
-            </Card>
+            <div className="grid md:grid-cols-3 gap-6">
+                <Card className="md:col-span-2">
+                    <CardHeader>
+                        <Skeleton className="h-8 w-1/2" />
+                        <Skeleton className="h-4 w-3/4" />
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
+                            <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
+                            <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
+                            <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
+                            <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
+                        </div>
+                         <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-20 w-full" /></div>
+                        <Skeleton className="h-10 w-24" />
+                    </CardContent>
+                </Card>
+                <Card>
+                     <CardHeader>
+                        <Skeleton className="h-8 w-3/4" />
+                    </CardHeader>
+                    <CardContent>
+                        <Skeleton className="h-48 w-full" />
+                    </CardContent>
+                </Card>
+            </div>
         )
     }
     
@@ -107,47 +120,68 @@ function FarmProfileForm() {
     }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Your Farm Profile</CardTitle>
-        <CardDescription>
-          Keep your farm's information up-to-date. This helps in providing you with tailored advice.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="farmerName">Farmer Name</Label>
-              <Input id="farmerName" value={profile.farmerName} onChange={handleChange} placeholder="Enter your name" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="farmName">Farm Name</Label>
-              <Input id="farmName" value={profile.farmName} onChange={handleChange} placeholder="Enter your farm's name" />
-            </div>
-             <div className="space-y-2">
-              <Label htmlFor="location">Location</Label>
-              <Input id="location" value={profile.location} onChange={handleChange} placeholder="e.g., Kuttanad, Kerala" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="farmSize">Farm Size (in acres)</Label>
-              <Input id="farmSize" type="number" value={profile.farmSize} onChange={handleChange} placeholder="e.g., 15" />
-            </div>
-             <div className="space-y-2">
-              <Label htmlFor="soilType">Soil Type</Label>
-              <Input id="soilType" value={profile.soilType} onChange={handleChange} placeholder="e.g., Alluvial Soil" />
-            </div>
-          </div>
+    <div className="grid md:grid-cols-3 gap-6 items-start">
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <CardTitle>Your Farm Profile</CardTitle>
+            <CardDescription>
+              Keep your farm's information up-to-date for tailored advice.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="farmerName">Farmer Name</Label>
+                  <Input id="farmerName" value={profile.farmerName} onChange={handleChange} placeholder="Enter your name" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="farmName">Farm Name</Label>
+                  <Input id="farmName" value={profile.farmName} onChange={handleChange} placeholder="Enter your farm's name" />
+                </div>
+                 <div className="space-y-2">
+                  <Label htmlFor="location">Location</Label>
+                  <Input id="location" value={profile.location} onChange={handleChange} placeholder="e.g., Kuttanad, Kerala" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="farmSize">Farm Size (in acres)</Label>
+                  <Input id="farmSize" type="number" value={profile.farmSize} onChange={handleChange} placeholder="e.g., 15" />
+                </div>
+                 <div className="space-y-2">
+                  <Label htmlFor="soilType">Soil Type</Label>
+                  <Input id="soilType" value={profile.soilType} onChange={handleChange} placeholder="e.g., Alluvial Soil" />
+                </div>
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="mainCrops">Main Crops Grown</Label>
-            <Textarea id="mainCrops" value={profile.mainCrops} onChange={handleChange} placeholder="List your primary crops, separated by commas" />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="mainCrops">Main Crops Grown</Label>
+                <Textarea id="mainCrops" value={profile.mainCrops} onChange={handleChange} placeholder="List your primary crops, separated by commas" />
+              </div>
 
-          <Button type="submit" disabled={isLoading}>{isLoading ? 'Saving...' : 'Save Profile'}</Button>
-        </form>
-      </CardContent>
-    </Card>
+              <Button type="submit" disabled={isLoading}>{isLoading ? 'Saving...' : 'Save Profile'}</Button>
+            </form>
+          </CardContent>
+        </Card>
+        <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle>Farm Layout</CardTitle>
+                <MapPin className="h-5 w-5 text-accent" />
+            </CardHeader>
+            <CardContent>
+                <div className="aspect-square w-full rounded-md overflow-hidden border border-border/50">
+                    <Image 
+                        src="https://picsum.photos/400/400" 
+                        alt="Farm minimap" 
+                        width={400} 
+                        height={400} 
+                        className="object-cover w-full h-full"
+                        data-ai-hint="farm aerial"
+                        />
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">A satellite view of your farm's location.</p>
+            </CardContent>
+        </Card>
+    </div>
   );
 }
 
