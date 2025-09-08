@@ -1,21 +1,10 @@
-
 'use client';
 
-import Link from 'next/link';
-import {
-  Bell,
-  ClipboardList,
-  Home,
-  Landmark,
-  LineChart,
-  MessageCircle,
-  User,
-  BarChart,
-} from 'lucide-react';
 import React from 'react';
 import { Bar, BarChart as RechartsBarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
-
-
+import { useToast } from '@/components/ui/use-toast';
+import { getProfile, saveProfile, FarmProfile } from '@/services/profile';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -24,13 +13,11 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
-import { getProfile, saveProfile, FarmProfile } from '@/services/profile';
-import { Skeleton } from '@/components/ui/skeleton';
+import AppShell from '@/components/app-shell';
+import { BarChart } from 'lucide-react';
 
 const chartData = [
   { name: 'Rice', value: 45 },
@@ -190,7 +177,7 @@ function FarmProfileForm() {
                             fontSize={12}
                             tickLine={false}
                             axisLine={false}
-                            tickFormatter={(value) => `${'value'}%`}
+                            tickFormatter={(value) => `${value}%`}
                         />
                         <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                         </RechartsBarChart>
@@ -206,105 +193,10 @@ function FarmProfileForm() {
 
 export default function ProfilePage() {
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <div className="hidden border-r bg-primary-foreground md:block">
-        <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold">
-              <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-5 w-5"
-              >
-                <path d="M12 4c-2.3 0-4.4.9-6 2.5-1.6 1.6-2.5 3.7-2.5 6 0 2.3.9 4.4 2.5 6 1.6 1.6 3.7 2.5 6 2.5s4.4-.9 6-2.5c1.6-1.6 2.5-3.7 2.5-6 0-2.3-.9-4.4-2.5-6C16.4 4.9 14.3 4 12 4z" />
-                <path d="M12 12c-2.3 0-4.4-.9-6-2.5" />
-                <path d="M12 12c2.3 0-4.4-.9 6-2.5" />
-                <path d="M12 12v10" />
-                <path d="M12 12c-2.3 0-4.4.9-6 2.5" />
-                <path d="m12 12 6 2.5" />
-                <path d="m6 9.5 6 2.5" />
-              </svg>
-              </div>
-              <span className="">Karshak Mitra</span>
-            </Link>
-          </div>
-          <div className="flex-1">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              <Link
-                href="/"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <Home className="h-4 w-4" />
-                Dashboard
-              </Link>
-               <Link
-                href="/assistant"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <MessageCircle className="h-4 w-4" />
-                Conversational Assistant
-              </Link>
-              <Link
-                href="/profile"
-                className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
-              >
-                <User className="h-4 w-4" />
-                Farm Profile
-              </Link>
-              <Link
-                href="/tracking"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <ClipboardList className="h-4 w-4" />
-                Activity Tracking
-              </Link>
-              <Link
-                href="/schemes"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <Landmark className="h-4 w-4" />
-                Government Schemes
-              </Link>
-              <Link
-                href="/market"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <LineChart className="h-4 w-4" />
-                Market Trends
-              </Link>
-            </nav>
-          </div>
-           <div className="mt-auto p-4">
-              <Avatar>
-                  <AvatarFallback className="bg-primary text-primary-foreground">N</AvatarFallback>
-              </Avatar>
-           </div>
-        </div>
-      </div>
-      <div className="flex flex-col">
-        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
-          <div className="w-full flex-1">
-            <h1 className="text-lg font-semibold md:text-2xl">
-              Farm Profile
-            </h1>
-          </div>
-          <Button variant="outline" size="icon" className="h-8 w-8">
-            <Bell className="h-4 w-4" />
-            <span className="sr-only">Toggle notifications</span>
-          </Button>
-        </header>
+    <AppShell title="Farm Profile" activePage="profile">
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <FarmProfileForm />
         </main>
-      </div>
-    </div>
+    </AppShell>
   );
 }
