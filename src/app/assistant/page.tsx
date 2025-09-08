@@ -230,7 +230,7 @@ function AssistantChat() {
                 )}
               </div>
             ))}
-             {isLoading && (
+             {isLoading && messages[messages.length - 1]?.role === 'user' && (
                 <div className="flex items-start gap-3">
                     <Avatar>
                         <AvatarFallback>KM</AvatarFallback>
