@@ -25,11 +25,16 @@ import {
 export const getWeatherForecastTool = ai.defineTool(
   {
     name: 'getWeatherForecast',
-    description: 'Returns the current weather forecast.',
-    inputSchema: z.object({}),
+    description: 'Returns the current weather forecast for a specific location.',
+    inputSchema: z.object({
+      location: z.string().describe("The user's location, e.g., 'Kuttanad, Kerala'"),
+    }),
     outputSchema: z.custom<WeatherData>(),
   },
-  async () => {
+  async ({ location }) => {
+    // In a real app, this would use the location to get specific data.
+    // For now, we'll return the mock data but acknowledge the location.
+    console.log(`Fetching weather for ${location}`);
     return await getWeatherForecast();
   }
 );

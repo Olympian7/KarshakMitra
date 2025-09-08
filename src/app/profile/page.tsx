@@ -26,32 +26,85 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Toaster } from '@/components/ui/toaster';
+import { getProfile, saveProfile, FarmProfile } from '@/services/profile';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function FarmProfileForm() {
-    const [farmerName, setFarmerName] = React.useState('Narayanan');
-    const [farmName, setFarmName] = React.useState('Narayanan Farms');
-    const [location, setLocation] = React.useState('Kuttanad, Kerala');
-    const [farmSize, setFarmSize] = React.useState('15');
-    const [soilType, setSoilType] = React.useState('Alluvial Soil');
-    const [mainCrops, setMainCrops] = React.useState('Rice, Coconut, Bananas');
+    const [profile, setProfile] = React.useState<FarmProfile | null>(null);
+    const [isLoading, setIsLoading] = React.useState(true);
     const { toast } = useToast();
+
+    React.useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const data = await getProfile();
+                setProfile(data);
+            } catch (error) {
+                toast({
+                    variant: 'destructive',
+                    title: 'Error',
+                    description: 'Failed to load farm profile.',
+                });
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchProfile();
+    }, [toast]);
     
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // In a real app, you would handle form submission here, e.g., save to a database.
-        console.log({
-            farmerName,
-            farmName,
-            location,
-            farmSize,
-            soilType,
-            mainCrops
-        });
-        toast({
-            title: "Profile Saved!",
-            description: "Your farm profile has been updated successfully.",
-        });
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if (!profile) return;
+        const { id, value } = e.target;
+        setProfile({ ...profile, [id]: value });
     };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!profile) return;
+
+        setIsLoading(true);
+        try {
+            await saveProfile(profile);
+            toast({
+                title: "Profile Saved!",
+                description: "Your farm profile has been updated successfully.",
+            });
+        } catch (error) {
+             toast({
+                variant: 'destructive',
+                title: "Save Failed",
+                description: "Could not save your profile changes.",
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+    if (isLoading && !profile) {
+        return (
+             <Card>
+                <CardHeader>
+                    <Skeleton className="h-8 w-1/2" />
+                    <Skeleton className="h-4 w-3/4" />
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
+                        <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
+                        <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
+                        <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
+                        <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-10 w-full" /></div>
+                    </div>
+                     <div className="space-y-2"><Skeleton className="h-4 w-1/4" /><Skeleton className="h-20 w-full" /></div>
+                    <Skeleton className="h-10 w-24" />
+                </CardContent>
+            </Card>
+        )
+    }
+    
+    if (!profile) {
+        return <p>Could not load profile.</p>
+    }
 
   return (
     <Card>
@@ -66,32 +119,32 @@ function FarmProfileForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="farmerName">Farmer Name</Label>
-              <Input id="farmerName" value={farmerName} onChange={e => setFarmerName(e.target.value)} placeholder="Enter your name" />
+              <Input id="farmerName" value={profile.farmerName} onChange={handleChange} placeholder="Enter your name" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="farmName">Farm Name</Label>
-              <Input id="farmName" value={farmName} onChange={e => setFarmName(e.target.value)} placeholder="Enter your farm's name" />
+              <Input id="farmName" value={profile.farmName} onChange={handleChange} placeholder="Enter your farm's name" />
             </div>
              <div className="space-y-2">
               <Label htmlFor="location">Location</Label>
-              <Input id="location" value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g., Kuttanad, Kerala" />
+              <Input id="location" value={profile.location} onChange={handleChange} placeholder="e.g., Kuttanad, Kerala" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="farmSize">Farm Size (in acres)</Label>
-              <Input id="farmSize" type="number" value={farmSize} onChange={e => setFarmSize(e.target.value)} placeholder="e.g., 15" />
+              <Input id="farmSize" type="number" value={profile.farmSize} onChange={handleChange} placeholder="e.g., 15" />
             </div>
              <div className="space-y-2">
               <Label htmlFor="soilType">Soil Type</Label>
-              <Input id="soilType" value={soilType} onChange={e => setSoilType(e.target.value)} placeholder="e.g., Alluvial Soil" />
+              <Input id="soilType" value={profile.soilType} onChange={handleChange} placeholder="e.g., Alluvial Soil" />
             </div>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="mainCrops">Main Crops Grown</Label>
-            <Textarea id="mainCrops" value={mainCrops} onChange={e => setMainCrops(e.target.value)} placeholder="List your primary crops, separated by commas" />
+            <Textarea id="mainCrops" value={profile.mainCrops} onChange={handleChange} placeholder="List your primary crops, separated by commas" />
           </div>
 
-          <Button type="submit">Save Profile</Button>
+          <Button type="submit" disabled={isLoading}>{isLoading ? 'Saving...' : 'Save Profile'}</Button>
         </form>
       </CardContent>
     </Card>
