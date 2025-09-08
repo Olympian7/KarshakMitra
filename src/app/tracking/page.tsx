@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import {
   Bell,
-  BotMessageSquare,
   ClipboardList,
   Home,
   Landmark,
@@ -218,13 +217,6 @@ export default function TrackingPage() {
               >
                 <User className="h-4 w-4" />
                 Farm Profile
-              </Link>
-              <Link
-                href="/assistant"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <BotMessageSquare className="h-4 w-4" />
-                Conversational Assistant
               </Link>
               <Link
                 href="/tracking"
