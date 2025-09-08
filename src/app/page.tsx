@@ -44,7 +44,7 @@ export default function Dashboard() {
                 <path d="m12 12 6 2.5" />
                 <path d="m6 9.5 6 2.5" />
               </svg>
-              <span className="">Kerala Krishi Mitra</span>
+              <span className="">Kerala Karshak Mitra</span>
             </Link>
           </div>
           <div className="flex-1">
