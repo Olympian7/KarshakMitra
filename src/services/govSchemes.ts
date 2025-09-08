@@ -8,6 +8,7 @@ export type GovScheme = {
   eligibility: string;
   benefits: string;
   link: string;
+  keyBenefits: string[];
 };
 
 const mockSchemes: GovScheme[] = [
@@ -16,24 +17,28 @@ const mockSchemes: GovScheme[] = [
         title: 'PM-KISAN Scheme',
         description: 'An income support scheme for all landholding farmer families.',
         eligibility: 'All landholding farmer families in the country.',
-        benefits: '₹6,000 per year in three equal installments.',
+        benefits: 'Direct income support of ₹6,000 per year, paid in three equal installments of ₹2,000 directly into the bank accounts of eligible farmers.',
         link: 'https://pmkisan.gov.in/',
+        keyBenefits: ['Income Support', 'Financial Stability', 'Direct Transfer'],
     },
     {
         id: 'kcc',
         title: 'Kisan Credit Card (KCC)',
         description: 'Provides farmers with timely access to credit for their cultivation and other needs.',
         eligibility: 'All farmers - individuals/joint borrowers who are owner cultivators.',
-        benefits: 'Short-term credit at concessional interest rates.',
+        benefits: 'Provides short-term credit at concessional interest rates for crop cultivation, post-harvest expenses, and other consumption requirements of farmer households.',
         link: 'https://www.sbi.co.in/web/agri-rural/agriculture-banking/crop-finance/kisan-credit-card',
+        keyBenefits: ['Easy Credit Access', 'Low Interest Rates', 'Flexible Repayment'],
+
     },
     {
         id: 'pmfby',
         title: 'Pradhan Mantri Fasal Bima Yojana (PMFBY)',
         description: 'An insurance service for farmers for their yields.',
         eligibility: 'All farmers including sharecroppers and tenant farmers growing notified crops in the notified areas are eligible for coverage.',
-        benefits: 'Insurance cover and financial support to the farmers in the event of failure of any of the notified crop as a result of natural calamities, pests & diseases.',
+        benefits: 'Provides comprehensive insurance coverage against failure of the crop, thus helping in stabilizing the income of the farmers.',
         link: 'https://pmfby.gov.in/',
+        keyBenefits: ['Crop Insurance', 'Risk Mitigation', 'Yield Protection'],
     }
 ];
 

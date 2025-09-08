@@ -17,7 +17,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import AppShell from '@/components/app-shell';
-import { BarChart } from 'lucide-react';
+import { BarChart, Lightbulb } from 'lucide-react';
 
 const chartData = [
   { name: 'Rice', value: 45 },
@@ -97,14 +97,24 @@ function FarmProfileForm() {
                         <Skeleton className="h-10 w-24" />
                     </CardContent>
                 </Card>
-                <Card>
-                     <CardHeader>
-                        <Skeleton className="h-8 w-3/4" />
-                    </CardHeader>
-                    <CardContent>
-                        <Skeleton className="h-48 w-full" />
-                    </CardContent>
-                </Card>
+                <div className="space-y-6">
+                  <Card>
+                      <CardHeader>
+                          <Skeleton className="h-8 w-3/4" />
+                      </CardHeader>
+                      <CardContent>
+                          <Skeleton className="h-48 w-full" />
+                      </CardContent>
+                  </Card>
+                   <Card>
+                      <CardHeader>
+                          <Skeleton className="h-8 w-3/4" />
+                      </CardHeader>
+                      <CardContent>
+                          <Skeleton className="h-20 w-full" />
+                      </CardContent>
+                  </Card>
+                </div>
             </div>
         )
     }
@@ -156,36 +166,48 @@ function FarmProfileForm() {
             </form>
           </CardContent>
         </Card>
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle>Crop Distribution</CardTitle>
-                <BarChart className="h-5 w-5 text-accent" />
-            </CardHeader>
-            <CardContent>
-                <div className="h-[200px] w-full">
-                   <ResponsiveContainer width="100%" height="100%">
-                        <RechartsBarChart data={chartData}>
-                        <XAxis
-                            dataKey="name"
-                            stroke="#888888"
-                            fontSize={12}
-                            tickLine={false}
-                            axisLine={false}
-                        />
-                        <YAxis
-                            stroke="#888888"
-                            fontSize={12}
-                            tickLine={false}
-                            axisLine={false}
-                            tickFormatter={(value) => `${value}%`}
-                        />
-                        <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                        </RechartsBarChart>
-                    </ResponsiveContainer>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">A visual breakdown of your main crops by acre.</p>
-            </CardContent>
-        </Card>
+        <div className="space-y-6">
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle>Crop Distribution</CardTitle>
+                    <BarChart className="h-5 w-5 text-accent" />
+                </CardHeader>
+                <CardContent>
+                    <div className="h-[200px] w-full">
+                       <ResponsiveContainer width="100%" height="100%">
+                            <RechartsBarChart data={chartData}>
+                            <XAxis
+                                dataKey="name"
+                                stroke="#888888"
+                                fontSize={12}
+                                tickLine={false}
+                                axisLine={false}
+                            />
+                            <YAxis
+                                stroke="#888888"
+                                fontSize={12}
+                                tickLine={false}
+                                axisLine={false}
+                                tickFormatter={(value) => `${value}%`}
+                            />
+                            <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                            </RechartsBarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </CardContent>
+            </Card>
+             <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle>AI-Powered Insight</CardTitle>
+                    <Lightbulb className="h-5 w-5 text-accent" />
+                </CardHeader>
+                <CardContent>
+                   <p className="text-sm text-muted-foreground">
+                        Based on your location in <span className="font-semibold text-foreground">{profile.location}</span> and <span className="font-semibold text-foreground">{profile.soilType}</span> soil, consider planting a cover crop like cowpea after your rice harvest to improve soil nitrogen levels naturally.
+                   </p>
+                </CardContent>
+            </Card>
+        </div>
     </div>
   );
 }

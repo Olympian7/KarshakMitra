@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import {
   CloudSun,
+  ClipboardList,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,6 +13,7 @@ import {
 import { getWeatherForecast } from '@/services/weather';
 import { getMarketTrends } from '@/services/market';
 import { getGovSchemes } from '@/services/govSchemes';
+import { getActivities } from '@/services/activity';
 import {
   Table,
   TableBody,
@@ -24,8 +26,9 @@ import AppShell from '@/components/app-shell';
 
 export default async function Dashboard() {
   const weather = await getWeatherForecast();
-  const marketTrends = await getMarketTrends();
+  const marketTrends = (await getMarketTrends()).slice(0, 3);
   const govSchemes = (await getGovSchemes()).slice(0, 2);
+  const recentActivities = (await getActivities()).slice(0, 1);
 
   return (
     <AppShell title="Dashboard" activePage="dashboard">
@@ -69,7 +72,7 @@ export default async function Dashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {marketTrends.slice(0, 3).map((crop) => (
+                    {marketTrends.map((crop) => (
                       <TableRow key={`${crop.name}-${crop.variety}`}>
                         <TableCell>{crop.name}</TableCell>
                         <TableCell className="text-right">₹{crop.price.toFixed(2)}</TableCell>
@@ -80,7 +83,31 @@ export default async function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card className="lg:col-span-2">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle>Recent Activity</CardTitle>
+                <Link href="/tracking">
+                  <Button variant="outline" size="sm">
+                    View All
+                  </Button>
+                </Link>
+              </CardHeader>
+              <CardContent>
+                 {recentActivities.length > 0 ? (
+                  <div className="flex items-start gap-4">
+                    <ClipboardList className="h-6 w-6 text-accent mt-1" />
+                    <div>
+                      <p className="font-medium">{recentActivities[0].text}</p>
+                      <p className="text-sm text-muted-foreground">{new Date(recentActivities[0].date).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No recent activities logged.</p>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle>Featured Government Schemes</CardTitle>
                  <Link href="/schemes">
@@ -89,9 +116,9 @@ export default async function Dashboard() {
                   </Button>
                 </Link>
               </CardHeader>
-              <CardContent className="grid gap-4 md:grid-cols-2">
+              <CardContent className="grid gap-4">
                 {govSchemes.map((scheme) => (
-                  <div key={scheme.id} className="border border-border/50 p-4 rounded-lg">
+                  <div key={scheme.id} className="border border-border/50 p-3 rounded-lg">
                     <h3 className="font-semibold">{scheme.title}</h3>
                     <p className="text-sm text-muted-foreground mt-1">{scheme.description.slice(0,100)}...</p>
                   </div>

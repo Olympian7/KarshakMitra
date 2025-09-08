@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import AppShell from '@/components/app-shell';
+import { Badge } from '@/components/ui/badge';
 
 export default async function SchemesPage() {
   const schemes = await getGovSchemes();
@@ -21,14 +22,24 @@ export default async function SchemesPage() {
                 <AccordionTrigger>{scheme.title}</AccordionTrigger>
                 <AccordionContent>
                   <div className="space-y-4">
-                    <p>{scheme.description}</p>
+                    <p className="text-muted-foreground">{scheme.description}</p>
+                    
+                     <div className="p-4 border rounded-lg bg-muted/20">
+                      <h4 className="font-semibold mb-2">Key Benefits</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {scheme.keyBenefits.map((benefit, index) => (
+                          <Badge key={index} variant="secondary">{benefit}</Badge>
+                        ))}
+                      </div>
+                    </div>
+
                     <div>
                       <h4 className="font-semibold">Eligibility</h4>
-                      <p>{scheme.eligibility}</p>
+                      <p className="text-muted-foreground">{scheme.eligibility}</p>
                     </div>
                      <div>
                       <h4 className="font-semibold">Benefits</h4>
-                      <p>{scheme.benefits}</p>
+                      <p className="text-muted-foreground">{scheme.benefits}</p>
                     </div>
                     <Button asChild>
                       <Link href={scheme.link} target="_blank" rel="noopener noreferrer">

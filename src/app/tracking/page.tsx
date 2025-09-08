@@ -4,12 +4,15 @@ import React from 'react';
 import {
   ClipboardList,
   Mic,
+  CalendarDays,
+  ListChecks,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -113,52 +116,84 @@ function ActivityTimeline() {
     }
   };
 
+  const lastActivityDate = activities.length > 0 ? new Date(activities[0].date).toLocaleDateString() : 'N/A';
+
   return (
-    <Card className="w-full flex-1 flex flex-col">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>Activity Log</CardTitle>
-          <CardDescription>
-            A timeline of all your farming activities. Click the mic to log a new one.
-          </CardDescription>
-        </div>
-        <Button
-          onClick={handleMicClick}
-          size="icon"
-          variant={isRecording ? 'destructive' : 'default'}
-          disabled={isLoading || isSubmitting}
-          className="rounded-full h-12 w-12 flex-shrink-0"
-        >
-          <Mic className="h-6 w-6" />
-          <span className="sr-only">{isRecording ? 'Stop Recording' : 'Log Activity'}</span>
-        </Button>
-      </CardHeader>
-      <CardContent className="flex-1 overflow-y-auto">
-        {isLoading ? (
-          <div className="space-y-4">
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-12 w-3/4" />
+    <div className="grid gap-6 md:grid-cols-3">
+    <div className="md:col-span-2">
+      <Card className="w-full flex-1 flex flex-col">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Activity Log</CardTitle>
+            <CardDescription>
+              A timeline of all your farming activities.
+            </CardDescription>
           </div>
-        ) : (
-          <div className="relative pl-6">
-            <div className="absolute left-0 top-0 h-full w-px bg-primary/20" />
-            {activities.map((activity) => (
-              <div key={activity.id} className="relative mb-8 pl-4">
-                <div className="absolute -left-7 top-1 h-6 w-6 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
-                  <ClipboardList className="h-4 w-4" />
+          <Button
+            onClick={handleMicClick}
+            size="icon"
+            variant={isRecording ? 'destructive' : 'default'}
+            disabled={isLoading || isSubmitting}
+            className="rounded-full h-12 w-12 flex-shrink-0"
+          >
+            <Mic className="h-6 w-6" />
+            <span className="sr-only">{isRecording ? 'Stop Recording' : 'Log Activity'}</span>
+          </Button>
+        </CardHeader>
+        <CardContent className="flex-1 overflow-y-auto min-h-[400px]">
+          {isLoading ? (
+            <div className="space-y-4">
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-3/4" />
+            </div>
+          ) : (
+            <div className="relative pl-6">
+              <div className="absolute left-0 top-0 h-full w-px bg-primary/20" />
+              {activities.map((activity) => (
+                <div key={activity.id} className="relative mb-8 pl-4">
+                  <div className="absolute -left-7 top-1 h-6 w-6 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
+                    <ClipboardList className="h-4 w-4" />
+                  </div>
+                  <p className="font-semibold">{activity.text}</p>
+                  <p className="text-sm text-muted-foreground">{new Date(activity.date).toLocaleString()}</p>
                 </div>
-                <p className="font-semibold">{activity.text}</p>
-                <p className="text-sm text-muted-foreground">{new Date(activity.date).toLocaleString()}</p>
-              </div>
-            ))}
-            {activities.length === 0 && !isLoading && (
-              <p>No activities logged yet. Click the microphone to add your first one!</p>
-            )}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+              ))}
+              {activities.length === 0 && !isLoading && (
+                <p>No activities logged yet. Click the microphone to add your first one!</p>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+      </div>
+      <div className="space-y-6">
+          <Card>
+            <CardHeader>
+                <CardTitle>Activity Summary</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <ListChecks className="h-5 w-5 text-accent"/>
+                      <span className="text-sm text-muted-foreground">Total Activities</span>
+                    </div>
+                    <span className="font-semibold">{isLoading ? <Skeleton className="h-5 w-8" /> : activities.length}</span>
+                </div>
+                 <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <CalendarDays className="h-5 w-5 text-accent"/>
+                      <span className="text-sm text-muted-foreground">Last Entry</span>
+                    </div>
+                    <span className="font-semibold">{isLoading ? <Skeleton className="h-5 w-20" /> : lastActivityDate}</span>
+                </div>
+            </CardContent>
+            <CardFooter>
+              <p className="text-xs text-muted-foreground">Keep logging to see your progress.</p>
+            </CardFooter>
+          </Card>
+      </div>
+    </div>
   );
 }
 
