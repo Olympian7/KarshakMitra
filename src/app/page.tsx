@@ -7,8 +7,6 @@ import {
   LineChart,
   User,
   CloudSun,
-  TrendingUp,
-  Building2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -75,21 +73,21 @@ export default async function Dashboard() {
                 Dashboard
               </Link>
               <Link
-                href="#"
+                href="/profile"
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <User className="h-4 w-4" />
                 Farm Profile
               </Link>
               <Link
-                href="#"
+                href="/assistant"
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <BotMessageSquare className="h-4 w-4" />
                 Conversational Assistant
               </Link>
               <Link
-                href="#"
+                href="/tracking"
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <ClipboardList className="h-4 w-4" />

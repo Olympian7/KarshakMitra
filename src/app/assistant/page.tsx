@@ -10,17 +10,15 @@ import {
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { getGovSchemes } from '@/services/govSchemes';
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
-export default async function SchemesPage() {
-  const schemes = await getGovSchemes();
-
+export default function AssistantPage() {
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-primary-foreground md:block">
@@ -68,7 +66,7 @@ export default async function SchemesPage() {
               </Link>
               <Link
                 href="/assistant"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
               >
                 <BotMessageSquare className="h-4 w-4" />
                 Conversational Assistant
@@ -82,7 +80,7 @@ export default async function SchemesPage() {
               </Link>
               <Link
                 href="/schemes"
-                className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <Landmark className="h-4 w-4" />
                 Government Schemes
@@ -102,7 +100,7 @@ export default async function SchemesPage() {
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           <div className="w-full flex-1">
             <h1 className="text-lg font-semibold md:text-2xl">
-              Government Schemes
+              Conversational Assistant
             </h1>
           </div>
           <Button variant="outline" size="icon" className="h-8 w-8">
@@ -111,31 +109,17 @@ export default async function SchemesPage() {
           </Button>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <Accordion type="single" collapsible className="w-full">
-            {schemes.map((scheme) => (
-              <AccordionItem value={`item-${scheme.id}`} key={scheme.id}>
-                <AccordionTrigger>{scheme.title}</AccordionTrigger>
-                <AccordionContent>
-                  <div className="space-y-4">
-                    <p>{scheme.description}</p>
-                    <div>
-                      <h4 className="font-semibold">Eligibility</h4>
-                      <p>{scheme.eligibility}</p>
-                    </div>
-                     <div>
-                      <h4 className="font-semibold">Benefits</h4>
-                      <p>{scheme.benefits}</p>
-                    </div>
-                    <Button>
-                      <Link href={scheme.link} target="_blank" rel="noopener noreferrer">
-                        Learn More & Apply
-                      </Link>
-                    </Button>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <Card>
+            <CardHeader>
+              <CardTitle>Coming Soon</CardTitle>
+              <CardDescription>
+                This feature is under construction.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>The Conversational Assistant will provide a voice-enabled chatbot for a natural, friendly experience.</p>
+            </CardContent>
+          </Card>
         </main>
       </div>
     </div>
