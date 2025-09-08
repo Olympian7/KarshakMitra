@@ -10,6 +10,12 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 import wav from 'wav';
+import {
+  getWeatherForecastTool,
+  getMarketTrendsTool,
+  getGovSchemesTool,
+} from '@/ai/tools';
+import { getProfile } from '@/services/profile';
 
 // Input schema for the main assistant flow
 const AssistantInputSchema = z.object({
