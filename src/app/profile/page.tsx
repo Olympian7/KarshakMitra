@@ -24,6 +24,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import { Toaster } from '@/components/ui/toaster';
 
 function FarmProfileForm() {
     const [farmerName, setFarmerName] = React.useState('Narayanan');
@@ -32,6 +34,7 @@ function FarmProfileForm() {
     const [farmSize, setFarmSize] = React.useState('15');
     const [soilType, setSoilType] = React.useState('Alluvial Soil');
     const [mainCrops, setMainCrops] = React.useState('Rice, Coconut, Bananas');
+    const { toast } = useToast();
     
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -44,7 +47,10 @@ function FarmProfileForm() {
             soilType,
             mainCrops
         });
-        alert('Profile saved!');
+        toast({
+            title: "Profile Saved!",
+            description: "Your farm profile has been updated successfully.",
+        });
     };
 
   return (
@@ -194,6 +200,7 @@ export default function ProfilePage() {
           <FarmProfileForm />
         </main>
       </div>
+      <Toaster />
     </div>
   );
 }

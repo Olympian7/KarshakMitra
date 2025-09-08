@@ -103,9 +103,12 @@ function AssistantChat() {
         };
 
         mediaRecorderRef.current.onstop = async () => {
-          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-          const transcribedText = "Placeholder for transcribed audio"; 
-          await handleSendMessage(transcribedText);
+          // In a real app, you'd send this blob to a speech-to-text API.
+          // For this demo, we'll simulate it with a prompt.
+           const transcribedText = prompt("Please type your question:", "What is the weather like today?");
+          if (transcribedText) {
+             await handleSendMessage(transcribedText);
+          }
           stream.getTracks().forEach(track => track.stop());
         };
 
