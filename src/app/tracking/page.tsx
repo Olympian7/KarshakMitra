@@ -7,6 +7,7 @@ import {
   Home,
   Landmark,
   LineChart,
+  MessageCircle,
   Mic,
   Plus,
   User,
@@ -210,6 +211,13 @@ export default function TrackingPage() {
               >
                 <Home className="h-4 w-4" />
                 Dashboard
+              </Link>
+               <Link
+                href="/assistant"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+              >
+                <MessageCircle className="h-4 w-4" />
+                Conversational Assistant
               </Link>
               <Link
                 href="/profile"

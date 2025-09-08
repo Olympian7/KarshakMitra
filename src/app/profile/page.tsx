@@ -7,6 +7,7 @@ import {
   Home,
   Landmark,
   LineChart,
+  MessageCircle,
   User,
 } from 'lucide-react';
 import React from 'react';
@@ -191,6 +192,13 @@ export default function ProfilePage() {
               >
                 <Home className="h-4 w-4" />
                 Dashboard
+              </Link>
+               <Link
+                href="/assistant"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+              >
+                <MessageCircle className="h-4 w-4" />
+                Conversational Assistant
               </Link>
               <Link
                 href="/profile"
