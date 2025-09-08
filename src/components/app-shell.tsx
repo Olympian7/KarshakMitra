@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import {
   Bell,
@@ -7,7 +8,8 @@ import {
   LineChart,
   MessageCircle,
   User,
-  Languages
+  Languages,
+  BookUser,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -18,7 +20,7 @@ import { translations } from '@/lib/translations';
 type AppShellProps = {
   children: React.ReactNode;
   title: string;
-  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market';
+  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation';
 };
 
 export default function AppShell({ children, title, activePage }: AppShellProps) {
@@ -32,6 +34,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
     { id: 'tracking', href: '/tracking', icon: ClipboardList, label: t.activityTracking },
     { id: 'schemes', href: '/schemes', icon: Landmark, label: t.governmentSchemes },
     { id: 'market', href: '/market', icon: LineChart, label: t.marketTrends },
+    { id: 'consultation', href: '/consultation', icon: BookUser, label: t.consultation },
   ];
 
   return (

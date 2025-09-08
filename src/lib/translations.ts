@@ -1,3 +1,4 @@
+
 export const translations = {
     en: {
       // App Shell & Navigation
@@ -7,6 +8,7 @@ export const translations = {
       activityTracking: 'Activity Tracking',
       governmentSchemes: 'Government Schemes',
       marketTrends: 'Market Trends',
+      consultation: 'Consultation',
       farmer: 'Farmer',
       toggleLanguage: 'Toggle Language',
       toggleNotifications: 'Toggle notifications',
@@ -86,6 +88,11 @@ export const translations = {
       keepLogging: 'Keep logging to see your progress.',
       typeActivityHere: 'Type your activity note here...',
       logging: 'Logging...',
+
+      // Consultation Page
+      expertConsultation: 'Expert Consultation & Resources',
+      consultationDesc: 'Connect with agricultural experts and access valuable resources to help you with your farming.',
+      visitWebsite: 'Visit Website',
     },
     ml: {
       // App Shell & Navigation
@@ -95,6 +102,7 @@ export const translations = {
       activityTracking: 'പ്രവർത്തന ട്രാക്കിംഗ്',
       governmentSchemes: 'സർക്കാർ പദ്ധതികൾ',
       marketTrends: 'വിപണി പ്രവണതകൾ',
+      consultation: 'കൺസൾട്ടേഷൻ',
       farmer: 'കർഷകൻ',
       toggleLanguage: 'ഭാഷ മാറ്റുക',
       toggleNotifications: 'അറിയിപ്പുകൾ മാറ്റുക',
@@ -174,6 +182,10 @@ export const translations = {
       keepLogging: 'നിങ്ങളുടെ പുരോഗതി കാണാൻ ലോഗിംഗ് തുടരുക.',
       typeActivityHere: 'നിങ്ങളുടെ പ്രവർത്തന കുറിപ്പ് ഇവിടെ ടൈപ്പ് ചെയ്യുക...',
       logging: 'ലോഗിംഗ് ചെയ്യുന്നു...',
+
+      // Consultation Page
+      expertConsultation: 'വിദഗ്ദ്ധ കൺസൾട്ടേഷൻ & ഉറവിടങ്ങൾ',
+      consultationDesc: 'കാർഷിക വിദഗ്ധരുമായി ബന്ധപ്പെടുകയും നിങ്ങളുടെ കൃഷിയിൽ സഹായിക്കുന്നതിന് மதிப்புமிக்க ഉറവിടങ്ങൾ നേടുകയും ചെയ്യുക.',
+      visitWebsite: 'വെബ്സൈറ്റ് സന്ദർശിക്കുക',
     },
   };
-  
