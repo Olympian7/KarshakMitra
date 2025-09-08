@@ -50,11 +50,12 @@ const assistantPrompt = ai.definePrompt({
 });
 
 export async function assistantFlow(input: AssistantInput): Promise<AssistantOutput> {
-  const llmResponse = await assistantPrompt.generate({
+  const llmResponse = await ai.generate({
+    prompt: assistantPrompt,
     input,
   });
   
-  const output = llmResponse.output();
+  const output = llmResponse.output;
   if (!output) {
       return { response: 'Sorry, I could not process your request.', language: 'english' };
   }
@@ -131,8 +132,9 @@ const translatePrompt = ai.definePrompt({
 
 
 export async function translateFlow(input: TranslateInput): Promise<string> {
-    const llmResponse = await translatePrompt.generate({
+    const llmResponse = await ai.generate({
+        prompt: translatePrompt,
         input,
     });
-    return llmResponse.output() || 'Translation failed.';
+    return llmResponse.output || 'Translation failed.';
 }
