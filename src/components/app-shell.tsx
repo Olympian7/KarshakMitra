@@ -10,6 +10,7 @@ import {
   User,
   Languages,
   BookUser,
+  Stethoscope,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -20,7 +21,7 @@ import { translations } from '@/lib/translations';
 type AppShellProps = {
   children: React.ReactNode;
   title: string;
-  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation';
+  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis';
 };
 
 export default function AppShell({ children, title, activePage }: AppShellProps) {
@@ -30,6 +31,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
   const navItems = [
     { id: 'dashboard', href: '/', icon: Home, label: t.dashboard },
     { id: 'assistant', href: '/assistant', icon: MessageCircle, label: t.conversationalAssistant },
+    { id: 'diagnosis', href: '/diagnosis', icon: Stethoscope, label: t.diagnosis },
     { id: 'profile', href: '/profile', icon: User, label: t.farmProfile },
     { id: 'tracking', href: '/tracking', icon: ClipboardList, label: t.activityTracking },
     { id: 'schemes', href: '/schemes', icon: Landmark, label: t.governmentSchemes },
