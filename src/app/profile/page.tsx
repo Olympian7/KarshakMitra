@@ -28,7 +28,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import { getProfile, saveProfile, FarmProfile } from '@/services/profile';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -190,7 +190,7 @@ function FarmProfileForm() {
                             fontSize={12}
                             tickLine={false}
                             axisLine={false}
-                            tickFormatter={(value) => `${value}%`}
+                            tickFormatter={(value) => `${'value'}%`}
                         />
                         <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                         </RechartsBarChart>
