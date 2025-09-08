@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
   Bell,
   BotMessageSquare,
@@ -6,35 +7,19 @@ import {
   Landmark,
   LineChart,
   User,
-  CloudSun,
-  TrendingUp,
-  Building2,
 } from 'lucide-react';
-import Link from 'next/link';
+
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { getWeatherForecast } from '@/services/weather';
-import { getMarketTrends } from '@/services/market';
 import { getGovSchemes } from '@/services/govSchemes';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
-export default async function Dashboard() {
-  const weather = await getWeatherForecast();
-  const marketTrends = await getMarketTrends();
-  const govSchemes = (await getGovSchemes()).slice(0, 2);
+export default async function SchemesPage() {
+  const schemes = await getGovSchemes();
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -69,7 +54,7 @@ export default async function Dashboard() {
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               <Link
                 href="/"
-                className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <Home className="h-4 w-4" />
                 Dashboard
@@ -97,7 +82,7 @@ export default async function Dashboard() {
               </Link>
               <Link
                 href="/schemes"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
               >
                 <Landmark className="h-4 w-4" />
                 Government Schemes
@@ -116,7 +101,9 @@ export default async function Dashboard() {
       <div className="flex flex-col">
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           <div className="w-full flex-1">
-            <h1 className="text-lg font-semibold md:text-2xl">Dashboard</h1>
+            <h1 className="text-lg font-semibold md:text-2xl">
+              Government Schemes
+            </h1>
           </div>
           <Button variant="outline" size="icon" className="h-8 w-8">
             <Bell className="h-4 w-4" />
@@ -124,76 +111,31 @@ export default async function Dashboard() {
           </Button>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <div className="flex items-center">
-            <h1 className="text-lg font-semibold md:text-2xl">
-              Welcome, Farmer!
-            </h1>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-2">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle>Today's Weather</CardTitle>
-                <CloudSun className="h-6 w-6 text-accent" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-bold">{weather.temperature}°C</div>
-                <p className="text-sm text-muted-foreground">
-                  {weather.condition}
-                </p>
-                <p className="text-sm">Humidity: {weather.humidity}%</p>
-                <p className="text-sm">Wind: {weather.windSpeed} km/h</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle>Market Snapshot</CardTitle>
-                <Link href="/market">
-                  <Button variant="outline" size="sm">
-                    View All
-                  </Button>
-                </Link>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Crop</TableHead>
-                      <TableHead className="text-right">Price (per kg)</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {marketTrends.slice(0, 3).map((crop) => (
-                      <TableRow key={crop.name}>
-                        <TableCell>{crop.name}</TableCell>
-                        <TableCell className="text-right">₹{crop.price.toFixed(2)}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-
-            <Card className="lg:col-span-2">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle>Featured Government Schemes</CardTitle>
-                 <Link href="/schemes">
-                  <Button variant="outline" size="sm">
-                    View All
-                  </Button>
-                </Link>
-              </CardHeader>
-              <CardContent className="grid gap-4 md:grid-cols-2">
-                {govSchemes.map((scheme) => (
-                  <div key={scheme.id} className="border p-4 rounded-lg">
-                    <h3 className="font-semibold">{scheme.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{scheme.description.slice(0,100)}...</p>
+          <Accordion type="single" collapsible className="w-full">
+            {schemes.map((scheme) => (
+              <AccordionItem value={`item-${scheme.id}`} key={scheme.id}>
+                <AccordionTrigger>{scheme.title}</AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-4">
+                    <p>{scheme.description}</p>
+                    <div>
+                      <h4 className="font-semibold">Eligibility</h4>
+                      <p>{scheme.eligibility}</p>
+                    </div>
+                     <div>
+                      <h4 className="font-semibold">Benefits</h4>
+                      <p>{scheme.benefits}</p>
+                    </div>
+                    <Button>
+                      <Link href={scheme.link} target="_blank" rel="noopener noreferrer">
+                        Learn More & Apply
+                      </Link>
+                    </Button>
                   </div>
-                ))}
-              </CardContent>
-            </Card>
-
-          </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </main>
       </div>
     </div>
