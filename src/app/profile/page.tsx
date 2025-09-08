@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Bar, BarChart as RechartsBarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
-import { toast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import { getProfile, saveProfile, FarmProfile } from '@/services/profile';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -31,7 +31,7 @@ const chartData = [
 function FarmProfileForm() {
     const { language } = useLanguage();
     const t = translations[language];
-
+    const { toast } = useToast();
     const [profile, setProfile] = React.useState<FarmProfile | null>(null);
     const [isLoading, setIsLoading] = React.useState(true);
     const [isSaving, setIsSaving] = React.useState(false);
@@ -53,7 +53,7 @@ function FarmProfileForm() {
             }
         };
         fetchProfile();
-    }, []);
+    }, [toast]);
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (!profile) return;
@@ -174,7 +174,7 @@ function FarmProfileForm() {
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle>{t.cropDistribution}</CardTitle>
-                    <BarChart className="h-5 w-5 text-accent" />
+                    <BarChart className="h-5 w-5 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                     <div className="h-[200px] w-full">
@@ -203,7 +203,7 @@ function FarmProfileForm() {
              <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle>{t.aiPoweredInsight}</CardTitle>
-                    <Lightbulb className="h-5 w-5 text-accent" />
+                    <Lightbulb className="h-5 w-5 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                    <p className="text-sm text-muted-foreground">

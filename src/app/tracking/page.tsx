@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/card';
 import { getActivities, Activity } from '@/services/activity';
 import { logActivityFlow } from '@/ai/flows/activity-flow';
-import { toast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import AppShell from '@/components/app-shell';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/context/language-context';
@@ -28,7 +28,7 @@ import { Textarea } from '@/components/ui/textarea';
 function ActivityTimeline() {
   const { language } = useLanguage();
   const t = translations[language];
-
+  const { toast } = useToast();
   const [activities, setActivities] = React.useState<Activity[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -53,7 +53,7 @@ function ActivityTimeline() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [toast]);
 
   React.useEffect(() => {
     fetchActivities();
@@ -199,14 +199,14 @@ function ActivityTimeline() {
             <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <ListChecks className="h-5 w-5 text-accent"/>
+                      <ListChecks className="h-5 w-5 text-muted-foreground"/>
                       <span className="text-sm text-muted-foreground">{t.totalActivities}</span>
                     </div>
                     <span className="font-semibold">{isLoading ? <Skeleton className="h-5 w-8" /> : activities.length}</span>
                 </div>
                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <CalendarDays className="h-5 w-5 text-accent"/>
+                      <CalendarDays className="h-5 w-5 text-muted-foreground"/>
                       <span className="text-sm text-muted-foreground">{t.lastEntry}</span>
                     </div>
                     <span className="font-semibold">{isLoading ? <Skeleton className="h-5 w-20" /> : lastActivityDate}</span>

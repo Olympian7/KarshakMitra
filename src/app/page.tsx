@@ -76,7 +76,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle>{t.todaysWeather}</CardTitle>
-              <CloudSun className="h-6 w-6 text-accent" />
+              <CloudSun className="h-6 w-6 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -154,7 +154,7 @@ export default function Dashboard() {
                 </div>
               ) : recentActivities.length > 0 ? (
                 <div className="flex items-start gap-4">
-                  <ClipboardList className="h-6 w-6 text-accent mt-1" />
+                  <ClipboardList className="h-6 w-6 text-muted-foreground mt-1" />
                   <div>
                     <p className="font-medium">{recentActivities[0].text}</p>
                     <p className="text-sm text-muted-foreground">{new Date(recentActivities[0].date).toLocaleDateString()}</p>
