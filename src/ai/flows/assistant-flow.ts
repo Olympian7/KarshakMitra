@@ -9,13 +9,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import {
-  getWeatherForecastTool,
-  getMarketTrendsTool,
-  getGovSchemesTool,
-} from '@/ai/tools';
 import wav from 'wav';
-import { FarmProfile, getProfile } from '@/services/profile';
 
 // Input schema for the main assistant flow
 const AssistantInputSchema = z.object({
@@ -31,69 +25,22 @@ const AssistantOutputSchema = z.object({
 });
 export type AssistantOutput = z.infer<typeof AssistantOutputSchema>;
 
-const AssistantPromptInputSchema = AssistantInputSchema.extend({
-    profile: z.custom<FarmProfile>()
-});
 
-// Main assistant flow
-const assistantPrompt = ai.definePrompt({
-  name: 'assistantPrompt',
-  input: { schema: AssistantPromptInputSchema },
-  output: { schema: AssistantOutputSchema },
-  tools: [getWeatherForecastTool, getMarketTrendsTool, getGovSchemesTool],
-  prompt: `You are Karshak Mitra, an expert agronomist and friendly AI assistant for farmers in Kerala, India.
-  Your responses should be concise, informative, and highly personalized based on the user's farm profile.
-  Answer in simple language, avoiding jargon.
-
-  First, detect the language of the user's query. It will be either English or Malayalam (written in English script, i.e., Manglish).
-  Respond in the SAME language as the user's query.
-  Set the 'language' field in your output to 'english' or 'malayalam' based on the language you are responding in.
+// Main assistant flow (now with fixed responses)
+async function assistantFlow(input: AssistantInput): Promise<AssistantOutput> {
+  const query = input.query.toLowerCase();
+  let response = "I'm sorry, I can only provide information about the weather right now. Please ask me about the weather.";
   
-  HERE IS THE USER'S FARM PROFILE:
-  - Farmer's Name: {{{profile.farmerName}}}
-  - Farm Name: {{{profile.farmName}}}
-  - Location: {{{profile.location}}}
-  - Farm Size: {{{profile.farmSize}}} acres
-  - Soil Type: {{{profile.soilType}}}
-  - Main Crops: {{{profile.mainCrops}}}
-
-  Use this profile to give tailored advice. For example, when asked about weather, use the user's location. When asked about crops, consider what they grow.
-  Use the available tools to answer questions about weather, market prices, and government schemes.
-  When using the getWeatherForecast tool, you MUST provide the user's location from their profile.
-
-  User query: {{{query}}}`,
-});
-
-const assistantFlowRunner = ai.defineFlow(
-  {
-    name: 'assistantFlow',
-    inputSchema: AssistantInputSchema,
-    outputSchema: AssistantOutputSchema,
-  },
-  async (input) => {
-
-    const profile = await getProfile();
-
-    const llmResponse = await ai.generate({
-      prompt: assistantPrompt,
-      input: {
-        query: input.query,
-        profile: profile,
-      }
-    });
-    
-    const output = llmResponse.output;
-    if (!output) {
-        return { response: 'Sorry, I could not process your request.', language: 'english' };
-    }
-    return output;
+  if (query.includes('weather')) {
+    response = "The skies are clear and the sun is smiling down on the paddy fields! It's a perfect day for farming, with a gentle breeze coming from the coast.";
   }
-);
 
-
-export async function assistantFlow(input: AssistantInput): Promise<AssistantOutput> {
-  return assistantFlowRunner(input);
+  // We default to English for the fixed responses.
+  return Promise.resolve({ response, language: 'english' });
 }
+
+
+export { assistantFlow };
 
 
 // Text-to-speech flow
