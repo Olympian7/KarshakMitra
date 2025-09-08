@@ -135,17 +135,18 @@ export default function AssistantPage() {
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-               <svg
+               <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center">
+              <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="currentColor"
+                stroke="white"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="h-6 w-6 text-primary"
+                className="h-5 w-5"
               >
                 <path d="M12 4c-2.3 0-4.4.9-6 2.5-1.6 1.6-2.5 3.7-2.5 6 0 2.3.9 4.4 2.5 6 1.6 1.6 3.7 2.5 6 2.5s4.4-.9 6-2.5c1.6-1.6 2.5-3.7 2.5-6 0-2.3-.9-4.4-2.5-6C16.4 4.9 14.3 4 12 4z" />
                 <path d="M12 12c-2.3 0-4.4-.9-6-2.5" />
@@ -155,6 +156,7 @@ export default function AssistantPage() {
                 <path d="m12 12 6 2.5" />
                 <path d="m6 9.5 6 2.5" />
               </svg>
+              </div>
               <span className="">Karshak Mitra</span>
             </Link>
           </div>
@@ -204,6 +206,11 @@ export default function AssistantPage() {
               </Link>
             </nav>
           </div>
+           <div className="mt-auto p-4">
+              <Avatar>
+                  <AvatarFallback className="bg-primary text-primary-foreground">N</AvatarFallback>
+              </Avatar>
+           </div>
         </div>
       </div>
       <div className="flex flex-col h-screen">
@@ -219,7 +226,7 @@ export default function AssistantPage() {
           </Button>
         </header>
         <main className="flex-1 flex flex-col gap-4 p-4 lg:gap-6 lg:p-6 overflow-hidden">
-           <Card className="flex-1 flex flex-col">
+           <Card className="flex-1 flex flex-col border-primary">
               <CardHeader>
                 <CardTitle>Chat</CardTitle>
                 <CardDescription>
