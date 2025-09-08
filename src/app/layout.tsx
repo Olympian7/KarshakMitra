@@ -9,7 +9,7 @@ const ptSans = PT_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Kerala Karshak Mitra',
+  title: 'Karshak Mitra',
   description: 'An AI-powered personal farming assistant for Kerala\'s farmers.',
 };
 

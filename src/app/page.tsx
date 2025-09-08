@@ -38,13 +38,13 @@ export default function Dashboard() {
               >
                 <path d="M12 4c-2.3 0-4.4.9-6 2.5-1.6 1.6-2.5 3.7-2.5 6 0 2.3.9 4.4 2.5 6 1.6 1.6 3.7 2.5 6 2.5s4.4-.9 6-2.5c1.6-1.6 2.5-3.7 2.5-6 0-2.3-.9-4.4-2.5-6C16.4 4.9 14.3 4 12 4z" />
                 <path d="M12 12c-2.3 0-4.4-.9-6-2.5" />
-                <path d="M12 12c2.3 0 4.4-.9 6-2.5" />
+                <path d="M12 12c2.3 0-4.4-.9 6-2.5" />
                 <path d="M12 12v10" />
                 <path d="M12 12c-2.3 0-4.4.9-6 2.5" />
                 <path d="m12 12 6 2.5" />
                 <path d="m6 9.5 6 2.5" />
               </svg>
-              <span className="">Kerala Karshak Mitra</span>
+              <span className="">Karshak Mitra</span>
             </Link>
           </div>
           <div className="flex-1">
