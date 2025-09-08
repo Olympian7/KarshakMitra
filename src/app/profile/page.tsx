@@ -10,10 +10,11 @@ import {
   LineChart,
   MessageCircle,
   User,
-  MapPin,
+  BarChart,
 } from 'lucide-react';
 import React from 'react';
-import Image from 'next/image';
+import { Bar, BarChart as RechartsBarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+
 
 import { Button } from '@/components/ui/button';
 import {
@@ -30,6 +31,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { getProfile, saveProfile, FarmProfile } from '@/services/profile';
 import { Skeleton } from '@/components/ui/skeleton';
+
+const chartData = [
+  { name: 'Rice', value: 45 },
+  { name: 'Coconut', value: 30 },
+  { name: 'Banana', value: 15 },
+  { name: 'Other', value: 10 },
+];
 
 function FarmProfileForm() {
     const [profile, setProfile] = React.useState<FarmProfile | null>(null);
@@ -163,20 +171,32 @@ function FarmProfileForm() {
         </Card>
         <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle>Farm Layout</CardTitle>
-                <MapPin className="h-5 w-5 text-accent" />
+                <CardTitle>Crop Distribution</CardTitle>
+                <BarChart className="h-5 w-5 text-accent" />
             </CardHeader>
             <CardContent>
-                <div className="aspect-square w-full rounded-md overflow-hidden border border-border/50">
-                    <Image 
-                        src="https://source.unsplash.com/400x400/?farm,aerial" 
-                        alt="Farm minimap" 
-                        width={400} 
-                        height={400} 
-                        className="object-cover w-full h-full"
+                <div className="h-[200px] w-full">
+                   <ResponsiveContainer width="100%" height="100%">
+                        <RechartsBarChart data={chartData}>
+                        <XAxis
+                            dataKey="name"
+                            stroke="#888888"
+                            fontSize={12}
+                            tickLine={false}
+                            axisLine={false}
                         />
+                        <YAxis
+                            stroke="#888888"
+                            fontSize={12}
+                            tickLine={false}
+                            axisLine={false}
+                            tickFormatter={(value) => `${value}%`}
+                        />
+                        <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                        </RechartsBarChart>
+                    </ResponsiveContainer>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2">A satellite view of your farm's location.</p>
+                <p className="text-xs text-muted-foreground mt-2">A visual breakdown of your main crops by acre.</p>
             </CardContent>
         </Card>
     </div>
