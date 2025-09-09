@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KarshakMitra</title>
+    <title>KarshakMitra - Advanced Assistant</title>
     <!-- Tailwind CSS for modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Use PT Sans font for a clean, professional look -->
@@ -12,15 +12,7 @@
     <style>
         body {
             font-family: 'PT Sans', sans-serif;
-            background: #dff0d8;
-            background-image: repeating-linear-gradient(
-                -45deg,
-                #e6f2e6 0,
-                #e6f2e6 1px,
-                #dff0d8 0,
-                #dff0d8 50%
-            );
-            background-size: 10px 10px;
+            background-color: #f0f4f8; /* Light blue-gray background */
         }
         .chat-container {
             height: 100vh;
@@ -28,7 +20,6 @@
         .chat-box {
             height: calc(100% - 6rem);
             overflow-y: auto;
-            /* Hide scrollbar for a cleaner look */
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
@@ -44,13 +35,6 @@
         .ai-message {
             align-self: flex-start;
         }
-        .copy-button {
-            display: none;
-        }
-        /* Show the copy button on hover */
-        .message:hover .copy-button {
-            display: block;
-        }
         .heading-font {
             font-family: 'Poppins', sans-serif;
         }
@@ -58,41 +42,38 @@
 </head>
 <body class="flex items-center justify-center p-0">
 
-    <div class="w-full h-screen flex flex-col border border-green-400 rounded-lg shadow-xl">
+    <div class="w-full h-screen flex flex-col border border-gray-300 rounded-lg shadow-2xl bg-white">
         <!-- Header -->
-        <div class="p-4 bg-white text-green-800 shadow-md flex items-center justify-center space-x-2">
-            <!-- Hand-drawn leaf icon from a public domain source (example) -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-green-700">
-                <path d="M12 22a8 8 0 0 0 8 -8c0 -1.6 -0.5 -3.2 -1.4 -4.6l-5.6 -9.4a1 1 0 0 0 -1.7 0l-5.6 9.4a8 8 0 0 0 -1.4 4.6c0 4.4 3.6 8 8 8z" />
-                <path d="M12 22a8 8 0 0 0 0 -16a8 8 0 0 0 0 16z" />
+        <div class="p-4 bg-white text-gray-800 shadow-md flex items-center justify-center space-x-3 border-b border-gray-200">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600">
+                <path d="M12 4c-2.3 0-4.4.9-6 2.5-1.6 1.6-2.5 3.7-2.5 6 0 2.3.9 4.4 2.5 6 1.6 1.6 3.7 2.5 6 2.5s4.4-.9 6-2.5c1.6-1.6 2.5-3.7 2.5-6 0-2.3-.9-4.4-2.5-6C16.4 4.9 14.3 4 12 4z"></path>
+                <path d="M12 12c-2.3 0-4.4-.9-6-2.5"></path>
+                <path d="M12 12c2.3 0-4.4-.9 6-2.5"></path>
+                <path d="M12 12v10"></path>
+                <path d="M12 12c-2.3 0-4.4.9-6 2.5"></path>
+                <path d="m12 12 6 2.5"></path>
+                <path d="m6 9.5 6 2.5"></path>
             </svg>
-            <h1 class="text-xl font-bold heading-font">KarshakMitra</h1>
+            <h1 class="text-2xl font-bold heading-font text-gray-700">KarshakMitra AI</h1>
         </div>
 
         <!-- Chat Box to display messages -->
-        <div id="chat-box" class="flex-1 p-4 flex flex-col space-y-4 chat-box">
+        <div id="chat-box" class="flex-1 p-4 flex flex-col space-y-4 chat-box bg-gray-50">
             <!-- Initial AI message to greet the user -->
         </div>
 
         <!-- Typing Indicator and Input Field -->
-        <div class="p-4 bg-white shadow-inner">
-            <div id="typing-indicator" class="hidden text-gray-500 mb-2">
-                Typing...
+        <div class="p-4 bg-white border-t border-gray-200">
+            <div id="typing-indicator" class="hidden text-gray-500 mb-2 text-sm italic">
+                KarshakMitra is typing...
             </div>
             <div class="flex items-center space-x-2">
-                <input id="user-input" type="text" placeholder="Type or speak your message here..." class="flex-1 p-3 rounded-full border border-green-400 focus:outline-none focus:ring-2 focus:ring-green-600 transition-all duration-200">
-                
-                <!-- Microphone button for voice input -->
-                <button id="mic-button" class="bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-700 transition-colors duration-200 focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a4 4 0 110-8 4 4 0 010 8z" />
-                    </svg>
-                </button>
+                <input id="user-input" type="text" placeholder="Ask about farming in Kerala..." class="flex-1 p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-200">
                 
                 <!-- Send button for text input -->
                 <button id="send-button" class="bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-700 transition-colors duration-200 focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path>
                     </svg>
                 </button>
             </div>
@@ -103,60 +84,46 @@
         const chatBox = document.getElementById('chat-box');
         const userInput = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
-        const micButton = document.getElementById('mic-button');
         const typingIndicator = document.getElementById('typing-indicator');
 
-        const apiKey = "AIzaSyCJmfRSUE5zNh3f1G-qIbMo1jXA1xyqwm4";
+        const apiKey = "AIzaSyDR7m1uyThriJQcPtasASsCgnHQ1BGi-WY";
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
         let chatHistory = [];
-        let recognition;
+
+        const initialMessage = 'Hello! I am KarshakMitra, an AI assistant. You can ask me anything about farming in Kerala.';
 
         const addMessage = (text, isUser) => {
             const messageElement = document.createElement('div');
-            messageElement.classList.add('message', 'p-3', 'rounded-xl', 'shadow-sm', 'relative');
+            messageElement.classList.add('message', 'p-3', 'rounded-xl', 'shadow-sm');
             messageElement.style.whiteSpace = 'pre-wrap';
             
             const messageContent = document.createElement('p');
             messageContent.textContent = text;
             messageElement.appendChild(messageContent);
-            
-            const copyButton = document.createElement('button');
-            copyButton.classList.add('copy-button', 'absolute', 'top-1', 'right-1', 'p-1', 'bg-gray-200', 'rounded-full', 'hover:bg-gray-300', 'transition-all', 'duration-200');
-            copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
-            copyButton.title = "Copy to clipboard";
-            copyButton.onclick = () => {
-                const textToCopy = messageContent.textContent;
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    alert("Message copied!");
-                }).catch(err => {
-                    console.error('Failed to copy text: ', err);
-                });
-            };
-            messageElement.appendChild(copyButton);
 
             if (isUser) {
-                messageElement.classList.add('bg-green-300', 'text-green-900', 'user-message');
+                messageElement.classList.add('bg-green-200', 'text-green-900', 'user-message');
             } else {
-                messageElement.classList.add('bg-green-100', 'text-green-800', 'ai-message');
+                messageElement.classList.add('bg-gray-200', 'text-gray-800', 'ai-message');
             }
             
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
 
+            // Add the message to history *after* it's been displayed
             chatHistory.push({
                 role: isUser ? "user" : "model",
                 parts: [{ text: text }]
             });
         };
-
+        
         const sendMessage = async () => {
             const userMessage = userInput.value.trim();
             if (userMessage === '') return;
 
             addMessage(userMessage, true);
             userInput.value = '';
-
             typingIndicator.classList.remove('hidden');
 
             const systemInstruction = {
@@ -167,7 +134,6 @@
 
             const payload = {
                 contents: chatHistory,
-                tools: [{ "google_search": {} }],
                 systemInstruction: systemInstruction
             };
 
@@ -185,56 +151,17 @@
                 const data = await response.json();
                 const aiResponse = data.candidates[0].content.parts[0].text;
                 addMessage(aiResponse, false);
+
             } catch (error) {
                 console.error('Error fetching from API:', error);
-                addMessage(`Sorry, an error occurred: ${error.message}`, false);
+                // Use a more descriptive error message
+                addMessage(`Sorry, an error occurred: ${error.message}. Please check the API key and network connection.`, false);
             } finally {
                 typingIndicator.classList.add('hidden');
             }
         };
-        
-        // Voice recognition logic
-        micButton.addEventListener('click', () => {
-            if (recognition && recognition.isListening) {
-                recognition.stop();
-                return;
-            }
 
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert('Speech recognition is not supported in this browser. Please use Google Chrome.');
-                return;
-            }
-
-            recognition = new SpeechRecognition();
-            recognition.interimResults = false;
-            recognition.lang = 'en-US,ml-IN';
-            
-            recognition.start();
-            micButton.classList.remove('bg-green-600');
-            micButton.classList.add('bg-red-600');
-            userInput.placeholder = "Listening...";
-            
-            recognition.onresult = (event) => {
-                const transcript = Array.from(event.results)
-                    .map(result => result[0])
-                    .map(result => result.transcript)
-                    .join('');
-                
-                userInput.value = transcript;
-            };
-
-            recognition.onend = () => {
-                micButton.classList.remove('bg-red-600');
-                micButton.classList.add('bg-green-600');
-                userInput.placeholder = "Type or speak your message here...";
-                if (userInput.value.trim() !== '') {
-                    sendMessage();
-                }
-            };
-        });
-
-        // Event listeners for sending a message with the button or the Enter key
+        // Event listeners for sending a message
         sendButton.addEventListener('click', sendMessage);
         userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -242,18 +169,21 @@
             }
         });
 
-        // Initialize with a welcome message
+        // Initialize the chat with the first message
         window.addEventListener('DOMContentLoaded', () => {
-            const initialMessage = 'Hello! I am KarshakMitra, your AI farming assistant. Ask me anything about Kerala agriculture.';
-            // Add the initial message from the 'model' to start the conversation correctly
-            chatHistory = [{ role: 'model', parts: [{ text: initialMessage }] }];
-
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message', 'p-3', 'rounded-xl', 'shadow-sm', 'relative', 'bg-green-100', 'text-green-800', 'ai-message');
+            // Only add the initial message visually, but also prime the chat history
+             const messageElement = document.createElement('div');
+            messageElement.classList.add('message', 'p-3', 'rounded-xl', 'shadow-sm', 'bg-gray-200', 'text-gray-800', 'ai-message');
+            messageElement.style.whiteSpace = 'pre-wrap';
             const messageContent = document.createElement('p');
             messageContent.textContent = initialMessage;
             messageElement.appendChild(messageContent);
             chatBox.appendChild(messageElement);
+
+            chatHistory.push({
+                role: "model",
+                parts: [{text: initialMessage}]
+            });
         });
     </script>
 </body>
