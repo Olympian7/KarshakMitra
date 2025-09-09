@@ -37,7 +37,6 @@
         }
         .message {
             max-width: 80%;
-            cursor: pointer;
         }
         .user-message {
             align-self: flex-end;
@@ -72,7 +71,7 @@
 
         <!-- Chat Box to display messages -->
         <div id="chat-box" class="flex-1 p-4 flex flex-col space-y-4 chat-box">
-            <!-- Initial AI message will be added by script -->
+            <!-- Initial AI message to greet the user -->
         </div>
 
         <!-- Typing Indicator and Input Field -->
@@ -97,7 +96,6 @@
                     </svg>
                 </button>
             </div>
-            <p class="text-xs text-gray-500 mt-2 text-center">Click on any message to see its translation.</p>
         </div>
     </div>
 
@@ -112,60 +110,7 @@
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
         let chatHistory = [];
-
-        const initialMessages = {
-            'en': 'Hello! I am an AI chat assistant. You can ask me anything.',
-            'ml': 'നമസ്കാരം! ഞാൻ ഒരു AI ചാറ്റ് അസിസ്റ്റന്റാണ്. നിങ്ങൾക്ക് എന്നോട് എന്തും ചോദിക്കാവുന്നതാണ്.'
-        };
-        
         let recognition;
-
-        const translateText = async (text, targetLang) => {
-            const translationPayload = {
-                contents: [{
-                    parts: [{
-                        text: `Translate the following text to ${targetLang === 'ml' ? 'Malayalam' : 'English'}. Respond with only the translated text, without any additional narration.`
-                    }]
-                }]
-            };
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(translationPayload)
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                return data.candidates[0].content.parts[0].text.trim();
-            } catch (error) {
-                console.error('Error translating text:', error);
-                return `Translation failed.`;
-            }
-        };
-
-        const handleMessageClick = async (messageElement) => {
-            const messageContent = messageElement.querySelector('p');
-            const currentText = messageContent.textContent;
-            const originalText = messageElement.getAttribute('data-original-text');
-            let translatedText = messageElement.getAttribute('data-translated-text');
-
-            if (currentText === originalText) {
-                // If translated text doesn't exist, fetch it
-                if (!translatedText) {
-                    const originalLang = detectLanguage(originalText);
-                    const targetLang = originalLang === 'en' ? 'ml' : 'en';
-                    messageContent.textContent = 'Translating...';
-                    translatedText = await translateText(originalText, targetLang);
-                    messageElement.setAttribute('data-translated-text', translatedText);
-                }
-                messageContent.textContent = translatedText;
-            } else {
-                messageContent.textContent = originalText;
-            }
-        };
 
         const addMessage = (text, isUser) => {
             const messageElement = document.createElement('div');
@@ -176,22 +121,19 @@
             messageContent.textContent = text;
             messageElement.appendChild(messageContent);
             
-            messageElement.setAttribute('data-original-text', text);
-            
             const copyButton = document.createElement('button');
             copyButton.classList.add('copy-button', 'absolute', 'top-1', 'right-1', 'p-1', 'bg-gray-200', 'rounded-full', 'hover:bg-gray-300', 'transition-all', 'duration-200');
             copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
             copyButton.title = "Copy to clipboard";
-            copyButton.onclick = (e) => {
-                e.stopPropagation(); // prevent message click event
+            copyButton.onclick = () => {
                 const textToCopy = messageContent.textContent;
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     alert("Message copied!");
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
                 });
             };
             messageElement.appendChild(copyButton);
-
-            messageElement.addEventListener('click', () => handleMessageClick(messageElement));
 
             if (isUser) {
                 messageElement.classList.add('bg-green-300', 'text-green-900', 'user-message');
@@ -201,11 +143,11 @@
             
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
-        };
-        
-        const detectLanguage = (text) => {
-            const malayalamChars = /[\u0D00-\u0D7F]/;
-            return malayalamChars.test(text) ? 'ml' : 'en';
+
+            chatHistory.push({
+                role: isUser ? "user" : "model",
+                parts: [{ text: text }]
+            });
         };
 
         const sendMessage = async () => {
@@ -213,7 +155,6 @@
             if (userMessage === '') return;
 
             addMessage(userMessage, true);
-            chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
             userInput.value = '';
 
             typingIndicator.classList.remove('hidden');
@@ -244,7 +185,6 @@
                 const data = await response.json();
                 const aiResponse = data.candidates[0].content.parts[0].text;
                 addMessage(aiResponse, false);
-                chatHistory.push({ role: "model", parts: [{ text: aiResponse }] });
             } catch (error) {
                 console.error('Error fetching from API:', error);
                 addMessage(`Sorry, an error occurred: ${error.message}`, false);
@@ -302,11 +242,18 @@
             }
         });
 
-        // Initialize with welcome message
+        // Initialize with a welcome message
         window.addEventListener('DOMContentLoaded', () => {
-            const welcomeText = initialMessages['en'];
-            addMessage(welcomeText, false);
-            chatHistory.push({ role: "model", parts: [{ text: welcomeText }] });
+            const initialMessage = 'Hello! I am KarshakMitra, your AI farming assistant. Ask me anything about Kerala agriculture.';
+            // Add the initial message from the 'model' to start the conversation correctly
+            chatHistory = [{ role: 'model', parts: [{ text: initialMessage }] }];
+
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', 'p-3', 'rounded-xl', 'shadow-sm', 'relative', 'bg-green-100', 'text-green-800', 'ai-message');
+            const messageContent = document.createElement('p');
+            messageContent.textContent = initialMessage;
+            messageElement.appendChild(messageContent);
+            chatBox.appendChild(messageElement);
         });
     </script>
 </body>
