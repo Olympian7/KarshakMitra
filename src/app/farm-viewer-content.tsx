@@ -57,7 +57,7 @@ export default function FarmViewerContent() {
                 {isLoading || !profile ? (
                   <Skeleton className="w-full aspect-square max-w-md" />
                 ) : (
-                  <div className="grid grid-cols-10 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30">
+                  <div className="grid grid-cols-15 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30">
                     {profile.farmGrid.flat().map((value, index) => (
                         <div key={index} className={cn(`aspect-square w-full h-full rounded-sm bg-gradient-to-br`, getColorForValue(value, profile.plotTypes))} title={`Value: ${value}`} />
                     ))}

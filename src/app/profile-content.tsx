@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Bar, BarChart as RechartsBarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { useToast } from '@/components/ui/use-toast';
 import { getProfile, saveProfile, FarmProfile, PlotType } from '@/services/profile';
@@ -54,7 +54,7 @@ function FarmProfileForm() {
     }, [profile]);
 
 
-    React.useEffect(() => {
+    useEffect(() => {
         const fetchProfile = async () => {
             setIsLoading(true);
             try {
@@ -259,7 +259,7 @@ function FarmProfileForm() {
                         <div className="flex-1">
                             <Label>Your Farm Grid</Label>
                             <div 
-                                className="grid grid-cols-10 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30 cursor-pointer"
+                                className="grid grid-cols-15 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30 cursor-pointer"
                                 onMouseLeave={() => setIsPainting(false)}
                             >
                                 {profile.farmGrid.map((row, rowIndex) => 

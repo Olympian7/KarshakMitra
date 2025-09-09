@@ -21,18 +21,18 @@ export interface FarmProfile {
   plotTypes: PlotType[]; // The palette is now part of the profile
 }
 
-// A completely empty 10x10 grid to start
-const defaultGrid = Array(10).fill(Array(10).fill(0));
+// A completely empty 15x15 grid to start
+const defaultGrid = Array(15).fill(0).map(() => Array(15).fill(0));
 
 const defaultPlotTypes: PlotType[] = [
-    { value: 0, color: 'from-gray-100 to-gray-200', label: { en: 'Empty', ml: 'ഒഴിഞ്ഞ' } },
-    { value: 100, color: 'from-teal-500 to-cyan-400', label: { en: 'Paddy', ml: 'നെല്ല്' } },
-    { value: 90, color: 'from-orange-500 to-amber-400', label: { en: 'Lentils', ml: 'പയർവർഗ്ഗങ്ങൾ' } },
-    { value: 80, color: 'from-yellow-400 to-yellow-300', label: { en: 'Bananas', ml: 'വാഴ' } },
-    { value: 60, color: 'from-lime-500 to-green-400', label: { en: 'Okra', ml: 'വെണ്ട' } },
-    { value: 40, color: 'from-rose-400 to-red-500', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
-    { value: 20, color: 'from-indigo-500 to-purple-500', label: { en: 'Vegetables', ml: 'പച്ചക്കറികൾ' } },
-    { value: 10, color: 'from-stone-400 to-stone-500', label: { en: 'Fallow Land', ml: 'തരിശുഭൂമി' } },
+    { value: 0, color: 'from-slate-100 to-slate-200', label: { en: 'Empty', ml: 'ഒഴിഞ്ഞ' } },
+    { value: 100, color: 'from-sky-400 to-cyan-300', label: { en: 'Paddy', ml: 'നെല്ല്' } },
+    { value: 90, color: 'from-amber-400 to-yellow-300', label: { en: 'Lentils', ml: 'പയർവർഗ്ഗങ്ങൾ' } },
+    { value: 80, color: 'from-yellow-500 to-amber-400', label: { en: 'Bananas', ml: 'വാഴ' } },
+    { value: 60, color: 'from-emerald-500 to-green-400', label: { en: 'Okra', ml: 'വെണ്ട' } },
+    { value: 40, color: 'from-rose-500 to-red-400', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
+    { value: 20, color: 'from-violet-500 to-purple-400', label: { en: 'Vegetables', ml: 'പച്ചക്കറികൾ' } },
+    { value: 10, color: 'from-stone-500 to-stone-600', label: { en: 'Fallow Land', ml: 'തരിശുഭൂമി' } },
 ];
 
 
