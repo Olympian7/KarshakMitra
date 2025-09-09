@@ -61,6 +61,12 @@ const responses = [
     malayalamResponse: "വിളകളെക്കുറിച്ചോ കീടങ്ങളെക്കുറിച്ചോ പ്രത്യേക ഉപദേശത്തിനായി, നിങ്ങളുടെ ഫാം പ്രൊഫൈൽ അപ്ഡേറ്റ് ചെയ്തിട്ടുണ്ടെന്ന് ഉറപ്പാക്കുക. ഭാവിയിൽ, നിങ്ങളുടെ പ്രൊഫൈലിനെ അടിസ്ഥാനമാക്കി വ്യക്തിഗത ശുപാർശകൾ നൽകാൻ എനിക്ക് കഴിയും!",
     englishResponse: "For specific advice on crops or pests, please ensure your Farm Profile is updated. In the future, I'll be able to provide personalized recommendations based on your profile!",
   },
+  // Safety
+  {
+    keywords: ['safety', 'chemical', 'pesticide', 'സുരക്ഷ', 'കീടനാശിനി', 'വിഷം'],
+    malayalamResponse: "രാസവസ്തുക്കളോ കീടനാശിനികളോ കൈകാര്യം ചെയ്യുമ്പോൾ, കയ്യുറകൾ, മാസ്കുകൾ, ഗ്ലാസുകൾ തുടങ്ങിയ സംരക്ഷണ ഉപകരണങ്ങൾ എപ്പോഴും ധരിക്കുക. ശരിയായ വായുസഞ്ചാരം ഉറപ്പാക്കുകയും നിർമ്മാതാവിൻ്റെ നിർദ്ദേശങ്ങൾ ശ്രദ്ധാപൂർവ്വം പാലിക്കുകയും ചെയ്യുക. കുട്ടികളിൽ നിന്നും ഭക്ഷണത്തിൽ നിന്നും അവയെ അകറ്റി നിർത്തുക. ഉപയോഗശേഷം, നിങ്ങളുടെ കൈകളും ചർമ്മത്തിന്റെ മറ്റു ഭാഗങ്ങളും നന്നായി കഴുകുക.",
+    englishResponse: "When handling any chemicals or pesticides, always wear protective gear like gloves, masks, and goggles. Ensure proper ventilation and follow the manufacturer's instructions carefully. Keep them away from children and food sources. After use, wash your hands and any exposed skin thoroughly.",
+  },
   // Growth Stage
   {
     keywords: ['growth', 'stage', 'crop status', 'വിളയുടെ അവസ്ഥ', 'വളർച്ച'],
