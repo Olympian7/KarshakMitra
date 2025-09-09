@@ -12,19 +12,39 @@ export type Activity = {
 // Starting with some mock data to make the timeline look populated.
 let mockActivities: Activity[] = [
     {
-        id: '3',
+        id: '7',
+        date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        text: 'Finished weeding the okra patch. Crop looks healthy.',
+    },
+    {
+        id: '6',
         date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
         text: 'Applied organic fertilizer to the banana plantation.',
     },
     {
-        id: '2',
+        id: '5',
         date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        text: 'Checked the irrigation system for the vegetable patch.',
+        text: 'Checked the irrigation system for the vegetable patch. All sprinklers are working correctly.',
+    },
+    {
+        id: '4',
+        date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        text: 'Harvested coconuts from the northern section.',
+    },
+    {
+        id: '3',
+        date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+        text: 'Noticed some minor pest activity on the lentil crops. Applied a neem oil solution.',
+    },
+    {
+        id: '2',
+        date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+        text: 'Prepared soil in the new plot for ginger planting next week.',
     },
     {
         id: '1',
-        date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        text: 'Harvested coconuts from the northern section.',
+        date: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
+        text: 'Planted high-yield paddy variety in the main field.',
     },
 ];
 
