@@ -64,9 +64,9 @@ export default function FarmViewerContent() {
   return (
     <AppShell title={t.farmViewer} activePage="farm-viewer">
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-5">
           {/* Left Column (Digital Twin) */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <Card>
               <CardHeader>
                 <CardTitle>{t.digitalTwinTitle}</CardTitle>
@@ -98,7 +98,7 @@ export default function FarmViewerContent() {
           </div>
           
           {/* Right Column (Info Cards) */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>{t.farmOverview}</CardTitle>
