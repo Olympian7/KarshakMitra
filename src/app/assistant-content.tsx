@@ -19,6 +19,8 @@ import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import Link from 'next/link';
 
+type Language = 'en' | 'ml';
+
 interface Message {
   id: string;
   sender: 'user' | 'assistant';
@@ -30,8 +32,11 @@ interface Message {
 }
 
 function AssistantChat() {
-  const { language, toggleLanguage } = useLanguage();
+  const { language } = useLanguage(); // Global language for UI
   const t = translations[language];
+
+  // Local state to track language of individual messages
+  const [messageLanguages, setMessageLanguages] = useState<Record<string, Language>>({});
 
   const getInitialMessage = (): Message => ({
     id: 'init',
@@ -49,10 +54,25 @@ function AssistantChat() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+  
+  // Effect to set the initial language of the welcome message
+  useEffect(() => {
+      setMessageLanguages(prev => ({ ...prev, init: language }));
+  }, []);
+
+  // Effect to update message languages when global language changes
+  useEffect(() => {
+    const newLangs: Record<string, Language> = {};
+    messages.forEach(msg => {
+        newLangs[msg.id] = language;
+    });
+    setMessageLanguages(newLangs);
+  }, [language, messages]);
+
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, language]);
+  }, [messages]);
 
 
   const handleSend = async () => {
@@ -69,18 +89,23 @@ function AssistantChat() {
 
     try {
       const result = await assistantFlow({ query: input });
+      const assistantMessageId = (Date.now() + 1).toString();
       const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: assistantMessageId,
         text: '', // Text will be derived during render
         sender: 'assistant',
         malayalamText: result.malayalamResponse,
         englishText: result.englishResponse,
       };
       setMessages((prev) => [...prev, assistantMessage]);
+      // Set the initial language for the new message based on global language
+      setMessageLanguages(prev => ({...prev, [assistantMessageId]: language}));
+
     } catch (error) {
       console.error('Error getting response from assistant:', error);
+       const errorMessageId = (Date.now() + 1).toString();
        const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: errorMessageId,
         text: t.assistantError,
         sender: 'assistant',
       };
@@ -96,11 +121,19 @@ function AssistantChat() {
     }
   };
   
+  const toggleMessageLanguage = (messageId: string) => {
+    setMessageLanguages(prev => ({
+      ...prev,
+      [messageId]: prev[messageId] === 'en' ? 'ml' : 'en'
+    }));
+  };
+
   const getMessageText = (message: Message) => {
     if (message.sender === 'user' || (!message.englishText && !message.malayalamText)) {
       return message.text;
     }
-    return language === 'ml' ? message.malayalamText : message.englishText;
+    const lang = messageLanguages[message.id] || language;
+    return lang === 'ml' ? message.malayalamText : message.englishText;
   }
 
   return (
@@ -133,7 +166,7 @@ function AssistantChat() {
                   variant="ghost" 
                   size="icon" 
                   className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={toggleLanguage} // Use the global toggle function
+                  onClick={() => toggleMessageLanguage(message.id)}
                   title={t.translate}
                   >
                   <Languages className="h-4 w-4" />
