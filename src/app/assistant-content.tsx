@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -183,7 +184,7 @@ function AssistantChat() {
       </div>
       <div className="p-4 border-t bg-background">
         <Button asChild className="w-full mb-4 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white">
-            <Link href="#" target="_blank" rel="noopener noreferrer">
+            <Link href="/advanced-assistant.html" target="_blank" rel="noopener noreferrer">
               Tap for Advanced AI
               <Sparkles className="ml-2 h-4 w-4" />
             </Link>
@@ -225,3 +226,5 @@ export default function AssistantContent() {
     </AppShell>
   );
 }
+
+    
