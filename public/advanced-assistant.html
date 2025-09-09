@@ -128,7 +128,7 @@
             const translationPayload = {
                 contents: [{
                     parts: [{
-                        text: `Translate the following text to ${targetLang === 'ml' ? 'Malayalam' : 'English'}. Provide only the translated text, with no additional commentary or explanation: ${text}`
+                        text: `Translate the following text to ${targetLang === 'ml' ? 'Malayalam' : 'English'}. Return only the translated text, with no other narration.`
                     }]
                 }]
             };
@@ -173,15 +173,14 @@
             copyButton.classList.add('copy-button', 'absolute', 'top-1', 'right-1', 'p-1', 'bg-gray-200', 'rounded-full', 'hover:bg-gray-300', 'transition-all', 'duration-200');
             copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
             copyButton.title = "Copy to clipboard";
-            copyButton.onclick = () => {
+            copyButton.onclick = (e) => {
+                e.stopPropagation(); // Prevent the translation click event from firing
                 const textToCopy = messageContent.textContent;
-                const tempInput = document.createElement('textarea');
-                tempInput.value = textToCopy;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                alert("Message copied!");
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    alert("Message copied!");
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
             };
             messageElement.appendChild(copyButton);
 
@@ -201,16 +200,21 @@
                 messageElement.classList.add('bg-green-300', 'text-green-900', 'user-message');
             } else {
                 messageElement.classList.add('bg-green-100', 'text-green-800', 'ai-message');
+                // Remove the initial placeholder message if it exists
+                const initialMsg = document.getElementById('initial-message');
+                if (initialMsg) {
+                    initialMsg.remove();
+                }
             }
             
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            if (isUser) {
-                 chatHistory.push({ role: "user", parts: [{ text: originalText }] });
-            } else {
-                 chatHistory.push({ role: "model", parts: [{ text: originalText }] });
-            }
+            // Add the message to history *after* it has been processed and displayed
+            chatHistory.push({
+                role: isUser ? "user" : "model",
+                parts: [{ text: originalText }]
+            });
         };
         
         const detectLanguage = (text) => {
@@ -224,8 +228,9 @@
         const sendMessage = async () => {
             const userMessage = userInput.value.trim();
             if (userMessage === '') return;
-
-            addMessage(userMessage, true);
+            
+            // Add user message to UI first, which also updates chatHistory
+            await addMessage(userMessage, true);
             userInput.value = '';
 
             typingIndicator.classList.remove('hidden');
@@ -250,15 +255,18 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    const errorBody = await response.json();
+                    console.error('API Error Response:', errorBody);
+                    throw new Error(`HTTP error! status: ${response.status} - ${errorBody.error.message}`);
                 }
                 
                 const data = await response.json();
                 const aiResponse = data.candidates[0].content.parts[0].text;
-                addMessage(aiResponse, false);
+                // Add AI response to UI, which also updates chatHistory
+                await addMessage(aiResponse, false);
             } catch (error) {
                 console.error('Error fetching from API:', error);
-                addMessage('Sorry, an error occurred while trying to get a response.', false);
+                await addMessage(`Sorry, an error occurred: ${error.message}`, false);
             } finally {
                 typingIndicator.classList.add('hidden');
             }
@@ -313,31 +321,13 @@
             }
         });
 
-        // Show initial AI message
+        // Initialize chat history with the first AI message
         window.addEventListener('DOMContentLoaded', () => {
-            const initialMessageText = initialMessages['en'];
-            const messageElement = document.getElementById('initial-message');
-            const messageContent = messageElement.querySelector('p');
-            
-            // This adds the initial message to the history, but NOT to the visual chat
-            chatHistory.push({ role: "model", parts: [{ text: initialMessageText }] });
-
-            // Now handle the translation setup for the initial message
-            translateText(initialMessageText, 'ml').then(translatedText => {
-                messageElement.setAttribute('data-original-text', initialMessageText);
-                messageElement.setAttribute('data-translated-text', translatedText);
-
-                 messageElement.addEventListener('click', () => {
-                    const currentText = messageContent.textContent;
-                    const original = messageElement.getAttribute('data-original-text');
-                    const translated = messageElement.getAttribute('data-translated-text');
-
-                    if (currentText === original) {
-                        messageContent.textContent = translated;
-                    } else {
-                        messageContent.textContent = original;
-                    }
-                });
+            const initialText = initialMessages['en'];
+            document.getElementById('initial-message').querySelector('p').textContent = initialText;
+            chatHistory.push({
+                role: "model",
+                parts: [{ text: initialText }]
             });
         });
     </script>
