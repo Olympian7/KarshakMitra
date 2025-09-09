@@ -29,8 +29,8 @@ type DiagnosisResult = {
 const mockDiagnosis: DiagnosisResult = {
   identification: {
     isPlant: true,
-    commonName: 'Unknown Plant',
-    latinName: 'N/A',
+    commonName: 'Basil Leaf',
+    latinName: 'Ocimum basilicum',
   },
   diagnosis: {
     isHealthy: false,
