@@ -41,7 +41,7 @@ export default function DashboardContent({ weather, marketTrends, govSchemes, re
           <h1 className="text-lg font-semibold md:text-2xl">{t.welcome}</h1>
         </div>
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-2">
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle>{t.todaysWeather}</CardTitle>
               <CloudSun className="h-6 w-6 text-muted-foreground" />
@@ -60,7 +60,7 @@ export default function DashboardContent({ weather, marketTrends, govSchemes, re
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle>{t.marketSnapshot}</CardTitle>
               <Link href="/market">
@@ -89,7 +89,7 @@ export default function DashboardContent({ weather, marketTrends, govSchemes, re
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle>{t.recentActivity}</CardTitle>
               <Link href="/tracking">
@@ -113,7 +113,7 @@ export default function DashboardContent({ weather, marketTrends, govSchemes, re
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle>{t.featuredGovernmentSchemes}</CardTitle>
               <Link href="/schemes">

@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'PT Sans', sans-serif;
-}
-
 @layer base {
   :root {
     --background: 240 10% 99%; /* Clean Off-white */
@@ -16,13 +12,13 @@ body {
     --popover-foreground: 222.2 84% 4.9%;
     --primary: 142.1 76.2% 36.3%; /* Rich Green */
     --primary-foreground: 210 40% 98%;
-    --primary-gradient-start: 84 39% 53%; /* Sap Green */
-    --primary-gradient-end: 120 60% 60%; /* Light Green */
+    --primary-gradient-start: 140 60% 45%; /* Vibrant Green */
+    --primary-gradient-end: 150 70% 35%; /* Deeper Green */
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 120 60% 50%; /* Vibrant Light Green */
+    --accent: 45 90% 55%; /* Gold Accent */
     --accent-foreground: 210 40% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -41,13 +37,13 @@ body {
     --popover-foreground: 210 40% 98%;
     --primary: 142.1 76.2% 36.3%;
     --primary-foreground: 210 40% 98%;
-    --primary-gradient-start: 84 39% 53%;
-    --primary-gradient-end: 120 60% 60%;
+    --primary-gradient-start: 140 60% 45%;
+    --primary-gradient-end: 150 70% 35%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 120 60% 50%;
+    --accent: 45 90% 55%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
