@@ -6,10 +6,9 @@
     <title>KarshakMitra - Advanced Assistant</title>
     <!-- Tailwind CSS for modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Use PT Sans for a clean, professional look -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Use PT Sans font for a clean, professional look -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap">
+    <!-- Poppins for the heading -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap">
     <style>
         body {
@@ -46,13 +45,6 @@
         .ai-message {
             align-self: flex-start;
         }
-        .copy-button {
-            display: none;
-        }
-        /* Show the copy button on hover */
-        .message:hover .copy-button {
-            display: block;
-        }
         .heading-font {
             font-family: 'Poppins', sans-serif;
         }
@@ -73,7 +65,10 @@
 
         <!-- Chat Box to display messages -->
         <div id="chat-box" class="flex-1 p-4 flex flex-col space-y-4 chat-box">
-            <!-- Initial AI message will be added by script -->
+            <!-- Initial AI message to greet the user -->
+            <div id="initial-message" class="bg-green-100 text-green-800 p-3 rounded-xl self-start message ai-message shadow-sm">
+                <p>Hello! I am an AI chat assistant. You can ask me anything.</p>
+            </div>
         </div>
 
         <!-- Typing Indicator and Input Field -->
@@ -107,38 +102,23 @@
         const sendButton = document.getElementById('send-button');
         const micButton = document.getElementById('mic-button');
         const typingIndicator = document.getElementById('typing-indicator');
+        const initialMessageDiv = document.getElementById('initial-message');
 
         const apiKey = "AIzaSyDR7m1uyThriJQcPtasASsCgnHQ1BGi-WY";
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
         let chatHistory = [];
-        
         let recognition;
 
         const addMessage = (text, isUser) => {
             const messageElement = document.createElement('div');
-            messageElement.classList.add('message', 'p-3', 'rounded-xl', 'shadow-sm', 'relative');
+            messageElement.classList.add('message', 'p-3', 'rounded-xl', 'shadow-sm');
             messageElement.style.whiteSpace = 'pre-wrap';
             
             const messageContent = document.createElement('p');
             messageContent.textContent = text;
             messageElement.appendChild(messageContent);
             
-            const copyButton = document.createElement('button');
-            copyButton.classList.add('copy-button', 'absolute', 'top-1', 'right-1', 'p-1', 'bg-gray-200', 'rounded-full', 'hover:bg-gray-300', 'transition-all', 'duration-200');
-            copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
-            copyButton.title = "Copy to clipboard";
-            copyButton.onclick = (e) => {
-                e.stopPropagation(); // Prevent the message click event from firing
-                const textToCopy = messageContent.textContent;
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    alert("Message copied!");
-                }).catch(err => {
-                    console.error('Failed to copy text: ', err);
-                });
-            };
-            messageElement.appendChild(copyButton);
-
             if (isUser) {
                 messageElement.classList.add('bg-green-300', 'text-green-900', 'user-message');
             } else {
@@ -148,20 +128,26 @@
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
         };
-        
 
         const sendMessage = async () => {
             const userMessage = userInput.value.trim();
             if (userMessage === '') return;
 
+            // Add user message to UI
             addMessage(userMessage, true);
-            // Add user message to history *before* sending the request
+            userInput.value = '';
+            
+            // Hide initial greeting if it's still there
+            if(initialMessageDiv) {
+                initialMessageDiv.style.display = 'none';
+            }
+
+            // Add user message to history
             chatHistory.push({
                 role: "user",
                 parts: [{ text: userMessage }]
             });
 
-            userInput.value = '';
             typingIndicator.classList.remove('hidden');
 
             const systemInstruction = {
@@ -170,14 +156,8 @@
                 }]
             };
 
-            // Ensure there's a model response before the user's message if history is empty
-            const contents = chatHistory.length === 1 
-                ? [ { role: 'model', parts: [{ text: 'Hello! How can I help you with your farming today?' }] }, ...chatHistory ]
-                : chatHistory;
-
-
             const payload = {
-                contents: contents, // Use the potentially modified contents
+                contents: chatHistory,
                 tools: [{ "google_search": {} }],
                 systemInstruction: systemInstruction
             };
@@ -195,23 +175,23 @@
                 
                 const data = await response.json();
                 
-                if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts) {
+                if (data.candidates && data.candidates.length > 0 && data.candidates[0].content.parts.length > 0) {
                     const aiResponse = data.candidates[0].content.parts[0].text;
                     addMessage(aiResponse, false);
-                    // Add AI response to history
+                     // Add AI response to history
                     chatHistory.push({
                         role: "model",
                         parts: [{ text: aiResponse }]
                     });
                 } else {
-                    // Handle cases where the response might be blocked or empty
-                    console.error('Invalid response structure from API:', data);
-                    addMessage('Sorry, I could not generate a valid response. Please try again.', false);
+                     addMessage('Sorry, I received an empty response. Please try again.', false);
                 }
-
+               
             } catch (error) {
                 console.error('Error fetching from API:', error);
                 addMessage(`Sorry, an error occurred: ${error.message}`, false);
+                 // On error, remove the last user message to allow retrying
+                chatHistory.pop();
             } finally {
                 typingIndicator.classList.add('hidden');
             }
@@ -265,15 +245,8 @@
                 sendMessage();
             }
         });
-
-        // Show initial AI message
-        window.addEventListener('DOMContentLoaded', () => {
-            const initialMessage = 'Hello! I am an AI chat assistant. You can ask me anything.';
-            addMessage(initialMessage, false);
-            // Do not add the initial greeting to chat history to avoid confusing the model
-        });
     </script>
 </body>
 </html>
 
-  
+    
