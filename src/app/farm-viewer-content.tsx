@@ -8,9 +8,17 @@ import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { getProfile, FarmProfile, PlotType } from '@/services/profile';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MapPin, Droplets, Sprout, Tractor } from 'lucide-react';
+import { MapPin, Droplets, Sprout, Tractor, Package } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 
 const plotTypes: PlotType[] = [
@@ -133,6 +141,40 @@ export default function FarmViewerContent() {
                  ) : (
                     <p>{t.couldNotLoadProfile}</p>
                  )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2">
+                <Package className="h-6 w-6 text-muted-foreground" />
+                <CardTitle>{t.currentCropStock}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <div className="space-y-2 pt-2">
+                    <Skeleton className="h-8 w-full" />
+                    <Skeleton className="h-8 w-full" />
+                    <Skeleton className="h-8 w-full" />
+                  </div>
+                ) : profile && profile.cropStock.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t.crop}</TableHead>
+                        <TableHead className="text-right">{t.quantity}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {profile.cropStock.map((item) => (
+                        <TableRow key={item.name}>
+                          <TableCell className="font-medium">{item.name}</TableCell>
+                          <TableCell className="text-right">{item.quantity.toLocaleString()} {item.unit}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <p className="text-sm text-muted-foreground pt-2">{t.noStockData}</p>
+                )}
               </CardContent>
             </Card>
           </div>

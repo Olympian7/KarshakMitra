@@ -10,6 +10,11 @@ export interface PlotType {
     label: { en: string; ml: string };
 }
 
+export interface CropStock {
+    name: string;
+    quantity: number;
+    unit: 'kg' | 'tonnes';
+}
 
 export interface FarmProfile {
   farmerName: string;
@@ -19,6 +24,7 @@ export interface FarmProfile {
   soilType: string;
   mainCrops: string;
   farmGrid: number[][];
+  cropStock: CropStock[];
 }
 
 // A non-symmetrical 10x10 grid to start
@@ -45,6 +51,13 @@ let userProfile: FarmProfile = {
   soilType: 'Alluvial Soil',
   mainCrops: 'Paddy (High-Yield), Lentils, Bananas, Okra, Ginger',
   farmGrid: defaultGrid,
+  cropStock: [
+    { name: 'Paddy', quantity: 5, unit: 'tonnes' },
+    { name: 'Lentils', quantity: 500, unit: 'kg' },
+    { name: 'Banana', quantity: 1500, unit: 'kg' },
+    { name: 'Ginger', quantity: 250, unit: 'kg' },
+    { name: 'Okra', quantity: 400, unit: 'kg' },
+  ]
 };
 
 export async function getProfile(): Promise<FarmProfile> {

@@ -132,7 +132,9 @@ export const translations = {
       acres: 'acres',
       plot: 'Plot',
       noCropsInProfile: 'Add crops to your profile to see them here.',
-
+      currentCropStock: 'Current Crop Stock',
+      quantity: 'Quantity',
+      noStockData: 'No crop stock data available.',
     },
     ml: {
       // App Shell & Navigation
@@ -266,6 +268,9 @@ export const translations = {
       acres: 'ഏക്കർ',
       plot: 'പ്ലോട്ട്',
       noCropsInProfile: 'ഇവിടെ കാണുന്നതിന് നിങ്ങളുടെ പ്രൊഫൈലിൽ വിളകൾ ചേർക്കുക.',
+      currentCropStock: 'നിലവിലെ വിള സ്റ്റോക്ക്',
+      quantity: 'അളവ്',
+      noStockData: 'വിള സ്റ്റോക്ക് ഡാറ്റ ലഭ്യമല്ല.',
     },
   };
 
