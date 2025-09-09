@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Bar, BarChart as RechartsBarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { useToast } from '@/components/ui/use-toast';
 import { getProfile, saveProfile, FarmProfile } from '@/services/profile';
@@ -55,6 +55,14 @@ function FarmProfileForm() {
     // State for the farm layout editor
     const [selectedPlot, setSelectedPlot] = useState<number>(plotTypes[0].value);
     const [isPainting, setIsPainting] = useState(false);
+
+    const paddyPercentage = useMemo(() => {
+        if (!profile) return 0;
+        const totalCells = profile.farmGrid.length * profile.farmGrid[0].length;
+        if (totalCells === 0) return 0;
+        const paddyCells = profile.farmGrid.flat().filter(cell => cell === 100 || cell === 90).length;
+        return ((paddyCells / totalCells) * 100).toFixed(0);
+    }, [profile]);
 
 
     React.useEffect(() => {
@@ -302,7 +310,7 @@ function FarmProfileForm() {
                 </CardHeader>
                 <CardContent>
                    <p className="text-sm text-muted-foreground">
-                        {t.aiInsightText1} <span className="font-semibold text-foreground">{profile.location}</span> {t.aiInsightText2} <span className="font-semibold text-foreground">{profile.soilType}</span> {t.aiInsightText3}
+                        Your farm layout dedicates approximately <span className="font-semibold text-foreground">{paddyPercentage}%</span> to paddy cultivation. Given your location in <span className="font-semibold text-foreground">{profile.location}</span>, consider rotating with a nitrogen-fixing crop like Lentils (പയർ) in some paddy plots after harvest to naturally improve soil fertility and reduce fertilizer costs for the next season.
                    </p>
                 </CardContent>
             </Card>
