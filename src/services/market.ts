@@ -7,6 +7,7 @@ export type MarketTrend = {
   price: number; // Price per kg
   change: number; // Percentage change
   changeDirection: 'up' | 'down';
+  category: 'Spices' | 'Plantation Crops';
 };
 
 // Function to generate a random price change
@@ -17,13 +18,13 @@ const getRandomChange = () => {
 
 
 const mockMarketData: MarketTrend[] = [
-    { name: 'Rubber', variety: 'RSS-4', price: 185.50, change: getRandomChange(), changeDirection: 'up' },
-    { name: 'Coconut', variety: 'Milling', price: 26.75, change: getRandomChange(), changeDirection: 'down' },
-    { name: 'Cardamom', variety: '8mm Bold', price: 1950.00, change: getRandomChange(), changeDirection: 'up' },
-    { name: 'Black Pepper', variety: 'Malabar Garbled', price: 580.00, change: getRandomChange(), changeDirection: 'down' },
-    { name: 'Areca Nut', variety: 'Ripe', price: 350.00, change: getRandomChange(), changeDirection: 'up' },
-    { name: 'Ginger', variety: 'Cochin', price: 120.00, change: getRandomChange(), changeDirection: 'down' },
-    { name: 'Turmeric', variety: 'Salem', price: 95.00, change: getRandomChange(), changeDirection: 'up' },
+    { name: 'Rubber', variety: 'RSS-4', price: 185.50, change: 0, changeDirection: 'up', category: 'Plantation Crops' },
+    { name: 'Coconut', variety: 'Milling', price: 26.75, change: 0, changeDirection: 'down', category: 'Plantation Crops' },
+    { name: 'Cardamom', variety: '8mm Bold', price: 1950.00, change: 0, changeDirection: 'up', category: 'Spices' },
+    { name: 'Black Pepper', variety: 'Malabar Garbled', price: 580.00, change: 0, changeDirection: 'down', category: 'Spices' },
+    { name: 'Areca Nut', variety: 'Ripe', price: 350.00, change: 0, changeDirection: 'up', category: 'Plantation Crops' },
+    { name: 'Ginger', variety: 'Cochin', price: 120.00, change: 0, changeDirection: 'down', category: 'Spices' },
+    { name: 'Turmeric', variety: 'Salem', price: 95.00, change: 0, changeDirection: 'up', category: 'Spices' },
 ].map(item => {
     const change = getRandomChange();
     return {

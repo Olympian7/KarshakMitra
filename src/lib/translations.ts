@@ -39,6 +39,8 @@ export const translations = {
       marketDescription: 'Real-time market prices for crops in your region, updated daily.',
       variety: 'Variety',
       change: 'Change',
+      'Spices': 'Spices',
+      'Plantation Crops': 'Plantation Crops',
   
       // Profile Page
       yourFarmProfile: 'Your Farm Profile',
@@ -156,6 +158,8 @@ export const translations = {
       marketDescription: 'നിങ്ങളുടെ പ്രദേശത്തെ വിളകളുടെ തത്സമയ മാർക്കറ്റ് വിലകൾ, ദിവസവും അപ്ഡേറ്റ് ചെയ്യുന്നു.',
       variety: 'ഇനം',
       change: 'മാറ്റം',
+      'Spices': 'സുഗന്ധവ്യഞ്ജനങ്ങൾ',
+      'Plantation Crops': 'തോട്ടവിളകൾ',
   
       // Profile Page
       yourFarmProfile: 'നിങ്ങളുടെ ഫാം പ്രൊഫൈൽ',
