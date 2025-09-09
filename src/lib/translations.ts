@@ -68,10 +68,14 @@ export const translations = {
       couldNotLoadProfile: 'Could not load profile.',
   
       // Schemes Page
+      schemesDescription: 'Find details about central and state government schemes available for farmers.',
       keyBenefits: 'Key Benefits',
       eligibility: 'Eligibility',
       benefits: 'Benefits',
       learnMoreAndApply: 'Learn More & Apply',
+      'Financial Support': 'Financial Support',
+      'Insurance & Security': 'Insurance & Security',
+      'Resource Support': 'Resource Support',
   
       // Tracking Page
       activityLog: 'Activity Log',
@@ -187,10 +191,14 @@ export const translations = {
       couldNotLoadProfile: 'പ്രൊഫൈൽ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.',
   
       // Schemes Page
+      schemesDescription: 'കർഷകർക്ക് ലഭ്യമായ കേന്ദ്ര-സംസ്ഥാന സർക്കാർ പദ്ധതികളെക്കുറിച്ചുള്ള വിശദാംശങ്ങൾ കണ്ടെത്തുക.',
       keyBenefits: 'പ്രധാന നേട്ടങ്ങൾ',
       eligibility: 'യോഗ്യത',
       benefits: 'പ്രയോജനങ്ങൾ',
       learnMoreAndApply: 'കൂടുതലറിയുക, അപേക്ഷിക്കുക',
+      'Financial Support': 'സാമ്പത്തിക സഹായം',
+      'Insurance & Security': 'ഇൻഷുറൻസും സുരക്ഷയും',
+      'Resource Support': 'വിഭവ പിന്തുണ',
   
       // Tracking Page
       activityLog: 'പ്രവർത്തന രേഖ',
