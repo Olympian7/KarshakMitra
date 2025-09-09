@@ -61,6 +61,12 @@ const responses = [
     malayalamResponse: "വിളകളെക്കുറിച്ചോ കീടങ്ങളെക്കുറിച്ചോ പ്രത്യേക ഉപദേശത്തിനായി, നിങ്ങളുടെ ഫാം പ്രൊഫൈൽ അപ്ഡേറ്റ് ചെയ്തിട്ടുണ്ടെന്ന് ഉറപ്പാക്കുക. ഭാവിയിൽ, നിങ്ങളുടെ പ്രൊഫൈലിനെ അടിസ്ഥാനമാക്കി വ്യക്തിഗത ശുപാർശകൾ നൽകാൻ എനിക്ക് കഴിയും!",
     englishResponse: "For specific advice on crops or pests, please ensure your Farm Profile is updated. In the future, I'll be able to provide personalized recommendations based on your profile!",
   },
+  // Growth Stage
+  {
+    keywords: ['growth', 'stage', 'crop status', 'വിളയുടെ അവസ്ഥ', 'വളർച്ച'],
+    malayalamResponse: "നിങ്ങളുടെ ആക്റ്റിവിറ്റി ലോഗ് അനുസരിച്ച്, നിങ്ങളുടെ പ്രധാന വിളകൾ ഇപ്പോൾ വളർച്ചയുടെ മധ്യഘട്ടത്തിലാണെന്ന് തോന്നുന്നു. ഈ സമയത്ത് ശരിയായ അളവിൽ വളം നൽകുന്നത് വിളവ് വർദ്ധിപ്പിക്കാൻ സഹായിക്കും.",
+    englishResponse: "Based on your activity log, your main crops seem to be in the mid-growth stage. Applying the right amount of fertilizer at this time can help boost your yield.",
+  },
   // Soil
   {
     keywords: ['soil', 'മണ്ണ്', 'fertilizer', 'വളം'],
