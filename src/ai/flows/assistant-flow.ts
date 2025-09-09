@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A simple, non-AI assistant for Karshak Mitra.
@@ -39,8 +40,8 @@ const responses = [
   // Weather
   {
     keywords: ['weather', 'climate', 'കാലാവസ്ഥ', 'മഴ', 'rain'],
-    malayalamResponse: "ആകാശം തെളിഞ്ഞതും സൂര്യൻ പ്രകാശിക്കുന്നതുമാണ്! കേരളത്തിലെ കൃഷിക്ക് മനോഹരമായ ഒരു ദിവസമാണിന്ന്. താപനില കൃത്യമാണ്, നിങ്ങളെ തണുപ്പിക്കാൻ ഒരു ഇളം കാറ്റുമുണ്ട്.",
-    englishResponse: "The sky is clear and the sun is shining! It's a beautiful day for farming in Kerala. The temperature is just right, and there's a gentle breeze to keep you cool.",
+    malayalamResponse: "അടുത്ത 24 മണിക്കൂറിനുള്ളിൽ, ഭാഗികമായി മേഘാവൃതമായ ആകാശവും ഉച്ചകഴിഞ്ഞ് നേരിയ മഴയ്ക്ക് സാധ്യതയുമുണ്ട്. താപനില 26°C മുതൽ 32°C വരെ ആയിരിക്കും. കാറ്റ് തെക്ക്-പടിഞ്ഞാറ് ദിശയിൽ നിന്ന് നേരിയ തോതിൽ വീശും. നടീലിന് നല്ല ദിവസമാണ്, എന്നാൽ ചെറിയ മഴയ്ക്ക് തയ്യാറാകുക.",
+    englishResponse: "Over the next 24 hours, expect partly cloudy skies with a chance of light showers in the late afternoon. Temperatures will range from 26°C to 32°C. Winds will be light, coming from the southwest. It's a good day for planting, but be prepared for brief rain.",
   },
   // Market Prices
   {
