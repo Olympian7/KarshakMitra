@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -12,8 +13,17 @@ import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 
 
-const getColorForValue = (value: number, plotTypes: PlotType[]) => {
-    return plotTypes.find(item => item.value === value)?.color || 'from-gray-200 to-gray-400';
+const plotTypes: PlotType[] = [
+    { value: 0, color: 'bg-gray-200', label: { en: 'Empty', ml: 'ഒഴിഞ്ഞ' } },
+    { value: 100, color: 'bg-blue-400', label: { en: 'Paddy', ml: 'നെല്ല്' } },
+    { value: 90, color: 'bg-yellow-400', label: { en: 'Lentils', ml: 'പയർവർഗ്ഗങ്ങൾ' } },
+    { value: 80, color: 'bg-yellow-600', label: { en: 'Bananas', ml: 'വാഴ' } },
+    { value: 60, color: 'bg-green-500', label: { en: 'Okra', ml: 'വെണ്ട' } },
+    { value: 40, color: 'bg-red-500', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
+];
+
+const getColorForValue = (value: number) => {
+    return plotTypes.find(item => item.value === value)?.color || 'bg-gray-200';
 };
 
 
@@ -57,18 +67,18 @@ export default function FarmViewerContent() {
                 {isLoading || !profile ? (
                   <Skeleton className="w-full aspect-square max-w-md" />
                 ) : (
-                  <div className="grid grid-cols-15 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30">
+                  <div className="grid grid-cols-10 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30">
                     {profile.farmGrid.flat().map((value, index) => (
-                        <div key={index} className={cn(`aspect-square w-full h-full rounded-sm bg-gradient-to-br`, getColorForValue(value, profile.plotTypes))} title={`Value: ${value}`} />
+                        <div key={index} className={cn(`aspect-square w-full h-full rounded-sm`, getColorForValue(value))} title={`Value: ${value}`} />
                     ))}
                   </div>
                 )}
                 <div className="w-full md:w-48">
                     <h3 className="font-semibold mb-2">Legend</h3>
                     <div className="space-y-2">
-                        {profile?.plotTypes.map(item => (
+                        {plotTypes.map(item => (
                             <div key={item.value} className="flex items-center gap-2">
-                                <div className={cn(`w-4 h-4 rounded-sm bg-gradient-to-br`, item.color)} />
+                                <div className={cn(`w-4 h-4 rounded-sm`, item.color)} />
                                 <span className="text-sm">{item.label[language]}</span>
                             </div>
                         ))}

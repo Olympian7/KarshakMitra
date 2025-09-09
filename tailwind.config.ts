@@ -10,9 +10,6 @@ export default {
   ],
   theme: {
     extend: {
-      gridTemplateColumns: {
-        '15': 'repeat(15, minmax(0, 1fr))',
-      },
       fontFamily: {
         sans: ['var(--font-sans)', 'sans-serif'],
       },

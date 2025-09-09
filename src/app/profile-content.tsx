@@ -23,7 +23,6 @@ import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { cn } from '@/lib/utils';
 
-
 const chartData = [
   { name: 'Rice', value: 45 },
   { name: 'Coconut', value: 30 },
@@ -31,8 +30,17 @@ const chartData = [
   { name: 'Other', value: 10 },
 ];
 
-const getColorForValue = (value: number, plotTypes: PlotType[]) => {
-    return plotTypes.find(p => p.value === value)?.color || 'from-gray-200 to-gray-400';
+const plotTypes: PlotType[] = [
+    { value: 0, color: 'bg-gray-200', label: { en: 'Empty', ml: 'ഒഴിഞ്ഞ' } },
+    { value: 100, color: 'bg-blue-400', label: { en: 'Paddy', ml: 'നെല്ല്' } },
+    { value: 90, color: 'bg-yellow-400', label: { en: 'Lentils', ml: 'പയർവർഗ്ഗങ്ങൾ' } },
+    { value: 80, color: 'bg-yellow-600', label: { en: 'Bananas', ml: 'വാഴ' } },
+    { value: 60, color: 'bg-green-500', label: { en: 'Okra', ml: 'വെണ്ട' } },
+    { value: 40, color: 'bg-red-500', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
+];
+
+const getColorForValue = (value: number) => {
+    return plotTypes.find(p => p.value === value)?.color || 'bg-gray-200';
 }
 
 function FarmProfileForm() {
@@ -43,14 +51,14 @@ function FarmProfileForm() {
     const [isLoading, setIsLoading] = React.useState(true);
     const [isSaving, setIsSaving] = React.useState(false);
 
-    const [selectedPlot, setSelectedPlot] = useState<number | null>(null);
+    const [selectedPlot, setSelectedPlot] = useState<number | null>(100);
     const [isPainting, setIsPainting] = useState(false);
 
     const paddyPercentage = useMemo(() => {
         if (!profile) return 0;
         const totalCells = profile.farmGrid.length * profile.farmGrid[0].length;
         if (totalCells === 0) return 0;
-        const paddyCells = profile.farmGrid.flat().filter(cell => cell === 100 || cell === 90).length;
+        const paddyCells = profile.farmGrid.flat().filter(cell => cell === 100).length;
         return ((paddyCells / totalCells) * 100).toFixed(0);
     }, [profile]);
 
@@ -61,9 +69,6 @@ function FarmProfileForm() {
             try {
                 const data = await getProfile();
                 setProfile(data);
-                if (data.plotTypes && data.plotTypes.length > 0) {
-                    setSelectedPlot(data.plotTypes[0].value);
-                }
             } catch (error) {
                 toast({
                     variant: 'destructive',
@@ -81,17 +86,6 @@ function FarmProfileForm() {
         if (!profile) return;
         const { id, value } = e.target;
         setProfile({ ...profile, [id]: value });
-    };
-
-    const handlePaletteLabelChange = (value: number, newLabel: string) => {
-        if (!profile) return;
-        const newPlotTypes = profile.plotTypes.map(pt => {
-            if (pt.value === value) {
-                return { ...pt, label: { ...pt.label, [language]: newLabel }};
-            }
-            return pt;
-        });
-        setProfile({ ...profile, plotTypes: newPlotTypes });
     };
 
     const handleGridCellChange = (rowIndex: number, colIndex: number) => {
@@ -235,10 +229,10 @@ function FarmProfileForm() {
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col md:flex-row gap-6">
-                        <div className="space-y-2 md:w-56">
-                            <Label>Crop Palette (Editable)</Label>
+                        <div className="space-y-2 md:w-48">
+                            <Label>Crop Palette</Label>
                             <div className="space-y-2">
-                                {profile.plotTypes.map(plot => (
+                                {plotTypes.map(plot => (
                                     <div 
                                         key={plot.value}
                                         onClick={() => setSelectedPlot(plot.value)}
@@ -247,12 +241,8 @@ function FarmProfileForm() {
                                             selectedPlot === plot.value ? 'ring-2 ring-primary' : 'hover:bg-muted/50'
                                         )}
                                     >
-                                        <div className={cn('w-4 h-4 rounded-sm flex-shrink-0 bg-gradient-to-br', plot.color)} />
-                                        <Input 
-                                            value={plot.label[language]}
-                                            onChange={(e) => handlePaletteLabelChange(plot.value, e.target.value)}
-                                            className="h-7 text-sm border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-ring"
-                                        />
+                                        <div className={cn('w-4 h-4 rounded-sm flex-shrink-0', plot.color)} />
+                                        <span className="text-sm">{plot.label[language]}</span>
                                     </div>
                                 ))}
                             </div>
@@ -260,14 +250,14 @@ function FarmProfileForm() {
                         <div className="flex-1">
                             <Label>Your Farm Grid</Label>
                             <div 
-                                className="grid grid-cols-15 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30 cursor-pointer"
+                                className="grid grid-cols-10 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30 cursor-pointer"
                                 onMouseLeave={() => setIsPainting(false)}
                             >
                                 {profile.farmGrid.map((row, rowIndex) => 
                                     row.map((cellValue, colIndex) => (
                                         <div 
                                             key={`${rowIndex}-${colIndex}`}
-                                            className={cn('aspect-square w-full h-full rounded-sm bg-gradient-to-br', getColorForValue(cellValue, profile.plotTypes))}
+                                            className={cn('aspect-square w-full h-full rounded-sm', getColorForValue(cellValue))}
                                             onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                                             onMouseOver={() => handleMouseOver(rowIndex, colIndex)}
                                         />
@@ -317,7 +307,11 @@ function FarmProfileForm() {
                 </CardHeader>
                 <CardContent>
                    <p className="text-sm text-muted-foreground">
-                        Your farm layout dedicates approximately <span className="font-semibold text-foreground">{paddyPercentage}%</span> to paddy cultivation. Given your location in <span className="font-semibold text-foreground">{profile.location}</span>, consider rotating with a nitrogen-fixing crop like Lentils (പയർ) in some paddy plots after harvest to naturally improve soil fertility and reduce fertilizer costs for the next season.
+                        {t.aiInsightText1}{' '}
+                        <span className="font-semibold text-foreground">{profile.location}</span>{' '}
+                        {t.aiInsightText2}{' '}
+                        <span className="font-semibold text-foreground">{profile.soilType}</span>
+                        {t.aiInsightText3}
                    </p>
                 </CardContent>
             </Card>
