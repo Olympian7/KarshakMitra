@@ -19,7 +19,7 @@ let userProfile: FarmProfile = {
   location: 'Kuttanad, Kerala',
   farmSize: '15',
   soilType: 'Alluvial Soil',
-  mainCrops: 'Rice, Coconut, Bananas',
+  mainCrops: 'Paddy (High-Yield), Lentils, Bananas, Okra, Ginger',
 };
 
 export async function getProfile(): Promise<FarmProfile> {
