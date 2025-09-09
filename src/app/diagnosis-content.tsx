@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState } from 'react';
@@ -28,13 +29,17 @@ type DiagnosisResult = {
 const mockDiagnosis: DiagnosisResult = {
   identification: {
     isPlant: true,
-    commonName: 'Tomato Plant',
-    latinName: 'Solanum lycopersicum',
+    commonName: 'Unknown Plant',
+    latinName: 'N/A',
   },
   diagnosis: {
     isHealthy: false,
-    diagnosis: 'Early Blight (Alternaria solani)',
-    recommendation: 'Remove affected lower leaves and ensure good air circulation. Consider applying a copper-based fungicide if the infection is severe. Avoid overhead watering.',
+    diagnosis: `The leaves are showing brown, scorched-looking patches with some yellowing. This pattern is consistent with several issues, most likely Leaf Scorch, Fungal Diseases (like Anthracnose), or Bacterial Diseases.`,
+    recommendation: `For a definitive diagnosis, more information is needed (plant type, recent weather). However, you can take these immediate steps:
+1.  **Check Environmental Stress:** Ensure the plant is not under-watered, especially during high heat or wind.
+2.  **Inspect for Pests:** Look closely for any signs of insects.
+3.  **Improve Airflow:** Prune dense areas to improve air circulation and reduce humidity, which can discourage fungal growth.
+It is highly recommended to consult a local arborist for an accurate diagnosis.`,
   },
 };
 
@@ -163,7 +168,7 @@ function DiagnosisPageComponent() {
                         <Sparkles className="mr-2 h-5 w-5 text-amber-500" />
                         {t.recommendation}
                     </h3>
-                    <p className="text-muted-foreground bg-primary/5 p-3 rounded-md border border-primary/20">
+                    <p className="text-muted-foreground bg-primary/5 p-3 rounded-md border border-primary/20 whitespace-pre-line">
                         {result.diagnosis.recommendation}
                     </p>
                 </div>
