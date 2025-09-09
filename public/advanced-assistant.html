@@ -128,7 +128,7 @@
             const translationPayload = {
                 contents: [{
                     parts: [{
-                        text: `Translate the following text to ${targetLang === 'ml' ? 'Malayalam' : 'English'}: ${text}`
+                        text: `Translate the following text to ${targetLang === 'ml' ? 'Malayalam' : 'English'}. Provide only the translated text, with no additional commentary or explanation: ${text}`
                     }]
                 }]
             };
@@ -147,7 +147,7 @@
             }
         };
 
-        const addMessage = async (text, isUser, addToHistory = true) => {
+        const addMessage = async (text, isUser) => {
             const messageElement = document.createElement('div');
             messageElement.classList.add('message', 'p-3', 'rounded-xl', 'shadow-sm', 'relative');
             messageElement.style.whiteSpace = 'pre-wrap';
@@ -206,11 +206,10 @@
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            if (addToHistory) {
-                chatHistory.push({
-                    role: isUser ? "user" : "model",
-                    parts: [{ text: originalText }]
-                });
+            if (isUser) {
+                 chatHistory.push({ role: "user", parts: [{ text: originalText }] });
+            } else {
+                 chatHistory.push({ role: "model", parts: [{ text: originalText }] });
             }
         };
         
@@ -226,7 +225,7 @@
             const userMessage = userInput.value.trim();
             if (userMessage === '') return;
 
-            addMessage(userMessage, true, true);
+            addMessage(userMessage, true);
             userInput.value = '';
 
             typingIndicator.classList.remove('hidden');
@@ -239,6 +238,7 @@
 
             const payload = {
                 contents: chatHistory,
+                tools: [{ "google_search": {} }],
                 systemInstruction: systemInstruction
             };
 
@@ -255,10 +255,10 @@
                 
                 const data = await response.json();
                 const aiResponse = data.candidates[0].content.parts[0].text;
-                addMessage(aiResponse, false, true);
+                addMessage(aiResponse, false);
             } catch (error) {
                 console.error('Error fetching from API:', error);
-                addMessage('Sorry, an error occurred while trying to get a response.', false, false);
+                addMessage('Sorry, an error occurred while trying to get a response.', false);
             } finally {
                 typingIndicator.classList.add('hidden');
             }
@@ -315,7 +315,30 @@
 
         // Show initial AI message
         window.addEventListener('DOMContentLoaded', () => {
-            addMessage(initialMessages['en'], false, true);
+            const initialMessageText = initialMessages['en'];
+            const messageElement = document.getElementById('initial-message');
+            const messageContent = messageElement.querySelector('p');
+            
+            // This adds the initial message to the history, but NOT to the visual chat
+            chatHistory.push({ role: "model", parts: [{ text: initialMessageText }] });
+
+            // Now handle the translation setup for the initial message
+            translateText(initialMessageText, 'ml').then(translatedText => {
+                messageElement.setAttribute('data-original-text', initialMessageText);
+                messageElement.setAttribute('data-translated-text', translatedText);
+
+                 messageElement.addEventListener('click', () => {
+                    const currentText = messageContent.textContent;
+                    const original = messageElement.getAttribute('data-original-text');
+                    const translated = messageElement.getAttribute('data-translated-text');
+
+                    if (currentText === original) {
+                        messageContent.textContent = translated;
+                    } else {
+                        messageContent.textContent = original;
+                    }
+                });
+            });
         });
     </script>
 </body>
