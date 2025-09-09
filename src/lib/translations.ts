@@ -10,6 +10,7 @@ export const translations = {
       marketTrends: 'Market Trends',
       consultation: 'Consultation',
       diagnosis: 'Pest & Disease Diagnosis',
+      farmViewer: 'Farm Viewer',
       farmer: 'Farmer',
       toggleLanguage: 'Toggle Language',
       toggleNotifications: 'Toggle notifications',
@@ -122,6 +123,15 @@ export const translations = {
       unhealthy: 'Potential Issue Detected',
       suspectedIssue: 'Suspected Issue',
       recommendation: 'AI Recommendation',
+
+      // Farm Viewer
+      digitalTwinTitle: 'Your Digital Farm Twin',
+      digitalTwinDesc: 'A visual representation of your farm based on your profile data.',
+      farmOverview: 'Farm Overview',
+      acres: 'acres',
+      plot: 'Plot',
+      noCropsInProfile: 'Add crops to your profile to see them here.',
+
     },
     ml: {
       // App Shell & Navigation
@@ -133,6 +143,7 @@ export const translations = {
       marketTrends: 'വിപണി പ്രവണതകൾ',
       consultation: 'കൺസൾട്ടേഷൻ',
       diagnosis: 'കീടരോഗ നിർണ്ണയം',
+      farmViewer: 'ഫാം വ്യൂവർ',
       farmer: 'കർഷകൻ',
       toggleLanguage: 'ഭാഷ മാറ്റുക',
       toggleNotifications: 'അറിയിപ്പുകൾ മാറ്റുക',
@@ -245,5 +256,13 @@ export const translations = {
       unhealthy: 'പ്രശ്നം കണ്ടെത്താനായി',
       suspectedIssue: 'സംശയിക്കുന്ന പ്രശ്നം',
       recommendation: 'AI ശുപാർശ',
+
+      // Farm Viewer
+      digitalTwinTitle: 'നിങ്ങളുടെ ഡിജിറ്റൽ ഫാം',
+      digitalTwinDesc: 'നിങ്ങളുടെ പ്രൊഫൈൽ ഡാറ്റയെ അടിസ്ഥാനമാക്കി നിങ്ങളുടെ ഫാമിന്റെ ഒരു ദൃശ്യാവിഷ്കാരം.',
+      farmOverview: 'ഫാം അവലോകനം',
+      acres: 'ഏക്കർ',
+      plot: 'പ്ലോട്ട്',
+      noCropsInProfile: 'ഇവിടെ കാണുന്നതിന് നിങ്ങളുടെ പ്രൊഫൈലിൽ വിളകൾ ചേർക്കുക.',
     },
   };
