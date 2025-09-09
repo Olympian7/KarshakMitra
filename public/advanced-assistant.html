@@ -8,11 +8,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Use PT Sans font for a clean, professional look -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap">
-    <!-- Poppins for the heading -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap">
     <style>
         body {
-            font-family: 'PT Sans', sans-serif; /* Changed from Inter to PT Sans */
+            font-family: 'PT Sans', sans-serif;
             background: #dff0d8;
             background-image: repeating-linear-gradient(
                 -45deg,
@@ -73,7 +72,7 @@
 
         <!-- Chat Box to display messages -->
         <div id="chat-box" class="flex-1 p-4 flex flex-col space-y-4 chat-box">
-            <!-- Initial AI message is added via script -->
+            <!-- Initial AI message will be added by script -->
         </div>
 
         <!-- Typing Indicator and Input Field -->
@@ -113,18 +112,19 @@
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
         let chatHistory = [];
-        let recognition;
 
         const initialMessages = {
             'en': 'Hello! I am an AI chat assistant. You can ask me anything.',
             'ml': 'നമസ്കാരം! ഞാൻ ഒരു AI ചാറ്റ് അസിസ്റ്റന്റാണ്. നിങ്ങൾക്ക് എന്നോട് എന്തും ചോദിക്കാവുന്നതാണ്.'
         };
+        
+        let recognition;
 
         const translateText = async (text, targetLang) => {
             const translationPayload = {
                 contents: [{
                     parts: [{
-                        text: `Translate the following text to ${targetLang === 'ml' ? 'Malayalam' : 'English'}. Return only the translated text, with no additional narration.`
+                        text: `Translate the following text to ${targetLang === 'ml' ? 'Malayalam' : 'English'}. Respond with only the translated text, without any additional narration.`
                     }]
                 }]
             };
@@ -135,16 +135,39 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(translationPayload)
                 });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const data = await response.json();
-                return data.candidates[0].content.parts[0].text;
-            } catch (error)
-            {
+                return data.candidates[0].content.parts[0].text.trim();
+            } catch (error) {
                 console.error('Error translating text:', error);
-                return `Translation failed. Error: ${error.message}`;
+                return `Translation failed.`;
             }
         };
 
-        const addMessage = async (text, isUser) => {
+        const handleMessageClick = async (messageElement) => {
+            const messageContent = messageElement.querySelector('p');
+            const currentText = messageContent.textContent;
+            const originalText = messageElement.getAttribute('data-original-text');
+            let translatedText = messageElement.getAttribute('data-translated-text');
+
+            if (currentText === originalText) {
+                // If translated text doesn't exist, fetch it
+                if (!translatedText) {
+                    const originalLang = detectLanguage(originalText);
+                    const targetLang = originalLang === 'en' ? 'ml' : 'en';
+                    messageContent.textContent = 'Translating...';
+                    translatedText = await translateText(originalText, targetLang);
+                    messageElement.setAttribute('data-translated-text', translatedText);
+                }
+                messageContent.textContent = translatedText;
+            } else {
+                messageContent.textContent = originalText;
+            }
+        };
+
+        const addMessage = (text, isUser) => {
             const messageElement = document.createElement('div');
             messageElement.classList.add('message', 'p-3', 'rounded-xl', 'shadow-sm', 'relative');
             messageElement.style.whiteSpace = 'pre-wrap';
@@ -153,19 +176,8 @@
             messageContent.textContent = text;
             messageElement.appendChild(messageContent);
             
-            let originalText = text;
-            let translatedText = '';
-
-            const lang = detectLanguage(text);
-            if (lang === 'en') {
-                translatedText = await translateText(text, 'ml');
-            } else {
-                translatedText = await translateText(text, 'en');
-            }
-
-            messageElement.setAttribute('data-original-text', originalText);
-            messageElement.setAttribute('data-translated-text', translatedText);
-
+            messageElement.setAttribute('data-original-text', text);
+            
             const copyButton = document.createElement('button');
             copyButton.classList.add('copy-button', 'absolute', 'top-1', 'right-1', 'p-1', 'bg-gray-200', 'rounded-full', 'hover:bg-gray-300', 'transition-all', 'duration-200');
             copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
@@ -175,23 +187,11 @@
                 const textToCopy = messageContent.textContent;
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     alert("Message copied!");
-                }).catch(err => {
-                    console.error('Failed to copy text: ', err);
                 });
             };
             messageElement.appendChild(copyButton);
 
-            messageElement.addEventListener('click', () => {
-                const currentText = messageContent.textContent;
-                const original = messageElement.getAttribute('data-original-text');
-                const translated = messageElement.getAttribute('data-translated-text');
-
-                if (currentText === original) {
-                    messageContent.textContent = translated;
-                } else {
-                    messageContent.textContent = original;
-                }
-            });
+            messageElement.addEventListener('click', () => handleMessageClick(messageElement));
 
             if (isUser) {
                 messageElement.classList.add('bg-green-300', 'text-green-900', 'user-message');
@@ -201,12 +201,6 @@
             
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
-            
-            // Add to history *after* displaying
-            chatHistory.push({
-                role: isUser ? "user" : "model",
-                parts: [{ text: originalText }]
-            });
         };
         
         const detectLanguage = (text) => {
@@ -218,12 +212,13 @@
             const userMessage = userInput.value.trim();
             if (userMessage === '') return;
 
-            await addMessage(userMessage, true);
+            addMessage(userMessage, true);
+            chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
             userInput.value = '';
+
             typingIndicator.classList.remove('hidden');
 
             const systemInstruction = {
-                role: "system",
                 parts: [{
                     text: `You are an AI assistant named KarshakMitra. Your primary function is to provide expert advice on farming, specifically for crops common in Kerala, India. If a user asks about a specific crop (e.g., 'tomato', 'coconut', 'rice'), provide detailed information on optimal farming conditions including soil type, climate, seed types, pests, diseases, and harvesting. If the user's query is not related to farming, respond in a friendly, conversational tone and redirect them to farming-related topics. Respond in the same language as the user. If the user's language is ambiguous, respond in English.`
                 }]
@@ -247,20 +242,18 @@
                 }
                 
                 const data = await response.json();
-                if (data.candidates && data.candidates.length > 0 && data.candidates[0].content) {
-                    const aiResponse = data.candidates[0].content.parts[0].text;
-                    await addMessage(aiResponse, false);
-                } else {
-                     await addMessage('I received a response, but it was empty. Please try again.', false);
-                }
+                const aiResponse = data.candidates[0].content.parts[0].text;
+                addMessage(aiResponse, false);
+                chatHistory.push({ role: "model", parts: [{ text: aiResponse }] });
             } catch (error) {
                 console.error('Error fetching from API:', error);
-                await addMessage(`Sorry, an error occurred: ${error.message}`, false);
+                addMessage(`Sorry, an error occurred: ${error.message}`, false);
             } finally {
                 typingIndicator.classList.add('hidden');
             }
         };
         
+        // Voice recognition logic
         micButton.addEventListener('click', () => {
             if (recognition && recognition.isListening) {
                 recognition.stop();
@@ -301,6 +294,7 @@
             };
         });
 
+        // Event listeners for sending a message with the button or the Enter key
         sendButton.addEventListener('click', sendMessage);
         userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -310,19 +304,10 @@
 
         // Initialize with welcome message
         window.addEventListener('DOMContentLoaded', () => {
-            // Set up the initial message in the history correctly
-            chatHistory.push({
-                role: "model",
-                parts: [{ text: initialMessages['en'] }]
-            });
-            // Display the message but don't re-add to history
-            const initialMessageDiv = document.createElement('div');
-            initialMessageDiv.classList.add('message', 'p-3', 'rounded-xl', 'shadow-sm', 'relative', 'bg-green-100', 'text-green-800', 'ai-message');
-            initialMessageDiv.innerHTML = `<p>${initialMessages['en']}</p>`;
-            chatBox.appendChild(initialMessageDiv);
+            const welcomeText = initialMessages['en'];
+            addMessage(welcomeText, false);
+            chatHistory.push({ role: "model", parts: [{ text: welcomeText }] });
         });
     </script>
 </body>
 </html>
-
-  
