@@ -135,6 +135,10 @@ export const translations = {
       currentCropStock: 'Current Crop Stock',
       quantity: 'Quantity',
       noStockData: 'No crop stock data available.',
+      farmInputs: 'Farm Inputs',
+      item: 'Item',
+      type: 'Type',
+      noInputData: 'No farm input data available.',
     },
     ml: {
       // App Shell & Navigation
@@ -271,6 +275,10 @@ export const translations = {
       currentCropStock: 'നിലവിലെ വിള സ്റ്റോക്ക്',
       quantity: 'അളവ്',
       noStockData: 'വിള സ്റ്റോക്ക് ഡാറ്റ ലഭ്യമല്ല.',
+      farmInputs: 'ഫാം ഇൻപുട്ടുകൾ',
+      item: 'ഇനം',
+      type: 'തരം',
+      noInputData: 'ഫാം ഇൻപുട്ട് ഡാറ്റ ലഭ്യമല്ല.',
     },
   };
 

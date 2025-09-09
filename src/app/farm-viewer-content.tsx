@@ -8,7 +8,7 @@ import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { getProfile, FarmProfile, PlotType } from '@/services/profile';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MapPin, Droplets, Sprout, Tractor, Package } from 'lucide-react';
+import { MapPin, Droplets, Sprout, Tractor, Package, Beaker } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import {
@@ -174,6 +174,41 @@ export default function FarmViewerContent() {
                   </Table>
                 ) : (
                   <p className="text-sm text-muted-foreground pt-2">{t.noStockData}</p>
+                )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2">
+                <Beaker className="h-6 w-6 text-muted-foreground" />
+                <CardTitle>{t.farmInputs}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <div className="space-y-2 pt-2">
+                    <Skeleton className="h-8 w-full" />
+                    <Skeleton className="h-8 w-full" />
+                  </div>
+                ) : profile && profile.farmInputs.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t.item}</TableHead>
+                        <TableHead>{t.type}</TableHead>
+                        <TableHead className="text-right">{t.quantity}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {profile.farmInputs.map((item) => (
+                        <TableRow key={item.name}>
+                          <TableCell className="font-medium">{item.name}</TableCell>
+                          <TableCell>{item.type}</TableCell>
+                          <TableCell className="text-right">{item.quantity.toLocaleString()} {item.unit}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <p className="text-sm text-muted-foreground pt-2">{t.noInputData}</p>
                 )}
               </CardContent>
             </Card>

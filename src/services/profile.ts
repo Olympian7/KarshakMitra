@@ -16,6 +16,13 @@ export interface CropStock {
     unit: 'kg' | 'tonnes';
 }
 
+export interface FarmInput {
+    name: string;
+    type: 'Fertilizer' | 'Pesticide' | 'Seed' | 'Herbicide';
+    quantity: number;
+    unit: 'kg' | 'litres';
+}
+
 export interface FarmProfile {
   farmerName: string;
   farmName: string;
@@ -25,6 +32,7 @@ export interface FarmProfile {
   mainCrops: string;
   farmGrid: number[][];
   cropStock: CropStock[];
+  farmInputs: FarmInput[];
 }
 
 // A non-symmetrical 10x10 grid to start
@@ -57,6 +65,12 @@ let userProfile: FarmProfile = {
     { name: 'Banana', quantity: 1500, unit: 'kg' },
     { name: 'Ginger', quantity: 250, unit: 'kg' },
     { name: 'Okra', quantity: 400, unit: 'kg' },
+  ],
+  farmInputs: [
+      { name: 'Urea', type: 'Fertilizer', quantity: 50, unit: 'kg' },
+      { name: 'Neem Oil', type: 'Pesticide', quantity: 5, unit: 'litres' },
+      { name: 'Uma (Paddy)', type: 'Seed', quantity: 200, unit: 'kg' },
+      { name: 'Glyphosate', type: 'Herbicide', quantity: 2, unit: 'litres' },
   ]
 };
 

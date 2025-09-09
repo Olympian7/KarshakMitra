@@ -61,9 +61,9 @@ const responses = [
     malayalamResponse: "വിളകളെക്കുറിച്ചോ കീടങ്ങളെക്കുറിച്ചോ പ്രത്യേക ഉപദേശത്തിനായി, നിങ്ങളുടെ ഫാം പ്രൊഫൈൽ അപ്ഡേറ്റ് ചെയ്തിട്ടുണ്ടെന്ന് ഉറപ്പാക്കുക. ഭാവിയിൽ, നിങ്ങളുടെ പ്രൊഫൈലിനെ അടിസ്ഥാനമാക്കി വ്യക്തിഗത ശുപാർശകൾ നൽകാൻ എനിക്ക് കഴിയും!",
     englishResponse: "For specific advice on crops or pests, please ensure your Farm Profile is updated. In the future, I'll be able to provide personalized recommendations based on your profile!",
   },
-  // Safety
+  // Safety & Dosage
   {
-    keywords: ['safety', 'chemical', 'pesticide', 'സുരക്ഷ', 'കീടനാശിനി', 'വിഷം'],
+    keywords: ['safety', 'chemical', 'pesticide', 'സുരക്ഷ', 'കീടനാശിനി', 'വിഷം', 'dosage', 'timing', 'അളവ്'],
     malayalamResponse: "സുരക്ഷയ്ക്കായി: എപ്പോഴും കയ്യുറകൾ, മാസ്കുകൾ, ഗ്ലാസുകൾ എന്നിവ ധരിക്കുക. നിർമ്മാതാവിൻ്റെ നിർദ്ദേശങ്ങൾ പാലിക്കുക. ഫലപ്രദമായ ഉപയോഗത്തിന്: ശരിയായ അളവിൽ ലയിപ്പിക്കുക. കാറ്റോ മഴയോ ഉള്ളപ്പോൾ തളിക്കുന്നത് ഒഴിവാക്കുക. രാവിലെയും വൈകുന്നേരവുമാണ് തളിക്കാൻ ഏറ്റവും അനുയോജ്യമായ സമയം, ഇത് ചെടികളിൽ മരുന്ന് കൂടുതൽ നേരം നിൽക്കാൻ സഹായിക്കും.",
     englishResponse: "For safety: Always wear protective gear like gloves, masks, and goggles. Follow the manufacturer's instructions. For effective use: Mix the correct dosage. Avoid spraying in windy or rainy conditions. The best time to spray is early morning or late evening to ensure the product stays on the plants longer and is more effective.",
   },
@@ -75,9 +75,21 @@ const responses = [
   },
   // Soil
   {
-    keywords: ['soil', 'മണ്ണ്', 'fertilizer', 'വളം'],
+    keywords: ['soil', 'മണ്ണ്'],
     malayalamResponse: "മണ്ണിന്റെ ആരോഗ്യം മെച്ചപ്പെടുത്തുന്നതിന് ജൈവവളങ്ങൾ ഉപയോഗിക്കുന്നത് വളരെ നല്ലതാണ്. നിങ്ങളുടെ മണ്ണിന്റെ തരം 'ഫാം പ്രൊഫൈൽ' പേജിൽ രേഖപ്പെടുത്തുന്നത് വ്യക്തിഗത ഉപദേശം നൽകാൻ സഹായിക്കും.",
     englishResponse: "Using organic manure is excellent for improving soil health. Recording your soil type on the 'Farm Profile' page can help me give you personalized advice.",
+  },
+  // Farm Inputs Stock
+  {
+    keywords: ['stock', 'inventory', 'fertilizer', 'herbicide', 'വളം', 'സ്റ്റോക്ക്'],
+    malayalamResponse: "'ഫാം വ്യൂവർ' ടാബിൽ നിങ്ങളുടെ നിലവിലെ വളം, കീടനാശിനി, വിത്ത് എന്നിവയുടെ സ്റ്റോക്ക് പരിശോധിക്കാം. അവിടെ നിങ്ങൾക്ക് എല്ലാ വിവരങ്ങളും കാണാൻ കഴിയും.",
+    englishResponse: "You can check your current stock of fertilizers, pesticides, and seeds on the 'Farm Viewer' tab. All the details are available there.",
+  },
+  // Seed Quality
+  {
+    keywords: ['seed', 'വിത്ത്', 'next season', 'അടുത്ത സീസൺ'],
+    malayalamResponse: "അടുത്ത സീസണിലേക്കുള്ള നല്ലയിനം വിത്തുകൾക്കായി, നിങ്ങളുടെ അടുത്തുള്ള കൃഷി ഭവനുമായി ബന്ധപ്പെടുന്നത് നല്ലതാണ്. അവർക്ക് സർട്ടിഫൈഡ് വിത്തുകളെക്കുറിച്ചും പുതിയ ഇനങ്ങളെക്കുറിച്ചും വിവരങ്ങൾ നൽകാൻ കഴിയും.",
+    englishResponse: "For good quality seeds for the next season, it's best to contact your local Krishi Bhavan. They can provide information on certified seeds and new varieties available.",
   },
   // Irrigation
   {
