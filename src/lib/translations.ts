@@ -68,6 +68,11 @@ export const translations = {
       profileSaveFailedTitle: 'Save Failed',
       profileSaveFailedDesc: 'Could not save your profile changes.',
       couldNotLoadProfile: 'Could not load profile.',
+      farmLayoutEditor: 'Farm Layout Editor',
+      farmLayoutLockedDesc: 'Click "Edit Profile" to unlock and modify your farm layout.',
+      farmLayoutUnlockedDesc: 'Click a crop below, then click or drag on the grid to design your farm layout.',
+      cropPalette: 'Crop Palette',
+      yourFarmGrid: 'Your Farm Grid',
   
       // Schemes Page
       schemesDescription: 'Find details about central and state government schemes available for farmers.',
@@ -124,6 +129,12 @@ export const translations = {
       unhealthy: 'Potential Issue Detected',
       suspectedIssue: 'Suspected Issue',
       recommendation: 'AI Recommendation',
+      diagnosisPearRust: "The leaf exhibits bright orange-yellow spots on its upper surface, a classic symptom of European Pear Rust. This is a fungal disease caused by the fungus Gymnosporangium sabinae, which requires a juniper host to complete its lifecycle.",
+      recommendationPearRust: `To manage this issue, consider the following steps:
+1.  **Remove Juniper Hosts:** If possible, locate and remove any nearby juniper trees or shrubs, as they are a primary host for the fungus.
+2.  **Prune Infected Areas:** Carefully prune and destroy any infected leaves and branches on the pear tree to reduce the source of spores.
+3.  **Fungicide Application:** Apply a fungicide specifically rated for rust diseases on fruit trees. Start applications in early spring and follow the product's instructions for timing and frequency.
+Consult with a local agricultural extension service for the most effective fungicides in your region.`,
 
       // Farm Viewer
       digitalTwinTitle: 'Your Digital Farm Twin',
@@ -133,12 +144,18 @@ export const translations = {
       plot: 'Plot',
       noCropsInProfile: 'Add crops to your profile to see them here.',
       currentCropStock: 'Current Crop Stock',
-      quantity: 'Quantity (kg)',
+      quantity: 'Quantity',
+      quantityKg: 'Quantity (kg)',
       noStockData: 'No crop stock data available.',
       farmInputs: 'Farm Inputs',
       item: 'Item',
       type: 'Type',
       noInputData: 'No farm input data available.',
+      legend: 'Legend',
+      Fertilizer: 'Fertilizer',
+      Pesticide: 'Pesticide',
+      Seed: 'Seed',
+      Herbicide: 'Herbicide',
     },
     ml: {
       // App Shell & Navigation
@@ -208,6 +225,11 @@ export const translations = {
       profileSaveFailedTitle: 'സംരക്ഷിക്കുന്നതിൽ പരാജയപ്പെട്ടു',
       profileSaveFailedDesc: 'നിങ്ങളുടെ പ്രൊഫൈൽ മാറ്റങ്ങൾ സംരക്ഷിക്കാൻ കഴിഞ്ഞില്ല.',
       couldNotLoadProfile: 'പ്രൊഫൈൽ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.',
+      farmLayoutEditor: 'ഫാം ലേഔട്ട് എഡിറ്റർ',
+      farmLayoutLockedDesc: 'നിങ്ങളുടെ ഫാം ലേഔട്ട് മാറ്റം വരുത്താൻ "പ്രൊഫൈൽ എഡിറ്റുചെയ്യുക" ക്ലിക്കുചെയ്യുക.',
+      farmLayoutUnlockedDesc: 'താഴെയുള്ള ഒരു വിളയിൽ ക്ലിക്കുചെയ്യുക, തുടർന്ന് നിങ്ങളുടെ ഫാം ലേഔട്ട് രൂപകൽപ്പന ചെയ്യാൻ ഗ്രിഡിൽ ക്ലിക്കുചെയ്യുക അല്ലെങ്കിൽ വലിച്ചിടുക.',
+      cropPalette: 'വിളകളുടെ പാലറ്റ്',
+      yourFarmGrid: 'നിങ്ങളുടെ ഫാം ഗ്രിഡ്',
   
       // Schemes Page
       schemesDescription: 'കർഷകർക്ക് ലഭ്യമായ കേന്ദ്ര-സംസ്ഥാന സർക്കാർ പദ്ധതികളെക്കുറിച്ചുള്ള വിശദാംശങ്ങൾ കണ്ടെത്തുക.',
@@ -264,6 +286,13 @@ export const translations = {
       unhealthy: 'പ്രശ്നം കണ്ടെത്താനായി',
       suspectedIssue: 'സംശയിക്കുന്ന പ്രശ്നം',
       recommendation: 'AI ശുപാർശ',
+      diagnosisPearRust: "ഇലയുടെ മുകൾ ഭാഗത്ത് തിളക്കമുള്ള ഓറഞ്ച്-മഞ്ഞ പാടുകൾ കാണപ്പെടുന്നു, ഇത് യൂറോപ്യൻ പിയർ റസ്റ്റിന്റെ ഒരു സാധാരണ ലക്ഷണമാണ്. ഇത് ജിംനോസ്പോറാഞ്ചിയം സബിനേ എന്ന ഫംഗസ് മൂലമുണ്ടാകുന്ന ഒരു ഫംഗസ് രോഗമാണ്, ഇതിന്റെ ജീവിതചക്രം പൂർത്തിയാക്കാൻ ഒരു ജൂണിപ്പർ മരം ആവശ്യമാണ്.",
+      recommendationPearRust: `ഈ പ്രശ്നം പരിഹരിക്കാൻ, താഴെ പറയുന്ന കാര്യങ്ങൾ പരിഗണിക്കുക:
+1. **ജൂണിപ്പർ മരങ്ങൾ നീക്കം ചെയ്യുക:** സാധ്യമെങ്കിൽ, അടുത്തുള്ള ജൂണിപ്പർ മരങ്ങൾ കണ്ടെത്തി നീക്കം ചെയ്യുക, കാരണം അവ ഫംഗസിന്റെ പ്രധാന വാസസ്ഥലമാണ്.
+2. **രോഗബാധിതമായ ഭാഗങ്ങൾ മുറിച്ചുമാറ്റുക:** രോഗം ബാധിച്ച ഇലകളും ശാഖകളും ശ്രദ്ധാപൂർവ്വം മുറിച്ചുമാറ്റി നശിപ്പിക്കുക.
+3. **ഫംഗസ്നാശിനി പ്രയോഗം:** പഴവർഗ്ഗ മരങ്ങളിലെ തുരുമ്പ് രോഗങ്ങൾക്കായി പ്രത്യേകം നിർമ്മിച്ച ഫംഗസ്നാശിനി പ്രയോഗിക്കുക. വസന്തകാലത്തിന്റെ തുടക്കത്തിൽ പ്രയോഗം ആരംഭിച്ച് ഉൽപ്പന്നത്തിന്റെ നിർദ്ദേശങ്ങൾ പാലിക്കുക.
+നിങ്ങളുടെ പ്രദേശത്തെ ഏറ്റവും ഫലപ്രദമായ ഫംഗസ്നാശിനികൾക്കായി ഒരു പ്രാദേശിക കാർഷിക വിദഗ്ദ്ധനുമായി ബന്ധപ്പെടുക.`,
+
 
       // Farm Viewer
       digitalTwinTitle: 'നിങ്ങളുടെ ഡിജിറ്റൽ ഫാം',
@@ -273,13 +302,17 @@ export const translations = {
       plot: 'പ്ലോട്ട്',
       noCropsInProfile: 'ഇവിടെ കാണുന്നതിന് നിങ്ങളുടെ പ്രൊഫൈലിൽ വിളകൾ ചേർക്കുക.',
       currentCropStock: 'നിലവിലെ വിള സ്റ്റോക്ക്',
-      quantity: 'അളവ് (kg)',
+      quantity: 'അളവ്',
+      quantityKg: 'അളവ് (kg)',
       noStockData: 'വിള സ്റ്റോക്ക് ഡാറ്റ ലഭ്യമല്ല.',
       farmInputs: 'ഫാം ഇൻപുട്ടുകൾ',
       item: 'ഇനം',
       type: 'തരം',
       noInputData: 'ഫാം ഇൻപുട്ട് ഡാറ്റ ലഭ്യമല്ല.',
+      legend: 'സൂചിക',
+      Fertilizer: 'വളം',
+      Pesticide: 'കീടനാശിനി',
+      Seed: 'വിത്ത്',
+      Herbicide: 'കളനാശിനി',
     },
   };
-
-    

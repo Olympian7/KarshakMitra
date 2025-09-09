@@ -214,7 +214,7 @@ function FarmProfileForm() {
                     </div>
                     <div className="space-y-2">
                     <Label htmlFor="location">{t.location}</Label>
-                    <Input id="location" value={profile.location} onChange={handleChange} placeholder="e.g., Kuttanad, Kerala" />
+                    <Input id="location" value={profile.location} placeholder="e.g., Kuttanad, Kerala" />
                     </div>
                     <div className="space-y-2">
                     <Label htmlFor="farmSize">{t.farmSize}</Label>
@@ -236,18 +236,18 @@ function FarmProfileForm() {
 
              <Card>
                 <CardHeader>
-                    <CardTitle>Farm Layout Editor</CardTitle>
+                    <CardTitle>{t.farmLayoutEditor}</CardTitle>
                     <CardDescription>
                         {isLayoutLocked 
-                            ? 'Click "Edit Profile" to unlock and modify your farm layout.'
-                            : 'Click a crop below, then click or drag on the grid to design your farm layout.'
+                            ? t.farmLayoutLockedDesc
+                            : t.farmLayoutUnlockedDesc
                         }
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col md:flex-row gap-6">
                         <div className="space-y-2 md:w-48">
-                            <Label>Crop Palette</Label>
+                            <Label>{t.cropPalette}</Label>
                             <fieldset disabled={isLayoutLocked} className="space-y-2">
                                 {plotTypes.map(plot => (
                                     <div 
@@ -267,7 +267,7 @@ function FarmProfileForm() {
                             </fieldset>
                         </div>
                         <div className="flex-1">
-                            <Label>Your Farm Grid</Label>
+                            <Label>{t.yourFarmGrid}</Label>
                             <div 
                                 className={cn(
                                     "grid grid-cols-10 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30",
@@ -362,5 +362,3 @@ export default function ProfileContent() {
     </AppShell>
   );
 }
-
-    

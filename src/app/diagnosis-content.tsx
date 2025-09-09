@@ -21,8 +21,8 @@ type DiagnosisResult = {
   };
   diagnosis: {
     isHealthy: boolean;
-    diagnosis: string;
-    recommendation: string;
+    diagnosis: string; // key for translation
+    recommendation: string; // key for translation
   };
 };
 
@@ -34,12 +34,8 @@ const mockDiagnosis: DiagnosisResult = {
   },
   diagnosis: {
     isHealthy: false,
-    diagnosis: "The leaf exhibits bright orange-yellow spots on its upper surface, a classic symptom of European Pear Rust. This is a fungal disease caused by the fungus Gymnosporangium sabinae, which requires a juniper host to complete its lifecycle.",
-    recommendation: `To manage this issue, consider the following steps:
-1.  **Remove Juniper Hosts:** If possible, locate and remove any nearby juniper trees or shrubs, as they are a primary host for the fungus.
-2.  **Prune Infected Areas:** Carefully prune and destroy any infected leaves and branches on the pear tree to reduce the source of spores.
-3.  **Fungicide Application:** Apply a fungicide specifically rated for rust diseases on fruit trees. Start applications in early spring and follow the product's instructions for timing and frequency.
-Consult with a local agricultural extension service for the most effective fungicides in your region.`,
+    diagnosis: "diagnosisPearRust",
+    recommendation: "recommendationPearRust",
   },
 };
 
@@ -159,7 +155,7 @@ function DiagnosisPageComponent() {
                         </span>
                     </p>
                     <p className="text-muted-foreground">
-                        <span className="font-medium text-foreground">{t.suspectedIssue}:</span> {result.diagnosis.diagnosis}
+                        <span className="font-medium text-foreground">{t.suspectedIssue}:</span> {t[result.diagnosis.diagnosis as keyof typeof t] || result.diagnosis.diagnosis}
                     </p>
                 </div>
                 
@@ -169,7 +165,7 @@ function DiagnosisPageComponent() {
                         {t.recommendation}
                     </h3>
                     <p className="text-muted-foreground bg-primary/5 p-3 rounded-md border border-primary/20 whitespace-pre-line">
-                        {result.diagnosis.recommendation}
+                        {t[result.diagnosis.recommendation as keyof typeof t] || result.diagnosis.recommendation}
                     </p>
                 </div>
               </div>

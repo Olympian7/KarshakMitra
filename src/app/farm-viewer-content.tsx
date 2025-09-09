@@ -83,7 +83,7 @@ export default function FarmViewerContent() {
                   </div>
                 )}
                 <div className="w-full md:w-48">
-                    <h3 className="font-semibold mb-2">Legend</h3>
+                    <h3 className="font-semibold mb-2">{t.legend}</h3>
                     <div className="space-y-2">
                         {plotTypes.map(item => (
                             <div key={item.value} className="flex items-center gap-2">
@@ -119,7 +119,7 @@ export default function FarmViewerContent() {
                       {profile.farmInputs.map((item) => (
                         <TableRow key={item.name}>
                           <TableCell className="font-medium">{item.name}</TableCell>
-                          <TableCell>{item.type}</TableCell>
+                          <TableCell>{t[item.type as keyof typeof t] || item.type}</TableCell>
                           <TableCell className="text-right">{item.quantity.toLocaleString()} {item.unit}</TableCell>
                         </TableRow>
                       ))}
@@ -199,7 +199,7 @@ export default function FarmViewerContent() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>{t.crop}</TableHead>
-                        <TableHead className="text-right">{t.quantity}</TableHead>
+                        <TableHead className="text-right">{t.quantityKg}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
