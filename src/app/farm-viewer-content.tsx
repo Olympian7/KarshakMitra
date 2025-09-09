@@ -64,9 +64,9 @@ export default function FarmViewerContent() {
   return (
     <AppShell title={t.farmViewer} activePage="farm-viewer">
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-        <div className="grid gap-6 lg:grid-cols-5">
-          {/* Left Column (Digital Twin) */}
-          <div className="lg:col-span-3">
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Left Column */}
+          <div className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>{t.digitalTwinTitle}</CardTitle>
@@ -95,10 +95,45 @@ export default function FarmViewerContent() {
                 </div>
               </CardContent>
             </Card>
+             <Card>
+              <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2">
+                <Beaker className="h-6 w-6 text-muted-foreground" />
+                <CardTitle>{t.farmInputs}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <div className="space-y-2 pt-2">
+                    <Skeleton className="h-8 w-full" />
+                    <Skeleton className="h-8 w-full" />
+                  </div>
+                ) : profile && profile.farmInputs.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t.item}</TableHead>
+                        <TableHead>{t.type}</TableHead>
+                        <TableHead className="text-right">{t.quantity}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {profile.farmInputs.map((item) => (
+                        <TableRow key={item.name}>
+                          <TableCell className="font-medium">{item.name}</TableCell>
+                          <TableCell>{item.type}</TableCell>
+                          <TableCell className="text-right">{item.quantity.toLocaleString()} {item.unit}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <p className="text-sm text-muted-foreground pt-2">{t.noInputData}</p>
+                )}
+              </CardContent>
+            </Card>
           </div>
           
-          {/* Right Column (Info Cards) */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* Right Column */}
+          <div className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>{t.farmOverview}</CardTitle>
@@ -178,42 +213,6 @@ export default function FarmViewerContent() {
                   </Table>
                 ) : (
                   <p className="text-sm text-muted-foreground pt-2">{t.noStockData}</p>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2">
-                <Beaker className="h-6 w-6 text-muted-foreground" />
-                <CardTitle>{t.farmInputs}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="space-y-2 pt-2">
-                    <Skeleton className="h-8 w-full" />
-                    <Skeleton className="h-8 w-full" />
-                  </div>
-                ) : profile && profile.farmInputs.length > 0 ? (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>{t.item}</TableHead>
-                        <TableHead>{t.type}</TableHead>
-                        <TableHead className="text-right">{t.quantity}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {profile.farmInputs.map((item) => (
-                        <TableRow key={item.name}>
-                          <TableCell className="font-medium">{item.name}</TableCell>
-                          <TableCell>{item.type}</TableCell>
-                          <TableCell className="text-right">{item.quantity.toLocaleString()} {item.unit}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                ) : (
-                  <p className="text-sm text-muted-foreground pt-2">{t.noInputData}</p>
                 )}
               </CardContent>
             </Card>
