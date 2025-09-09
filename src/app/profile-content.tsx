@@ -18,7 +18,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import AppShell from '@/components/app-shell';
-import { BarChart, Lightbulb } from 'lucide-react';
+import { BarChart, Lightbulb, Lock, Pencil } from 'lucide-react';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { cn } from '@/lib/utils';
@@ -50,6 +50,7 @@ function FarmProfileForm() {
     const [profile, setProfile] = React.useState<FarmProfile | null>(null);
     const [isLoading, setIsLoading] = React.useState(true);
     const [isSaving, setIsSaving] = React.useState(false);
+    const [isLayoutLocked, setIsLayoutLocked] = React.useState(true);
 
     const [selectedPlot, setSelectedPlot] = useState<number | null>(100);
     const [isPainting, setIsPainting] = useState(false);
@@ -89,7 +90,7 @@ function FarmProfileForm() {
     };
 
     const handleGridCellChange = (rowIndex: number, colIndex: number) => {
-        if (!profile || selectedPlot === null) return;
+        if (!profile || selectedPlot === null || isLayoutLocked) return;
         const newGrid = profile.farmGrid.map((row, rIdx) => 
             row.map((cell, cIdx) => {
                 if (rIdx === rowIndex && cIdx === colIndex) {
@@ -102,12 +103,13 @@ function FarmProfileForm() {
     };
 
     const handleMouseDown = (rowIndex: number, colIndex: number) => {
+        if (isLayoutLocked) return;
         setIsPainting(true);
         handleGridCellChange(rowIndex, colIndex);
     };
 
     const handleMouseOver = (rowIndex: number, colIndex: number) => {
-        if (isPainting) {
+        if (isPainting && !isLayoutLocked) {
             handleGridCellChange(rowIndex, colIndex);
         }
     };
@@ -124,6 +126,7 @@ function FarmProfileForm() {
                 title: t.profileSavedTitle,
                 description: t.profileSavedDesc,
             });
+            setIsLayoutLocked(true); // Lock the layout after saving
         } catch (error) {
              toast({
                 variant: 'destructive',
@@ -134,6 +137,15 @@ function FarmProfileForm() {
             setIsSaving(false);
         }
     };
+
+    const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (isLayoutLocked) {
+            e.preventDefault(); // Prevent form submission
+            setIsLayoutLocked(false);
+        }
+        // If not locked, the default form submission will occur via handleSubmit
+    };
+
     
     if (isLoading && !profile) {
         return (
@@ -191,7 +203,7 @@ function FarmProfileForm() {
             </CardHeader>
             <CardContent>
                 <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <fieldset disabled={isLayoutLocked} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                     <Label htmlFor="farmerName">{t.farmerName}</Label>
                     <Input id="farmerName" value={profile.farmerName} onChange={handleChange} placeholder={t.enterYourName} />
@@ -212,12 +224,12 @@ function FarmProfileForm() {
                     <Label htmlFor="soilType">{t.soilType}</Label>
                     <Input id="soilType" value={profile.soilType} onChange={handleChange} placeholder="e.g., Alluvial Soil" />
                     </div>
-                </div>
+                </fieldset>
 
-                <div className="space-y-2">
+                <fieldset disabled={isLayoutLocked} className="space-y-2">
                     <Label htmlFor="mainCrops">{t.mainCrops}</Label>
                     <Textarea id="mainCrops" value={profile.mainCrops} onChange={handleChange} placeholder={t.mainCropsPlaceholder} />
-                </div>
+                </fieldset>
                 </div>
             </CardContent>
             </Card>
@@ -225,32 +237,42 @@ function FarmProfileForm() {
              <Card>
                 <CardHeader>
                     <CardTitle>Farm Layout Editor</CardTitle>
-                    <CardDescription>Click a crop below, then click or drag on the grid to design your farm layout.</CardDescription>
+                    <CardDescription>
+                        {isLayoutLocked 
+                            ? 'Click "Edit Profile" to unlock and modify your farm layout.'
+                            : 'Click a crop below, then click or drag on the grid to design your farm layout.'
+                        }
+                    </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col md:flex-row gap-6">
                         <div className="space-y-2 md:w-48">
                             <Label>Crop Palette</Label>
-                            <div className="space-y-2">
+                            <fieldset disabled={isLayoutLocked} className="space-y-2">
                                 {plotTypes.map(plot => (
                                     <div 
                                         key={plot.value}
-                                        onClick={() => setSelectedPlot(plot.value)}
+                                        onClick={() => !isLayoutLocked && setSelectedPlot(plot.value)}
                                         className={cn(
-                                            'w-full flex items-center gap-2 p-2 rounded-md border cursor-pointer',
-                                            selectedPlot === plot.value ? 'ring-2 ring-primary' : 'hover:bg-muted/50'
+                                            'w-full flex items-center gap-2 p-2 rounded-md border',
+                                            !isLayoutLocked && 'cursor-pointer',
+                                            selectedPlot === plot.value && !isLayoutLocked ? 'ring-2 ring-primary' : 'hover:bg-muted/50',
+                                            isLayoutLocked && 'opacity-50 cursor-not-allowed'
                                         )}
                                     >
                                         <div className={cn('w-4 h-4 rounded-sm flex-shrink-0', plot.color)} />
                                         <span className="text-sm">{plot.label[language]}</span>
                                     </div>
                                 ))}
-                            </div>
+                            </fieldset>
                         </div>
                         <div className="flex-1">
                             <Label>Your Farm Grid</Label>
                             <div 
-                                className="grid grid-cols-10 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30 cursor-pointer"
+                                className={cn(
+                                    "grid grid-cols-10 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30",
+                                    !isLayoutLocked ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'
+                                )}
                                 onMouseLeave={() => setIsPainting(false)}
                             >
                                 {profile.farmGrid.map((row, rowIndex) => 
@@ -268,7 +290,15 @@ function FarmProfileForm() {
                     </div>
                 </CardContent>
              </Card>
-             <Button type="submit" disabled={isSaving}>{isSaving ? t.saving : t.saveProfile}</Button>
+             <Button type={isLayoutLocked ? "button" : "submit"} onClick={handleButtonClick} disabled={isSaving}>
+                {isLayoutLocked ? (
+                    <>
+                        <Pencil className="mr-2 h-4 w-4" /> {t.editProfile}
+                    </>
+                ) : (
+                    isSaving ? t.saving : t.saveProfile
+                )}
+            </Button>
         </form>
         <div className="space-y-6">
             <Card>
@@ -307,7 +337,7 @@ function FarmProfileForm() {
                 </CardHeader>
                 <CardContent>
                    <p className="text-sm text-muted-foreground">
-                        {t.aiInsightText1}{' '}
+                        {t.aiInsightText1(paddyPercentage)}{' '}
                         <span className="font-semibold text-foreground">{profile.location}</span>{' '}
                         {t.aiInsightText2}{' '}
                         <span className="font-semibold text-foreground">{profile.soilType}</span>
@@ -332,3 +362,5 @@ export default function ProfileContent() {
     </AppShell>
   );
 }
+
+    

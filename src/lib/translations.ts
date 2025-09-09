@@ -56,10 +56,11 @@ export const translations = {
       mainCrops: 'Main Crops Grown',
       mainCropsPlaceholder: 'List your primary crops, separated by commas',
       saveProfile: 'Save Profile',
+      editProfile: 'Edit Profile',
       saving: 'Saving...',
       cropDistribution: 'Crop Distribution',
       aiPoweredInsight: 'AI-Powered Insight',
-      aiInsightText1: 'Based on your location in',
+      aiInsightText1: (percentage: string) => `With ${percentage}% of your farm dedicated to Paddy in`,
       aiInsightText2: 'and',
       aiInsightText3: 'soil, consider planting a cover crop like cowpea after your rice harvest to improve soil nitrogen levels naturally.',
       profileSavedTitle: 'Profile Saved!',
@@ -189,10 +190,11 @@ export const translations = {
       mainCrops: 'പ്രധാന വിളകൾ',
       mainCropsPlaceholder: 'നിങ്ങളുടെ പ്രധാന വിളകൾ കോമ ഇട്ട് വേർതിരിച്ച് നൽകുക',
       saveProfile: 'പ്രൊഫൈൽ സംരക്ഷിക്കുക',
+      editProfile: 'പ്രൊഫൈൽ എഡിറ്റുചെയ്യുക',
       saving: 'സംരക്ഷിക്കുന്നു...',
       cropDistribution: 'വിള വിതരണം',
       aiPoweredInsight: 'AI സഹായത്തോടെയുള്ള ഉൾക്കാഴ്ച',
-      aiInsightText1: 'നിങ്ങളുടെ സ്ഥലം',
+      aiInsightText1: (percentage: string) => `നിങ്ങളുടെ ഫാമിലെ ${percentage}% നെല്ലിന് നീക്കിവച്ചിരിക്കുന്നതിനാൽ`,
       aiInsightText2: '-ഉം,',
       aiInsightText3: ' മണ്ണും അടിസ്ഥാനമാക്കി, നെൽ വിളവെടുപ്പിന് ശേഷം പയർ പോലുള്ള ഒരു കവർ ക്രോപ്പ് നടുന്നത് മണ്ണിന്റെ നൈട്രജൻ അളവ് സ്വാഭാവികമായി മെച്ചപ്പെടുത്താൻ സഹായിക്കും.',
       profileSavedTitle: 'പ്രൊഫൈൽ സംരക്ഷിച്ചു!',
@@ -266,3 +268,5 @@ export const translations = {
       noCropsInProfile: 'ഇവിടെ കാണുന്നതിന് നിങ്ങളുടെ പ്രൊഫൈലിൽ വിളകൾ ചേർക്കുക.',
     },
   };
+
+    
