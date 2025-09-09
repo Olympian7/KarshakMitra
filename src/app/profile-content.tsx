@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Bar, BarChart as RechartsBarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { useToast } from '@/components/ui/use-toast';
 import { getProfile, saveProfile, FarmProfile } from '@/services/profile';
@@ -17,9 +17,11 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import AppShell from '@/components/app-shell';
-import { BarChart, Lightbulb } from 'lucide-react';
+import { BarChart, Lightbulb, Tractor } from 'lucide-react';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
+import { cn } from '@/lib/utils';
+
 
 const chartData = [
   { name: 'Rice', value: 45 },
@@ -28,6 +30,20 @@ const chartData = [
   { name: 'Other', value: 10 },
 ];
 
+const plotTypes = [
+    { value: 100, color: 'bg-red-600/80', label: { en: 'Paddy (High-Yield)', ml: 'നെല്ല് (ഉയർന്ന വിളവ്)' } },
+    { value: 90, color: 'bg-orange-500/80', label: { en: 'Paddy (Mid-Yield)', ml: 'നെല്ല് (ഇടത്തരം വിളവ്)' } },
+    { value: 80, color: 'bg-yellow-400/80', label: { en: 'Lentils', ml: 'പയർവർഗ്ഗങ്ങൾ' } },
+    { value: 60, color: 'bg-yellow-300/80', label: { en: 'Bananas', ml: 'വാഴ' } },
+    { value: 40, color: 'bg-green-500/80', label: { en: 'Okra', ml: 'വെണ്ട' } },
+    { value: 20, color: 'bg-green-600/80', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
+    { value: 10, color: 'bg-blue-800/80', label: { en: 'Fallow Land', ml: 'തരിശുഭൂമി' } },
+];
+
+const getColorForValue = (value: number) => {
+    return plotTypes.find(p => p.value === value)?.color || 'bg-gray-200';
+}
+
 function FarmProfileForm() {
     const { language } = useLanguage();
     const t = translations[language];
@@ -35,6 +51,11 @@ function FarmProfileForm() {
     const [profile, setProfile] = React.useState<FarmProfile | null>(null);
     const [isLoading, setIsLoading] = React.useState(true);
     const [isSaving, setIsSaving] = React.useState(false);
+
+    // State for the farm layout editor
+    const [selectedPlot, setSelectedPlot] = useState<number>(plotTypes[0].value);
+    const [isPainting, setIsPainting] = useState(false);
+
 
     React.useEffect(() => {
         const fetchProfile = async () => {
@@ -60,6 +81,31 @@ function FarmProfileForm() {
         const { id, value } = e.target;
         setProfile({ ...profile, [id]: value });
     };
+
+    const handleGridCellChange = (rowIndex: number, colIndex: number) => {
+        if (!profile) return;
+        const newGrid = profile.farmGrid.map((row, rIdx) => 
+            row.map((cell, cIdx) => {
+                if (rIdx === rowIndex && cIdx === colIndex) {
+                    return selectedPlot;
+                }
+                return cell;
+            })
+        );
+        setProfile({ ...profile, farmGrid: newGrid });
+    };
+
+    const handleMouseDown = (rowIndex: number, colIndex: number) => {
+        setIsPainting(true);
+        handleGridCellChange(rowIndex, colIndex);
+    };
+
+    const handleMouseOver = (rowIndex: number, colIndex: number) => {
+        if (isPainting) {
+            handleGridCellChange(rowIndex, colIndex);
+        }
+    };
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -130,46 +176,95 @@ function FarmProfileForm() {
     }
 
   return (
-    <div className="grid md:grid-cols-3 gap-6 items-start">
-        <Card className="md:col-span-2">
-          <CardHeader>
-            <CardTitle>{t.yourFarmProfile}</CardTitle>
-            <CardDescription>{t.farmProfileDesc}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="farmerName">{t.farmerName}</Label>
-                  <Input id="farmerName" value={profile.farmerName} onChange={handleChange} placeholder={t.enterYourName} />
+    <div className="grid md:grid-cols-3 gap-6 items-start" onMouseUp={() => setIsPainting(false)}>
+        <form onSubmit={handleSubmit} className="md:col-span-2 space-y-6">
+            <Card>
+            <CardHeader>
+                <CardTitle>{t.yourFarmProfile}</CardTitle>
+                <CardDescription>{t.farmProfileDesc}</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                    <Label htmlFor="farmerName">{t.farmerName}</Label>
+                    <Input id="farmerName" value={profile.farmerName} onChange={handleChange} placeholder={t.enterYourName} />
+                    </div>
+                    <div className="space-y-2">
+                    <Label htmlFor="farmName">{t.farmName}</Label>
+                    <Input id="farmName" value={profile.farmName} onChange={handleChange} placeholder={t.enterFarmName} />
+                    </div>
+                    <div className="space-y-2">
+                    <Label htmlFor="location">{t.location}</Label>
+                    <Input id="location" value={profile.location} onChange={handleChange} placeholder="e.g., Kuttanad, Kerala" />
+                    </div>
+                    <div className="space-y-2">
+                    <Label htmlFor="farmSize">{t.farmSize}</Label>
+                    <Input id="farmSize" type="number" value={profile.farmSize} onChange={handleChange} placeholder="e.g., 15" />
+                    </div>
+                    <div className="space-y-2">
+                    <Label htmlFor="soilType">{t.soilType}</Label>
+                    <Input id="soilType" value={profile.soilType} onChange={handleChange} placeholder="e.g., Alluvial Soil" />
+                    </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="farmName">{t.farmName}</Label>
-                  <Input id="farmName" value={profile.farmName} onChange={handleChange} placeholder={t.enterFarmName} />
-                </div>
-                 <div className="space-y-2">
-                  <Label htmlFor="location">{t.location}</Label>
-                  <Input id="location" value={profile.location} onChange={handleChange} placeholder="e.g., Kuttanad, Kerala" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="farmSize">{t.farmSize}</Label>
-                  <Input id="farmSize" type="number" value={profile.farmSize} onChange={handleChange} placeholder="e.g., 15" />
-                </div>
-                 <div className="space-y-2">
-                  <Label htmlFor="soilType">{t.soilType}</Label>
-                  <Input id="soilType" value={profile.soilType} onChange={handleChange} placeholder="e.g., Alluvial Soil" />
-                </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="mainCrops">{t.mainCrops}</Label>
-                <Textarea id="mainCrops" value={profile.mainCrops} onChange={handleChange} placeholder={t.mainCropsPlaceholder} />
-              </div>
+                <div className="space-y-2">
+                    <Label htmlFor="mainCrops">{t.mainCrops}</Label>
+                    <Textarea id="mainCrops" value={profile.mainCrops} onChange={handleChange} placeholder={t.mainCropsPlaceholder} />
+                </div>
+                </div>
+            </CardContent>
+            </Card>
 
-              <Button type="submit" disabled={isSaving}>{isSaving ? t.saving : t.saveProfile}</Button>
-            </form>
-          </CardContent>
-        </Card>
+             <Card>
+                <CardHeader>
+                    <CardTitle>Farm Layout Editor</CardTitle>
+                    <CardDescription>Click a crop below, then click or drag on the grid to design your farm layout.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="flex flex-col md:flex-row gap-6">
+                        <div className="space-y-2 md:w-48">
+                            <Label>Crop Palette</Label>
+                            <div className="space-y-2">
+                                {plotTypes.map(plot => (
+                                    <button 
+                                        type="button"
+                                        key={plot.value}
+                                        onClick={() => setSelectedPlot(plot.value)}
+                                        className={cn(
+                                            'w-full flex items-center gap-2 p-2 rounded-md border text-left',
+                                            selectedPlot === plot.value ? 'ring-2 ring-primary' : 'hover:bg-muted/50'
+                                        )}
+                                    >
+                                        <div className={cn('w-4 h-4 rounded-sm', plot.color)} />
+                                        <span className="text-sm">{plot.label[language]}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="flex-1">
+                            <Label>Your Farm Grid</Label>
+                            <div 
+                                className="grid grid-cols-10 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30 cursor-pointer"
+                                onMouseLeave={() => setIsPainting(false)}
+                            >
+                                {profile.farmGrid.map((row, rowIndex) => 
+                                    row.map((cellValue, colIndex) => (
+                                        <div 
+                                            key={`${rowIndex}-${colIndex}`}
+                                            className={cn('aspect-square w-full h-full rounded-sm', getColorForValue(cellValue))}
+                                            onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
+                                            onMouseOver={() => handleMouseOver(rowIndex, colIndex)}
+                                        />
+                                    ))
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+             </Card>
+             <Button type="submit" disabled={isSaving}>{isSaving ? t.saving : t.saveProfile}</Button>
+        </form>
         <div className="space-y-6">
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
