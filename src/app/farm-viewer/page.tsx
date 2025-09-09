@@ -8,6 +8,6 @@ export default function FarmViewerPage() {
   return (
     <LanguageProvider>
       <FarmViewerContent />
-    </Language-Provider>
+    </LanguageProvider>
   );
 }
