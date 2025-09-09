@@ -64,9 +64,9 @@ export default function FarmViewerContent() {
   return (
     <AppShell title={t.farmViewer} activePage="farm-viewer">
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Left Column */}
-          <div className="space-y-6">
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Left Column (Digital Twin) */}
+          <div className="lg:col-span-2">
             <Card>
               <CardHeader>
                 <CardTitle>{t.digitalTwinTitle}</CardTitle>
@@ -74,9 +74,9 @@ export default function FarmViewerContent() {
               </CardHeader>
               <CardContent className="flex flex-col md:flex-row items-start gap-6">
                 {isLoading || !profile ? (
-                  <Skeleton className="w-full aspect-square max-w-md" />
+                  <Skeleton className="w-full aspect-square max-w-lg" />
                 ) : (
-                  <div className="grid grid-cols-10 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30">
+                  <div className="grid grid-cols-10 gap-1 w-full aspect-square max-w-lg border-2 border-dashed rounded-lg p-2 bg-muted/30">
                     {profile.farmGrid.flat().map((value, index) => (
                         <div key={index} className={cn(`aspect-square w-full h-full rounded-sm`, getColorForValue(value))} title={`Value: ${value}`} />
                     ))}
@@ -95,45 +95,10 @@ export default function FarmViewerContent() {
                 </div>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2">
-                <Package className="h-6 w-6 text-muted-foreground" />
-                <CardTitle>{t.currentCropStock}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="space-y-2 pt-2">
-                    <Skeleton className="h-8 w-full" />
-                    <Skeleton className="h-8 w-full" />
-                    <Skeleton className="h-8 w-full" />
-                  </div>
-                ) : profile && profile.cropStock.length > 0 ? (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>{t.crop}</TableHead>
-                        <TableHead className="text-right">{t.quantity}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {profile.cropStock.map((item) => (
-                        <TableRow key={item.name}>
-                          <TableCell className="font-medium">{item.name}</TableCell>
-                          <TableCell className="text-right">{item.quantity.toLocaleString()} {item.unit}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                ) : (
-                  <p className="text-sm text-muted-foreground pt-2">{t.noStockData}</p>
-                )}
-              </CardContent>
-            </Card>
           </div>
           
-          {/* Right Column */}
-          <div className="space-y-6">
+          {/* Right Column (Info Cards) */}
+          <div className="lg:col-span-1 space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>{t.farmOverview}</CardTitle>
@@ -183,6 +148,41 @@ export default function FarmViewerContent() {
             </Card>
             
              <Card>
+              <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2">
+                <Package className="h-6 w-6 text-muted-foreground" />
+                <CardTitle>{t.currentCropStock}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <div className="space-y-2 pt-2">
+                    <Skeleton className="h-8 w-full" />
+                    <Skeleton className="h-8 w-full" />
+                    <Skeleton className="h-8 w-full" />
+                  </div>
+                ) : profile && profile.cropStock.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t.crop}</TableHead>
+                        <TableHead className="text-right">{t.quantity}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {profile.cropStock.map((item) => (
+                        <TableRow key={item.name}>
+                          <TableCell className="font-medium">{item.name}</TableCell>
+                          <TableCell className="text-right">{item.quantity.toLocaleString()} {item.unit}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <p className="text-sm text-muted-foreground pt-2">{t.noStockData}</p>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
               <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2">
                 <Beaker className="h-6 w-6 text-muted-foreground" />
                 <CardTitle>{t.farmInputs}</CardTitle>
