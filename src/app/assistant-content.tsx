@@ -21,24 +21,24 @@ import Link from 'next/link';
 
 interface Message {
   id: string;
-  text: string;
   sender: 'user' | 'assistant';
+  // For user messages, text is the direct input.
+  // For assistant messages, this will be dynamically set based on language.
+  text: string; 
   malayalamText?: string;
   englishText?: string;
-  currentLang?: 'ml' | 'en';
 }
 
 function AssistantChat() {
-  const { language } = useLanguage();
+  const { language, toggleLanguage } = useLanguage();
   const t = translations[language];
 
   const getInitialMessage = (): Message => ({
     id: 'init',
-    text: language === 'ml' ? translations.ml.assistantWelcome : translations.en.assistantWelcome,
+    text: '', // Text will be derived during render
     sender: 'assistant',
     malayalamText: translations.ml.assistantWelcome,
     englishText: translations.en.assistantWelcome,
-    currentLang: language,
   });
 
   const [messages, setMessages] = useState<Message[]>([getInitialMessage()]);
@@ -52,18 +52,7 @@ function AssistantChat() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
-
-  // Update welcome message text when language changes
-  useEffect(() => {
-    setMessages(prev => {
-        if (prev.length > 0 && prev[0].id === 'init') {
-            return [getInitialMessage(), ...prev.slice(1)];
-        }
-        return [getInitialMessage()];
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language]);
+  }, [messages, language]);
 
 
   const handleSend = async () => {
@@ -82,11 +71,10 @@ function AssistantChat() {
       const result = await assistantFlow({ query: input });
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: language === 'ml' ? result.malayalamResponse : result.englishResponse,
+        text: '', // Text will be derived during render
         sender: 'assistant',
         malayalamText: result.malayalamResponse,
         englishText: result.englishResponse,
-        currentLang: language,
       };
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
@@ -108,19 +96,12 @@ function AssistantChat() {
     }
   };
   
-  const handleTranslate = (messageId: string) => {
-    setMessages(messages.map(msg => {
-      if (msg.id === messageId && msg.sender === 'assistant') {
-        const newLang = msg.currentLang === 'ml' ? 'en' : 'ml';
-        return {
-          ...msg,
-          currentLang: newLang,
-          text: newLang === 'ml' ? msg.malayalamText! : msg.englishText!,
-        };
-      }
-      return msg;
-    }));
-  };
+  const getMessageText = (message: Message) => {
+    if (message.sender === 'user' || (!message.englishText && !message.malayalamText)) {
+      return message.text;
+    }
+    return language === 'ml' ? message.malayalamText : message.englishText;
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -146,13 +127,13 @@ function AssistantChat() {
                   : 'bg-muted'
               }`}
             >
-              <p className="text-sm">{message.text}</p>
+              <p className="text-sm">{getMessageText(message)}</p>
                {message.sender === 'assistant' && message.englishText && message.malayalamText && (
                 <Button 
                   variant="ghost" 
                   size="icon" 
                   className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={() => handleTranslate(message.id)}
+                  onClick={toggleLanguage} // Use the global toggle function
                   title={t.translate}
                   >
                   <Languages className="h-4 w-4" />
@@ -226,5 +207,3 @@ export default function AssistantContent() {
     </AppShell>
   );
 }
-
-    
