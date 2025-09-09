@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { Bar, BarChart as RechartsBarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { useToast } from '@/components/ui/use-toast';
-import { getProfile, saveProfile, FarmProfile } from '@/services/profile';
+import { getProfile, saveProfile, FarmProfile, PlotType } from '@/services/profile';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,7 +17,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import AppShell from '@/components/app-shell';
-import { BarChart, Lightbulb, Tractor } from 'lucide-react';
+import { BarChart, Lightbulb } from 'lucide-react';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { cn } from '@/lib/utils';
@@ -30,18 +30,8 @@ const chartData = [
   { name: 'Other', value: 10 },
 ];
 
-const plotTypes = [
-    { value: 100, color: 'bg-red-600/80', label: { en: 'Paddy (High-Yield)', ml: 'നെല്ല് (ഉയർന്ന വിളവ്)' } },
-    { value: 90, color: 'bg-orange-500/80', label: { en: 'Paddy (Mid-Yield)', ml: 'നെല്ല് (ഇടത്തരം വിളവ്)' } },
-    { value: 80, color: 'bg-yellow-400/80', label: { en: 'Lentils', ml: 'പയർവർഗ്ഗങ്ങൾ' } },
-    { value: 60, color: 'bg-yellow-300/80', label: { en: 'Bananas', ml: 'വാഴ' } },
-    { value: 40, color: 'bg-green-500/80', label: { en: 'Okra', ml: 'വെണ്ട' } },
-    { value: 20, color: 'bg-green-600/80', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
-    { value: 10, color: 'bg-blue-800/80', label: { en: 'Fallow Land', ml: 'തരിശുഭൂമി' } },
-];
-
-const getColorForValue = (value: number) => {
-    return plotTypes.find(p => p.value === value)?.color || 'bg-gray-200';
+const getColorForValue = (value: number, plotTypes: PlotType[]) => {
+    return plotTypes.find(p => p.value === value)?.color || 'from-gray-200 to-gray-400';
 }
 
 function FarmProfileForm() {
@@ -52,8 +42,7 @@ function FarmProfileForm() {
     const [isLoading, setIsLoading] = React.useState(true);
     const [isSaving, setIsSaving] = React.useState(false);
 
-    // State for the farm layout editor
-    const [selectedPlot, setSelectedPlot] = useState<number>(plotTypes[0].value);
+    const [selectedPlot, setSelectedPlot] = useState<number | null>(null);
     const [isPainting, setIsPainting] = useState(false);
 
     const paddyPercentage = useMemo(() => {
@@ -71,6 +60,9 @@ function FarmProfileForm() {
             try {
                 const data = await getProfile();
                 setProfile(data);
+                if (data.plotTypes && data.plotTypes.length > 0) {
+                    setSelectedPlot(data.plotTypes[0].value);
+                }
             } catch (error) {
                 toast({
                     variant: 'destructive',
@@ -90,8 +82,19 @@ function FarmProfileForm() {
         setProfile({ ...profile, [id]: value });
     };
 
-    const handleGridCellChange = (rowIndex: number, colIndex: number) => {
+    const handlePaletteLabelChange = (value: number, newLabel: string) => {
         if (!profile) return;
+        const newPlotTypes = profile.plotTypes.map(pt => {
+            if (pt.value === value) {
+                return { ...pt, label: { ...pt.label, [language]: newLabel }};
+            }
+            return pt;
+        });
+        setProfile({ ...profile, plotTypes: newPlotTypes });
+    };
+
+    const handleGridCellChange = (rowIndex: number, colIndex: number) => {
+        if (!profile || selectedPlot === null) return;
         const newGrid = profile.farmGrid.map((row, rIdx) => 
             row.map((cell, cIdx) => {
                 if (rIdx === rowIndex && cIdx === colIndex) {
@@ -231,22 +234,25 @@ function FarmProfileForm() {
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col md:flex-row gap-6">
-                        <div className="space-y-2 md:w-48">
-                            <Label>Crop Palette</Label>
+                        <div className="space-y-2 md:w-56">
+                            <Label>Crop Palette (Editable)</Label>
                             <div className="space-y-2">
-                                {plotTypes.map(plot => (
-                                    <button 
-                                        type="button"
+                                {profile.plotTypes.map(plot => (
+                                    <div 
                                         key={plot.value}
                                         onClick={() => setSelectedPlot(plot.value)}
                                         className={cn(
-                                            'w-full flex items-center gap-2 p-2 rounded-md border text-left',
+                                            'w-full flex items-center gap-2 p-2 rounded-md border cursor-pointer',
                                             selectedPlot === plot.value ? 'ring-2 ring-primary' : 'hover:bg-muted/50'
                                         )}
                                     >
-                                        <div className={cn('w-4 h-4 rounded-sm', plot.color)} />
-                                        <span className="text-sm">{plot.label[language]}</span>
-                                    </button>
+                                        <div className={cn('w-4 h-4 rounded-sm flex-shrink-0 bg-gradient-to-br', plot.color)} />
+                                        <Input 
+                                            value={plot.label[language]}
+                                            onChange={(e) => handlePaletteLabelChange(plot.value, e.target.value)}
+                                            className="h-7 text-sm border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-ring"
+                                        />
+                                    </div>
                                 ))}
                             </div>
                         </div>
@@ -260,7 +266,7 @@ function FarmProfileForm() {
                                     row.map((cellValue, colIndex) => (
                                         <div 
                                             key={`${rowIndex}-${colIndex}`}
-                                            className={cn('aspect-square w-full h-full rounded-sm', getColorForValue(cellValue))}
+                                            className={cn('aspect-square w-full h-full rounded-sm bg-gradient-to-br', getColorForValue(cellValue, profile.plotTypes))}
                                             onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                                             onMouseOver={() => handleMouseOver(rowIndex, colIndex)}
                                         />

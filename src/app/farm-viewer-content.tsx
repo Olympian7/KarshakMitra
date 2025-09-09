@@ -5,23 +5,15 @@ import AppShell from '@/components/app-shell';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
-import { getProfile, FarmProfile } from '@/services/profile';
+import { getProfile, FarmProfile, PlotType } from '@/services/profile';
 import { Skeleton } from '@/components/ui/skeleton';
 import { MapPin, Droplets, Sprout, Tractor } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
 
-const legendItems = [
-    { value: 100, color: 'bg-red-600/80', label: { en: 'Paddy (High-Yield)', ml: 'നെല്ല് (ഉയർന്ന വിളവ്)' } },
-    { value: 90, color: 'bg-orange-500/80', label: { en: 'Paddy (Mid-Yield)', ml: 'നെല്ല് (ഇടത്തരം വിളവ്)' } },
-    { value: 80, color: 'bg-yellow-400/80', label: { en: 'Lentils', ml: 'പയർവർഗ്ഗങ്ങൾ' } },
-    { value: 60, color: 'bg-yellow-300/80', label: { en: 'Bananas', ml: 'വാഴ' } },
-    { value: 40, color: 'bg-green-500/80', label: { en: 'Okra', ml: 'വെണ്ട' } },
-    { value: 20, color: 'bg-green-600/80', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
-    { value: 10, color: 'bg-blue-800/80', label: { en: 'Fallow Land', ml: 'തരിശുഭൂമി' } },
-];
 
-const getColorForValue = (value: number) => {
-    return legendItems.find(item => item.value === value)?.color || 'bg-gray-200/80';
+const getColorForValue = (value: number, plotTypes: PlotType[]) => {
+    return plotTypes.find(item => item.value === value)?.color || 'from-gray-200 to-gray-400';
 };
 
 
@@ -67,16 +59,16 @@ export default function FarmViewerContent() {
                 ) : (
                   <div className="grid grid-cols-10 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30">
                     {profile.farmGrid.flat().map((value, index) => (
-                        <div key={index} className={`aspect-square w-full h-full rounded-sm ${getColorForValue(value)}`} title={`Value: ${value}`} />
+                        <div key={index} className={cn(`aspect-square w-full h-full rounded-sm bg-gradient-to-br`, getColorForValue(value, profile.plotTypes))} title={`Value: ${value}`} />
                     ))}
                   </div>
                 )}
                 <div className="w-full md:w-48">
                     <h3 className="font-semibold mb-2">Legend</h3>
                     <div className="space-y-2">
-                        {legendItems.map(item => (
+                        {profile?.plotTypes.map(item => (
                             <div key={item.value} className="flex items-center gap-2">
-                                <div className={`w-4 h-4 rounded-sm ${item.color}`} />
+                                <div className={cn(`w-4 h-4 rounded-sm bg-gradient-to-br`, item.color)} />
                                 <span className="text-sm">{item.label[language]}</span>
                             </div>
                         ))}
