@@ -64,8 +64,8 @@ const responses = [
   // Safety
   {
     keywords: ['safety', 'chemical', 'pesticide', 'സുരക്ഷ', 'കീടനാശിനി', 'വിഷം'],
-    malayalamResponse: "രാസവസ്തുക്കളോ കീടനാശിനികളോ കൈകാര്യം ചെയ്യുമ്പോൾ, കയ്യുറകൾ, മാസ്കുകൾ, ഗ്ലാസുകൾ തുടങ്ങിയ സംരക്ഷണ ഉപകരണങ്ങൾ എപ്പോഴും ധരിക്കുക. ശരിയായ വായുസഞ്ചാരം ഉറപ്പാക്കുകയും നിർമ്മാതാവിൻ്റെ നിർദ്ദേശങ്ങൾ ശ്രദ്ധാപൂർവ്വം പാലിക്കുകയും ചെയ്യുക. കുട്ടികളിൽ നിന്നും ഭക്ഷണത്തിൽ നിന്നും അവയെ അകറ്റി നിർത്തുക. ഉപയോഗശേഷം, നിങ്ങളുടെ കൈകളും ചർമ്മത്തിന്റെ മറ്റു ഭാഗങ്ങളും നന്നായി കഴുകുക.",
-    englishResponse: "When handling any chemicals or pesticides, always wear protective gear like gloves, masks, and goggles. Ensure proper ventilation and follow the manufacturer's instructions carefully. Keep them away from children and food sources. After use, wash your hands and any exposed skin thoroughly.",
+    malayalamResponse: "സുരക്ഷയ്ക്കായി: എപ്പോഴും കയ്യുറകൾ, മാസ്കുകൾ, ഗ്ലാസുകൾ എന്നിവ ധരിക്കുക. നിർമ്മാതാവിൻ്റെ നിർദ്ദേശങ്ങൾ പാലിക്കുക. ഫലപ്രദമായ ഉപയോഗത്തിന്: ശരിയായ അളവിൽ ലയിപ്പിക്കുക. കാറ്റോ മഴയോ ഉള്ളപ്പോൾ തളിക്കുന്നത് ഒഴിവാക്കുക. രാവിലെയും വൈകുന്നേരവുമാണ് തളിക്കാൻ ഏറ്റവും അനുയോജ്യമായ സമയം, ഇത് ചെടികളിൽ മരുന്ന് കൂടുതൽ നേരം നിൽക്കാൻ സഹായിക്കും.",
+    englishResponse: "For safety: Always wear protective gear like gloves, masks, and goggles. Follow the manufacturer's instructions. For effective use: Mix the correct dosage. Avoid spraying in windy or rainy conditions. The best time to spray is early morning or late evening to ensure the product stays on the plants longer and is more effective.",
   },
   // Growth Stage
   {
