@@ -29,17 +29,17 @@ type DiagnosisResult = {
 const mockDiagnosis: DiagnosisResult = {
   identification: {
     isPlant: true,
-    commonName: 'Basil Leaf',
-    latinName: 'Ocimum basilicum',
+    commonName: 'Pear Leaf',
+    latinName: 'Pyrus communis',
   },
   diagnosis: {
     isHealthy: false,
-    diagnosis: `The leaves are showing brown, scorched-looking patches with some yellowing. This pattern is consistent with several issues, most likely Leaf Scorch, Fungal Diseases (like Anthracnose), or Bacterial Diseases.`,
-    recommendation: `For a definitive diagnosis, more information is needed (plant type, recent weather). However, you can take these immediate steps:
-1.  **Check Environmental Stress:** Ensure the plant is not under-watered, especially during high heat or wind.
-2.  **Inspect for Pests:** Look closely for any signs of insects.
-3.  **Improve Airflow:** Prune dense areas to improve air circulation and reduce humidity, which can discourage fungal growth.
-It is highly recommended to consult a local arborist for an accurate diagnosis.`,
+    diagnosis: "The leaf exhibits bright orange-yellow spots on its upper surface, a classic symptom of European Pear Rust. This is a fungal disease caused by the fungus Gymnosporangium sabinae, which requires a juniper host to complete its lifecycle.",
+    recommendation: `To manage this issue, consider the following steps:
+1.  **Remove Juniper Hosts:** If possible, locate and remove any nearby juniper trees or shrubs, as they are a primary host for the fungus.
+2.  **Prune Infected Areas:** Carefully prune and destroy any infected leaves and branches on the pear tree to reduce the source of spores.
+3.  **Fungicide Application:** Apply a fungicide specifically rated for rust diseases on fruit trees. Start applications in early spring and follow the product's instructions for timing and frequency.
+Consult with a local agricultural extension service for the most effective fungicides in your region.`,
   },
 };
 
