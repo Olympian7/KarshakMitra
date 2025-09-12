@@ -8,15 +8,17 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
-import { MessageCircle, User, Send, Languages, Loader2 } from 'lucide-react';
+import { MessageCircle, User, Send, Languages, Loader2, ExternalLink } from 'lucide-react';
 import { assistantFlow, AssistantOutput } from '@/ai/flows/assistant-flow';
 import { useToast } from '@/components/ui/use-toast';
+import Link from 'next/link';
 
 interface Message {
   id: string;
   sender: 'user' | 'assistant';
   englishText: string;
   malayalamText: string;
+  link?: string;
 }
 
 function AdvancedAssistantChat() {
@@ -57,6 +59,7 @@ function AdvancedAssistantChat() {
         sender: 'assistant',
         englishText: result.englishResponse,
         malayalamText: result.malayalamResponse,
+        link: result.link,
       };
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
@@ -123,10 +126,19 @@ function AdvancedAssistantChat() {
                         )}
                     </div>
                     {message.sender === 'assistant' && (
-                        <Button variant="ghost" size="sm" onClick={() => toggleTranslation(message.id)} className="flex items-center gap-1 text-xs h-auto py-1 px-2 -mt-1 ml-12 text-muted-foreground">
-                           <Languages className="h-3 w-3" />
-                           {language === 'en' ? (isTranslated ? 'Show in English' : 'Malayalam') : (isTranslated ? 'Show in Malayalam' : 'English')}
-                        </Button>
+                        <div className="flex items-center gap-2 -mt-1 ml-12">
+                            <Button variant="ghost" size="sm" onClick={() => toggleTranslation(message.id)} className="flex items-center gap-1 text-xs h-auto py-1 px-2 text-muted-foreground">
+                               <Languages className="h-3 w-3" />
+                               {language === 'en' ? (isTranslated ? 'Show in English' : 'Malayalam') : (isTranslated ? 'Show in Malayalam' : 'English')}
+                            </Button>
+                            {message.link && (
+                                <Button asChild variant="outline" size="sm" className="flex items-center gap-1 text-xs h-auto py-1 px-2 text-muted-foreground">
+                                    <Link href={message.link} target="_blank" rel="noopener noreferrer">
+                                        {t.learnMore} <ExternalLink className="h-3 w-3" />
+                                    </Link>
+                                </Button>
+                            )}
+                        </div>
                     )}
                 </div>
             )

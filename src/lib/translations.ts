@@ -34,6 +34,7 @@ export const translations = {
       askYourAssistant: 'Ask your assistant...',
       assistantError: "Sorry, I'm having trouble connecting. Please try again later.",
       translate: 'Translate',
+      learnMore: 'Learn More',
   
       // Market Page
       latestCropPrices: 'Latest Crop Prices',
@@ -186,6 +187,7 @@ export const translations = {
       askYourAssistant: 'നിങ്ങളുടെ സഹായിയോട് ചോദിക്കൂ...',
       assistantError: 'ക്ഷമിക്കണം, എനിക്ക് കണക്റ്റുചെയ്യുന്നതിൽ പ്രശ്‌നമുണ്ട്. ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.',
       translate: 'വിവർത്തനം ചെയ്യുക',
+      learnMore: 'കൂടുതലറിയുക',
   
       // Market Page
       latestCropPrices: 'ഏറ്റവും പുതിയ വിള വിലകൾ',

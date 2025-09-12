@@ -26,6 +26,7 @@ const AssistantOutputSchema = z.object({
   englishResponse: z
     .string()
     .describe('The response to the user in the English language.'),
+  link: z.optional(z.string().url().describe('A relevant URL for more information, if applicable.')),
 });
 export type AssistantOutput = z.infer<typeof AssistantOutputSchema>;
 
@@ -43,6 +44,7 @@ const assistantPrompt = ai.definePrompt({
   
   - Analyze the user's query: {{{query}}}
   - If the query is about weather, market prices, or government schemes, you MUST use the provided tools to get the most up-to-date information before answering.
+  - When providing information about a specific scheme, market, or official source, ALWAYS include a relevant URL in the 'link' output field if one is available from the tool output.
   - If the query is a general greeting or question, provide a warm and helpful response.
   - If you cannot answer the question, politely say so in both languages.
   - Keep your answers brief and to the point.
