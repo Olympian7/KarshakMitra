@@ -112,9 +112,9 @@ function OfflineAssistantChat() {
         <div className="flex flex-col h-full">
             <div className="p-4 border-b">
                  <Button asChild className="w-full">
-                    <Link href="https://console.gemini.google.com/" target="_blank" rel="noopener noreferrer">
+                    <a href="https://console.gemini.google.com/" target="_blank" rel="noopener noreferrer">
                         <Sparkles className="mr-2 h-4 w-4" /> Try the Advanced AI Assistant
-                    </Link>
+                    </a>
                 </Button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
