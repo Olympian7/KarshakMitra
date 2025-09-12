@@ -6,9 +6,9 @@ import AppShell from '@/components/app-shell';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
-import { getProfile, FarmProfile, PlotType } from '@/services/profile';
+import { getProfile, saveProfile, FarmProfile, PlotType, CropStock } from '@/services/profile';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MapPin, Droplets, Sprout, Tractor, Package, Beaker } from 'lucide-react';
+import { MapPin, Droplets, Sprout, Tractor, Package, Beaker, Pencil } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import {
@@ -19,7 +19,19 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const plotTypes: PlotType[] = [
     { value: 0, color: 'bg-gradient-to-br from-gray-50 to-gray-200', label: { en: 'Empty', ml: 'ഒഴിഞ്ഞ' } },
@@ -35,6 +47,92 @@ const getColorForValue = (value: number) => {
 };
 
 
+function EditStockDialog({ profile, onSave }: { profile: FarmProfile, onSave: (updatedProfile: FarmProfile) => void }) {
+  const { language } = useLanguage();
+  const t = translations[language];
+  const { toast } = useToast();
+  const [localStock, setLocalStock] = useState<CropStock[]>(JSON.parse(JSON.stringify(profile.cropStock)));
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleQuantityChange = (cropName: string, newQuantity: string) => {
+    const quantity = parseInt(newQuantity, 10);
+    if (isNaN(quantity) && newQuantity !== '') return; // Prevent non-numeric input
+
+    setLocalStock(currentStock =>
+      currentStock.map(item =>
+        item.name === cropName ? { ...item, quantity: isNaN(quantity) ? 0 : quantity } : item
+      )
+    );
+  };
+
+  const handleSaveChanges = async () => {
+    setIsSaving(true);
+    try {
+        const updatedProfile = { ...profile, cropStock: localStock };
+        await saveProfile(updatedProfile);
+        onSave(updatedProfile); // Update parent state
+        toast({
+            title: t.profileSavedTitle,
+            description: "Your crop stock has been updated.",
+        });
+    } catch (error) {
+        toast({
+            variant: 'destructive',
+            title: t.profileSaveFailedTitle,
+            description: 'Could not save your crop stock changes.',
+        });
+    } finally {
+        setIsSaving(false);
+    }
+  };
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="icon" className="h-8 w-8">
+            <Pencil className="h-4 w-4" />
+            <span className="sr-only">Edit Stock</span>
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit Crop Stock</DialogTitle>
+          <DialogDescription>
+            Update the quantities for your available crop stock here. Click save when you're done.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          {localStock.map(item => (
+            <div key={item.name} className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor={`quantity-${item.name}`} className="text-right">
+                {item.name}
+              </Label>
+              <Input
+                id={`quantity-${item.name}`}
+                type="number"
+                value={item.quantity}
+                onChange={(e) => handleQuantityChange(item.name, e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+          ))}
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+             <Button type="button" variant="secondary">Cancel</Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button onClick={handleSaveChanges} disabled={isSaving}>
+              {isSaving ? 'Saving...' : 'Save changes'}
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+
 export default function FarmViewerContent() {
   const { language } = useLanguage();
   const t = translations[language];
@@ -42,24 +140,30 @@ export default function FarmViewerContent() {
   const [profile, setProfile] = useState<FarmProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const fetchProfile = async () => {
+    setIsLoading(true);
+    try {
+      const data = await getProfile();
+      setProfile(data);
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to load farm profile for the digital twin.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
   useEffect(() => {
-    const fetchProfile = async () => {
-      setIsLoading(true);
-      try {
-        const data = await getProfile();
-        setProfile(data);
-      } catch (error) {
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Failed to load farm profile for the digital twin.',
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchProfile();
   }, [toast]);
+
+  const handleStockSave = (updatedProfile: FarmProfile) => {
+    setProfile(updatedProfile);
+  };
+
 
   return (
     <AppShell title={t.farmViewer} activePage="farm-viewer">
@@ -183,9 +287,12 @@ export default function FarmViewerContent() {
             </Card>
             
              <Card>
-              <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2">
-                <Package className="h-6 w-6 text-muted-foreground" />
-                <CardTitle>{t.currentCropStock}</CardTitle>
+              <CardHeader className="flex flex-row items-center justify-between gap-4 space-y-0 pb-2">
+                <div className="flex items-center gap-4">
+                    <Package className="h-6 w-6 text-muted-foreground" />
+                    <CardTitle>{t.currentCropStock}</CardTitle>
+                </div>
+                {!isLoading && profile && <EditStockDialog profile={profile} onSave={handleStockSave} />}
               </CardHeader>
               <CardContent>
                 {isLoading ? (
