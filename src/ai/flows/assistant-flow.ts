@@ -53,12 +53,24 @@ const assistantPrompt = ai.definePrompt({
   `,
 });
 
+const assistantFlowInternal = ai.defineFlow(
+  {
+    name: 'assistantFlow',
+    inputSchema: AssistantInputSchema,
+    outputSchema: AssistantOutputSchema,
+  },
+  async (input) => {
+    const { output } = await assistantPrompt(input);
+    if (!output) {
+      throw new Error('The AI model did not return a valid output.');
+    }
+    return output;
+  }
+);
+
+
 export async function assistantFlow(
   input: AssistantInput
 ): Promise<AssistantOutput> {
-  const { output } = await assistantPrompt(input);
-  if (!output) {
-    throw new Error('The AI model did not return a valid output.');
-  }
-  return output;
+  return assistantFlowInternal(input);
 }
