@@ -42,7 +42,7 @@ const assistantPrompt = ai.definePrompt({
   IMPORTANT: You MUST provide a response in BOTH English and Malayalam.
   
   - Analyze the user's query: {{{query}}}
-  - If the query is about weather, market prices, or government schemes, use the provided tools to get the most up-to-date information.
+  - If the query is about weather, market prices, or government schemes, you MUST use the provided tools to get the most up-to-date information before answering.
   - If the query is a general greeting or question, provide a warm and helpful response.
   - If you cannot answer the question, politely say so in both languages.
   - Keep your answers brief and to the point.
@@ -61,10 +61,16 @@ const assistantFlowInternal = ai.defineFlow(
     outputSchema: AssistantOutputSchema,
   },
   async (input) => {
-    const { output } = await assistantPrompt(input);
+    const llmResponse = await assistantPrompt(input);
+    const output = llmResponse.output;
+
     if (!output) {
+      // This case handles if the model truly returns nothing.
       throw new Error('The AI model did not return a valid output.');
     }
+    
+    // The model's structured output is directly available in the 'output' field.
+    // We return this object, which matches the AssistantOutputSchema.
     return output;
   }
 );
