@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -29,7 +30,8 @@ export default function DashboardContent({ weather, marketTrends, govSchemes, re
   const [activityDate, setActivityDate] = useState('');
 
   useEffect(() => {
-    if (recentActivities.length > 0) {
+    if (recentActivities.length > 0 && recentActivities[0].date) {
+      // Format the date on the client side to avoid hydration mismatch
       setActivityDate(new Date(recentActivities[0].date).toLocaleDateString());
     }
   }, [recentActivities]);
