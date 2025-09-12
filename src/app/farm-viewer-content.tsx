@@ -8,7 +8,7 @@ import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { getProfile, saveProfile, FarmProfile, PlotType, CropStock } from '@/services/profile';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MapPin, Droplets, Sprout, Tractor, Package, Beaker, Pencil } from 'lucide-react';
+import { MapPin, Droplets, Sprout, Tractor, Package, Beaker, Pencil, Trash2, PlusCircle } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import {
@@ -52,6 +52,7 @@ function EditStockDialog({ profile, onSave }: { profile: FarmProfile, onSave: (u
   const t = translations[language];
   const { toast } = useToast();
   const [localStock, setLocalStock] = useState<CropStock[]>(JSON.parse(JSON.stringify(profile.cropStock)));
+  const [newCropName, setNewCropName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
   const handleQuantityChange = (cropName: string, newQuantity: string) => {
@@ -64,6 +65,31 @@ function EditStockDialog({ profile, onSave }: { profile: FarmProfile, onSave: (u
       )
     );
   };
+
+  const handleAddCrop = () => {
+    if (newCropName.trim() === '') {
+        toast({ variant: 'destructive', title: 'Crop name cannot be empty.'});
+        return;
+    }
+    if (localStock.some(item => item.name.toLowerCase() === newCropName.trim().toLowerCase())) {
+        toast({ variant: 'destructive', title: 'This crop already exists in your stock.'});
+        return;
+    }
+    
+    const newCrop: CropStock = {
+        name: newCropName.trim(),
+        quantity: 0,
+        unit: 'kg',
+    };
+
+    setLocalStock(current => [...current, newCrop]);
+    setNewCropName(''); // Reset input
+  };
+  
+  const handleRemoveCrop = (cropName: string) => {
+    setLocalStock(current => current.filter(item => item.name !== cropName));
+  };
+
 
   const handleSaveChanges = async () => {
     setIsSaving(true);
@@ -98,13 +124,13 @@ function EditStockDialog({ profile, onSave }: { profile: FarmProfile, onSave: (u
         <DialogHeader>
           <DialogTitle>Edit Crop Stock</DialogTitle>
           <DialogDescription>
-            Update the quantities for your available crop stock here. Click save when you're done.
+            Add, remove, or update the quantities for your available crop stock.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
           {localStock.map(item => (
-            <div key={item.name} className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor={`quantity-${item.name}`} className="text-right">
+            <div key={item.name} className="flex items-center gap-2">
+              <Label htmlFor={`quantity-${item.name}`} className="flex-1 text-right">
                 {item.name}
               </Label>
               <Input
@@ -112,10 +138,27 @@ function EditStockDialog({ profile, onSave }: { profile: FarmProfile, onSave: (u
                 type="number"
                 value={item.quantity}
                 onChange={(e) => handleQuantityChange(item.name, e.target.value)}
-                className="col-span-3"
+                className="w-24"
               />
+              <Button variant="ghost" size="icon" onClick={() => handleRemoveCrop(item.name)} className="text-destructive hover:text-destructive">
+                  <Trash2 className="h-4 w-4" />
+              </Button>
             </div>
           ))}
+           <div className="pt-4 border-t">
+                <Label>Add New Crop</Label>
+                <div className="flex items-center gap-2 mt-2">
+                    <Input
+                        placeholder="e.g., Tomato"
+                        value={newCropName}
+                        onChange={(e) => setNewCropName(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleAddCrop()}
+                    />
+                    <Button onClick={handleAddCrop} size="icon">
+                        <PlusCircle className="h-4 w-4" />
+                    </Button>
+                </div>
+            </div>
         </div>
         <DialogFooter>
           <DialogClose asChild>
