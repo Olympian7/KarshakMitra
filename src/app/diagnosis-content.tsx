@@ -12,58 +12,65 @@ import { translations } from '@/lib/translations';
 import { Upload, Stethoscope, Leaf, Sparkles, AlertTriangle } from 'lucide-react';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
+import { diagnosePlant, DiagnosePlantOutput } from '@/ai/flows/diagnose-plant-flow';
+import { useToast } from '@/components/ui/use-toast';
 
-type DiagnosisResult = {
-  identification: {
-    isPlant: boolean;
-    commonName: string;
-    latinName: string;
-  };
-  diagnosis: {
-    isHealthy: boolean;
-    diagnosis: string; // key for translation
-    recommendation: string; // key for translation
-  };
-};
 
-const mockDiagnosis: DiagnosisResult = {
-  identification: {
-    isPlant: true,
-    commonName: 'Pear Leaf',
-    latinName: 'Pyrus communis',
-  },
-  diagnosis: {
-    isHealthy: false,
-    diagnosis: "diagnosisPearRust",
-    recommendation: "recommendationPearRust",
-  },
-};
+// Utility to convert file to data URI
+const toDataUri = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 
 
 function DiagnosisPageComponent() {
   const { language } = useLanguage();
   const t = translations[language];
+  const { toast } = useToast();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [description, setDescription] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<DiagnosisResult | null>(null);
+  const [result, setResult] = useState<DiagnosePlantOutput | null>(null);
   
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
+      setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
       setResult(null); // Clear previous result
     }
   };
 
   const handleDiagnose = async () => {
-    if (!imagePreview) return;
+    if (!imageFile || !description) {
+         toast({
+            variant: 'destructive',
+            title: 'Missing Information',
+            description: 'Please upload a photo and provide a description of the symptoms.',
+        });
+        return;
+    }
     setIsLoading(true);
     setResult(null);
-    // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setResult(mockDiagnosis);
-    setIsLoading(false);
+    
+    try {
+        const photoDataUri = await toDataUri(imageFile);
+        const diagnosisResult = await diagnosePlant({ photoDataUri, description });
+        setResult(diagnosisResult);
+    } catch (error) {
+        console.error('Error diagnosing plant:', error);
+        toast({
+            variant: 'destructive',
+            title: 'Diagnosis Failed',
+            description: 'The AI model could not complete the diagnosis. Please try again.',
+        });
+    } finally {
+        setIsLoading(false);
+    }
   };
 
   return (
@@ -135,12 +142,18 @@ function DiagnosisPageComponent() {
                         <Leaf className="mr-2 h-5 w-5 text-primary" />
                         {t.plantIdentification}
                     </h3>
-                    <p className="text-muted-foreground">
-                        <span className="font-medium text-foreground">{t.commonName}:</span> {result.identification.commonName}
-                    </p>
-                    <p className="text-muted-foreground">
-                        <span className="font-medium text-foreground">{t.latinName}:</span> <em className="italic">{result.identification.latinName}</em>
-                    </p>
+                     {!result.identification.isPlant ? (
+                        <p className="text-muted-foreground">{t.notAPlant}</p>
+                    ) : (
+                        <>
+                        <p className="text-muted-foreground">
+                            <span className="font-medium text-foreground">{t.commonName}:</span> {result.identification.commonName}
+                        </p>
+                        <p className="text-muted-foreground">
+                            <span className="font-medium text-foreground">{t.latinName}:</span> <em className="italic">{result.identification.latinName}</em>
+                        </p>
+                        </>
+                    )}
                 </div>
 
                 <div>
@@ -155,7 +168,7 @@ function DiagnosisPageComponent() {
                         </span>
                     </p>
                     <p className="text-muted-foreground">
-                        <span className="font-medium text-foreground">{t.suspectedIssue}:</span> {t[result.diagnosis.diagnosis as keyof typeof t] || result.diagnosis.diagnosis}
+                        <span className="font-medium text-foreground">{t.suspectedIssue}:</span> {result.diagnosis.diagnosis}
                     </p>
                 </div>
                 
@@ -165,7 +178,7 @@ function DiagnosisPageComponent() {
                         {t.recommendation}
                     </h3>
                     <p className="text-muted-foreground bg-primary/5 p-3 rounded-md border border-primary/20 whitespace-pre-line">
-                        {t[result.diagnosis.recommendation as keyof typeof t] || result.diagnosis.recommendation}
+                        {result.diagnosis.recommendation}
                     </p>
                 </div>
               </div>

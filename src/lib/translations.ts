@@ -129,12 +129,7 @@ export const translations = {
       unhealthy: 'Potential Issue Detected',
       suspectedIssue: 'Suspected Issue',
       recommendation: 'AI Recommendation',
-      diagnosisPearRust: "The leaf exhibits bright orange-yellow spots on its upper surface, a classic symptom of European Pear Rust. This is a fungal disease caused by the fungus Gymnosporangium sabinae, which requires a juniper host to complete its lifecycle.",
-      recommendationPearRust: `To manage this issue, consider the following steps:
-1.  **Remove Juniper Hosts:** If possible, locate and remove any nearby juniper trees or shrubs, as they are a primary host for the fungus.
-2.  **Prune Infected Areas:** Carefully prune and destroy any infected leaves and branches on the pear tree to reduce the source of spores.
-3.  **Fungicide Application:** Apply a fungicide specifically rated for rust diseases on fruit trees. Start applications in early spring and follow the product's instructions for timing and frequency.
-Consult with a local agricultural extension service for the most effective fungicides in your region.`,
+      notAPlant: 'The uploaded image does not appear to be a plant.',
 
       // Farm Viewer
       digitalTwinTitle: 'Your Digital Farm Twin',
@@ -286,13 +281,7 @@ Consult with a local agricultural extension service for the most effective fungi
       unhealthy: 'പ്രശ്നം കണ്ടെത്താനായി',
       suspectedIssue: 'സംശയിക്കുന്ന പ്രശ്നം',
       recommendation: 'AI ശുപാർശ',
-      diagnosisPearRust: "ഇലയുടെ മുകൾ ഭാഗത്ത് തിളക്കമുള്ള ഓറഞ്ച്-മഞ്ഞ പാടുകൾ കാണപ്പെടുന്നു, ഇത് യൂറോപ്യൻ പിയർ റസ്റ്റിന്റെ ഒരു സാധാരണ ലക്ഷണമാണ്. ഇത് ജിംനോസ്പോറാഞ്ചിയം സബിനേ എന്ന ഫംഗസ് മൂലമുണ്ടാകുന്ന ഒരു ഫംഗസ് രോഗമാണ്, ഇതിന്റെ ജീവിതചക്രം പൂർത്തിയാക്കാൻ ഒരു ജൂണിപ്പർ മരം ആവശ്യമാണ്.",
-      recommendationPearRust: `ഈ പ്രശ്നം പരിഹരിക്കാൻ, താഴെ പറയുന്ന കാര്യങ്ങൾ പരിഗണിക്കുക:
-1. **ജൂണിപ്പർ മരങ്ങൾ നീക്കം ചെയ്യുക:** സാധ്യമെങ്കിൽ, അടുത്തുള്ള ജൂണിപ്പർ മരങ്ങൾ കണ്ടെത്തി നീക്കം ചെയ്യുക, കാരണം അവ ഫംഗസിന്റെ പ്രധാന വാസസ്ഥലമാണ്.
-2. **രോഗബാധിതമായ ഭാഗങ്ങൾ മുറിച്ചുമാറ്റുക:** രോഗം ബാധിച്ച ഇലകളും ശാഖകളും ശ്രദ്ധാപൂർവ്വം മുറിച്ചുമാറ്റി നശിപ്പിക്കുക.
-3. **ഫംഗസ്നാശിനി പ്രയോഗം:** പഴവർഗ്ഗ മരങ്ങളിലെ തുരുമ്പ് രോഗങ്ങൾക്കായി പ്രത്യേകം നിർമ്മിച്ച ഫംഗസ്നാശിനി പ്രയോഗിക്കുക. വസന്തകാലത്തിന്റെ തുടക്കത്തിൽ പ്രയോഗം ആരംഭിച്ച് ഉൽപ്പന്നത്തിന്റെ നിർദ്ദേശങ്ങൾ പാലിക്കുക.
-നിങ്ങളുടെ പ്രദേശത്തെ ഏറ്റവും ഫലപ്രദമായ ഫംഗസ്നാശിനികൾക്കായി ഒരു പ്രാദേശിക കാർഷിക വിദഗ്ദ്ധനുമായി ബന്ധപ്പെടുക.`,
-
+      notAPlant: 'അപ്‌ലോഡ് ചെയ്ത ചിത്രം ഒരു ചെടിയുടേതായി തോന്നുന്നില്ല.',
 
       // Farm Viewer
       digitalTwinTitle: 'നിങ്ങളുടെ ഡിജിറ്റൽ ഫാം',
