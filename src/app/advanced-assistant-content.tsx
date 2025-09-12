@@ -6,6 +6,7 @@ import {
   Send,
   User,
   Languages,
+  ArrowLeft,
 } from 'lucide-react';
 import React, { useState, useRef, useEffect } from 'react';
 import AppShell from '@/components/app-shell';
@@ -16,6 +17,7 @@ import { assistantFlow } from '@/ai/flows/assistant-flow';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
+import Link from 'next/link';
 
 type Language = 'en' | 'ml';
 
@@ -228,6 +230,13 @@ export default function AdvancedAssistantContent() {
     // Note: The activePage prop is set to 'assistant' to keep the sidebar consistent
     <AppShell title="Advanced Assistant" activePage="assistant">
       <main className="flex flex-1 flex-col bg-muted/20 h-full">
+        <div className="p-4 border-b bg-background">
+          <Button asChild variant="outline">
+            <Link href="/assistant">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Assistant
+            </Link>
+          </Button>
+        </div>
         <AssistantChat />
       </main>
     </AppShell>
