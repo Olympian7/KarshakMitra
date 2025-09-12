@@ -13,12 +13,10 @@
     "hint": "farm crop"
   },
   "market_banner": {
-    "seed": "888",
     "width": 1000,
     "height": 300,
-    "hint": "indian spice market",
-    "url": "https://images.unsplash.com/photo-1596825362948-1c45a725102b?q=80&w=2070",
-    "alt": "A vibrant Indian market stall with various spices and goods."
+    "url": "https://i.ibb.co/2v2H2Y1/farmers-market.jpg",
+    "alt": "A vibrant Indian vegetable market stall."
   },
   "consultation_banner": {
     "seed": "104",

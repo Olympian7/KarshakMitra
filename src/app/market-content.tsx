@@ -61,7 +61,7 @@ export default function MarketContent() {
         <div className="relative w-full h-48">
           <Image
             src={market_banner.url || `https://picsum.photos/seed/${market_banner.seed}/${market_banner.width}/${market_banner.height}`}
-            alt={market_banner.alt || "A vibrant market scene with spices"}
+            alt={market_banner.alt || "A vibrant market scene"}
             layout="fill"
             objectFit="cover"
             className="opacity-90"
