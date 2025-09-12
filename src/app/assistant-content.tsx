@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -77,7 +78,7 @@ function OfflineAssistantChat() {
     // Update welcome message if language changes
     useEffect(() => {
         setMessages([getInitialMessage()]);
-    }, [language]);
+    }, [language, offlineT.welcome]);
 
 
     const handleSend = () => {
@@ -111,7 +112,7 @@ function OfflineAssistantChat() {
         <div className="flex flex-col h-full">
             <div className="p-4 border-b">
                  <Button asChild className="w-full">
-                    <Link href="/advanced-assistant">
+                    <Link href="https://console.gemini.google.com/" target="_blank" rel="noopener noreferrer">
                         <Sparkles className="mr-2 h-4 w-4" /> Try the Advanced AI Assistant
                     </Link>
                 </Button>
