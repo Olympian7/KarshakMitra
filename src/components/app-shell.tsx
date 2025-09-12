@@ -12,6 +12,7 @@ import {
   BookUser,
   Stethoscope,
   Tractor,
+  Bot,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -22,7 +23,7 @@ import { translations } from '@/lib/translations';
 type AppShellProps = {
   children: React.ReactNode;
   title: string;
-  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer';
+  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer' | 'community-bot';
 };
 
 export default function AppShell({ children, title, activePage }: AppShellProps) {
@@ -34,6 +35,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
     { id: 'assistant', href: '/assistant', icon: MessageCircle, label: t.conversationalAssistant },
     { id: 'diagnosis', href: '/diagnosis', icon: Stethoscope, label: t.diagnosis },
     { id: 'farm-viewer', href: '/farm-viewer', icon: Tractor, label: t.farmViewer },
+    { id: 'community-bot', href: '/community-bot', icon: Bot, label: t.communityBot },
     { id: 'profile', href: '/profile', icon: User, label: t.farmProfile },
     { id: 'tracking', href: '/tracking', icon: ClipboardList, label: t.activityTracking },
     { id: 'schemes', href: '/schemes', icon: Landmark, label: t.governmentSchemes },
