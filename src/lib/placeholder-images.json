@@ -7,10 +7,10 @@
     "hint": "kerala farm backwaters"
   },
   "diagnosis_banner": {
-    "seed": "301",
+    "seed": "303",
     "width": 1000,
     "height": 300,
-    "hint": "farm crop"
+    "hint": "crop disease"
   },
   "market_banner": {
     "seed": "103",
