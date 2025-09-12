@@ -1,9 +1,9 @@
-
 export const translations = {
     en: {
       // App Shell & Navigation
       dashboard: 'Dashboard',
       conversationalAssistant: 'Conversational Assistant',
+      communityBot: 'Community Bot',
       farmProfile: 'Farm Profile',
       activityTracking: 'Activity Tracking',
       governmentSchemes: 'Government Schemes',
@@ -35,9 +35,6 @@ export const translations = {
       assistantError: "Sorry, I'm having trouble connecting. Please try again later.",
       translate: 'Translate',
       learnMore: 'Learn More',
-      liveCommunityBotTitle: 'Live Community Bot',
-      liveCommunityBotDesc: 'Connect with other farmers and get instant answers from a live agent.',
-      openCommunityBot: 'Open Community Bot',
   
       // Market Page
       latestCropPrices: 'Latest Crop Prices',
@@ -160,6 +157,7 @@ export const translations = {
       // App Shell & Navigation
       dashboard: 'ഡാഷ്ബോർഡ്',
       conversationalAssistant: 'സംഭാഷണ സഹായി',
+      communityBot: 'കമ്മ്യൂണിറ്റി ബോട്ട്',
       farmProfile: 'ഫാം പ്രൊഫൈൽ',
       activityTracking: 'പ്രവർത്തന ട്രാക്കിംഗ്',
       governmentSchemes: 'സർക്കാർ പദ്ധതികൾ',
@@ -191,9 +189,6 @@ export const translations = {
       assistantError: 'ക്ഷമിക്കണം, എനിക്ക് കണക്റ്റുചെയ്യുന്നതിൽ പ്രശ്‌നമുണ്ട്. ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.',
       translate: 'വിവർത്തനം ചെയ്യുക',
       learnMore: 'കൂടുതലറിയുക',
-      liveCommunityBotTitle: 'ലൈവ് കമ്മ്യൂണിറ്റി ബോട്ട്',
-      liveCommunityBotDesc: 'മറ്റ് കർഷകരുമായി ബന്ധപ്പെടുകയും ഒരു ലൈവ് ഏജന്റിൽ നിന്ന് തൽക്ഷണ ഉത്തരങ്ങൾ നേടുകയും ചെയ്യുക.',
-      openCommunityBot: 'കമ്മ്യൂണിറ്റി ബോട്ട് തുറക്കുക',
   
       // Market Page
       latestCropPrices: 'ഏറ്റവും പുതിയ വിള വിലകൾ',

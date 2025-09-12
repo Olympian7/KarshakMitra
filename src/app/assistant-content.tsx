@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -8,11 +7,10 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
-import { MessageCircle, User, Send, Languages, Loader2, ExternalLink, Bot } from 'lucide-react';
+import { MessageCircle, User, Send, Languages, Loader2, ExternalLink } from 'lucide-react';
 import { assistantFlow, AssistantOutput } from '@/ai/flows/assistant-flow';
 import { useToast } from '@/components/ui/use-toast';
 import Link from 'next/link';
-import { Card, CardContent } from '@/components/ui/card';
 
 interface Message {
   id: string;
@@ -189,21 +187,6 @@ export default function AssistantContent() {
   return (
     <AppShell title={t.conversationalAssistant} activePage="assistant">
       <main className="flex flex-1 flex-col bg-muted/20 h-full">
-        <div className="p-4 border-b bg-background">
-          <Card>
-            <CardContent className="p-4 flex items-center justify-between">
-                <div>
-                    <h2 className="font-semibold">{t.liveCommunityBotTitle}</h2>
-                    <p className="text-sm text-muted-foreground">{t.liveCommunityBotDesc}</p>
-                </div>
-                <Button asChild>
-                    <Link href="https://karshakmitra-bot.vercel.app/" target="_blank" rel="noopener noreferrer">
-                       <Bot className="mr-2 h-4 w-4"/> {t.openCommunityBot}
-                    </Link>
-                </Button>
-            </CardContent>
-          </Card>
-        </div>
         <AdvancedAssistantChat />
       </main>
     </AppShell>

@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import {
   Bell,
@@ -12,6 +11,7 @@ import {
   BookUser,
   Stethoscope,
   Tractor,
+  Bot,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,7 @@ import { translations } from '@/lib/translations';
 type AppShellProps = {
   children: React.ReactNode;
   title: string;
-  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer';
+  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer' | 'community-bot';
 };
 
 export default function AppShell({ children, title, activePage }: AppShellProps) {
@@ -32,6 +32,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
   const navItems = [
     { id: 'dashboard', href: '/', icon: Home, label: t.dashboard },
     { id: 'assistant', href: '/assistant', icon: MessageCircle, label: t.conversationalAssistant },
+    { id: 'community-bot', href: '/community-bot', icon: Bot, label: t.communityBot },
     { id: 'diagnosis', href: '/diagnosis', icon: Stethoscope, label: t.diagnosis },
     { id: 'farm-viewer', href: '/farm-viewer', icon: Tractor, label: t.farmViewer },
     { id: 'profile', href: '/profile', icon: User, label: t.farmProfile },
