@@ -220,12 +220,13 @@ function AssistantChat() {
 }
 
 
-export default function AssistantContent() {
+export default function AdvancedAssistantContent() {
   const { language } = useLanguage();
   const t = translations[language];
 
   return (
-    <AppShell title={t.conversationalAssistant} activePage="assistant">
+    // Note: The activePage prop is set to 'assistant' to keep the sidebar consistent
+    <AppShell title="Advanced Assistant" activePage="assistant">
       <main className="flex flex-1 flex-col bg-muted/20 h-full">
         <AssistantChat />
       </main>
