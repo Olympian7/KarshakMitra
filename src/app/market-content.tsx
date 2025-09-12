@@ -14,7 +14,7 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import AppShell from '@/components/app-shell';
-import { ArrowDown, ArrowUp, Store } from 'lucide-react';
+import { ArrowDown, ArrowUp, Store, ChevronsUpDown } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import React, { useEffect, useState, useMemo } from 'react';
 import { getMarketTrends, MarketTrend } from '@/services/market';
@@ -22,11 +22,17 @@ import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { Skeleton } from '@/components/ui/skeleton';
 
+type SortConfig = {
+  key: keyof MarketTrend | null;
+  direction: 'ascending' | 'descending';
+};
+
 export default function MarketContent() {
   const { language } = useLanguage();
   const t = translations[language];
   const [marketTrends, setMarketTrends] = useState<MarketTrend[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'ascending' });
 
   useEffect(() => {
     const fetchTrends = async () => {
@@ -38,8 +44,32 @@ export default function MarketContent() {
     fetchTrends();
   }, []);
 
+  const handleSort = (key: keyof MarketTrend) => {
+    let direction: 'ascending' | 'descending' = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+  
+  const sortedTrends = useMemo(() => {
+    let sortableItems = [...marketTrends];
+    if (sortConfig.key !== null) {
+      sortableItems.sort((a, b) => {
+        if (a[sortConfig.key!] < b[sortConfig.key!]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key!] > b[sortConfig.key!]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [marketTrends, sortConfig]);
+
   const categorizedTrends = useMemo(() => {
-    return marketTrends.reduce((acc, trend) => {
+    return sortedTrends.reduce((acc, trend) => {
       const category = trend.category;
       if (!acc[category]) {
         acc[category] = [];
@@ -47,7 +77,24 @@ export default function MarketContent() {
       acc[category].push(trend);
       return acc;
     }, {} as Record<string, MarketTrend[]>);
-  }, [marketTrends]);
+  }, [sortedTrends]);
+  
+  const SortableHeader = ({ columnKey, label }: { columnKey: keyof MarketTrend, label: string }) => {
+    const isSorting = sortConfig.key === columnKey;
+    return (
+        <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort(columnKey)}>
+            <div className="flex items-center gap-2">
+                {label}
+                {isSorting ? (
+                    sortConfig.direction === 'ascending' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />
+                ) : (
+                    <ChevronsUpDown className="h-4 w-4 text-muted-foreground" />
+                )}
+            </div>
+        </TableHead>
+    );
+  };
+
 
   return (
     <AppShell title={t.marketTrends} activePage="market">
@@ -99,9 +146,9 @@ export default function MarketContent() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>{t.crop}</TableHead>
-                        <TableHead>{t.variety}</TableHead>
-                        <TableHead>{t.pricePerKg}</TableHead>
+                        <SortableHeader columnKey="name" label={t.crop} />
+                        <SortableHeader columnKey="variety" label={t.variety} />
+                        <SortableHeader columnKey="price" label={t.pricePerKg} />
                         <TableHead className="text-right">{t.change}</TableHead>
                       </TableRow>
                     </TableHeader>
