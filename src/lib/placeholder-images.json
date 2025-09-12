@@ -7,16 +7,16 @@
     "hint": "kerala farm backwaters"
   },
   "diagnosis_banner": {
-    "seed": "303",
+    "seed": "512",
     "width": 1000,
     "height": 300,
-    "hint": "crop disease"
+    "hint": "farm crop"
   },
   "market_banner": {
-    "seed": "103",
+    "seed": "205",
     "width": 1000,
     "height": 300,
-    "hint": "market spice kerala"
+    "hint": "farmers market"
   },
   "consultation_banner": {
     "seed": "104",
