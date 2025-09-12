@@ -7,16 +7,16 @@
     "hint": "kerala farm backwaters"
   },
   "diagnosis_banner": {
-    "seed": "104",
+    "seed": "901",
     "width": 1000,
     "height": 300,
     "hint": "farm crop"
   },
   "market_banner": {
-    "seed": "987",
+    "seed": "888",
     "width": 1000,
     "height": 300,
-    "hint": "indian vegetables market"
+    "hint": "vegetable market india"
   },
   "consultation_banner": {
     "seed": "104",
