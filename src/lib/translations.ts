@@ -3,7 +3,7 @@ export const translations = {
       // App Shell & Navigation
       dashboard: 'Dashboard',
       conversationalAssistant: 'Conversational Assistant',
-      communityBot: 'Community Bot',
+      communityBot: 'Mitra',
       farmProfile: 'Farm Profile',
       activityTracking: 'Activity Tracking',
       governmentSchemes: 'Government Schemes',
@@ -157,7 +157,7 @@ export const translations = {
       // App Shell & Navigation
       dashboard: 'ഡാഷ്ബോർഡ്',
       conversationalAssistant: 'സംഭാഷണ സഹായി',
-      communityBot: 'കമ്മ്യൂണിറ്റി ബോട്ട്',
+      communityBot: 'മിത്ര',
       farmProfile: 'ഫാം പ്രൊഫൈൽ',
       activityTracking: 'പ്രവർത്തന ട്രാക്കിംഗ്',
       governmentSchemes: 'സർക്കാർ പദ്ധതികൾ',
