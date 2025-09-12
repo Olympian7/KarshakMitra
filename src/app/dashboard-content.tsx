@@ -22,12 +22,15 @@ import AppShell from '@/components/app-shell';
 import React, { useEffect, useState } from 'react';
 import { translations } from '@/lib/translations';
 import { useLanguage } from '@/context/language-context';
+import Image from 'next/image';
+import imageData from '@/lib/placeholder-images.json';
 
 // A client component is needed to use the useLanguage hook.
 export default function DashboardContent({ weather, marketTrends, govSchemes, recentActivities }: any) {
   const { language } = useLanguage();
   const t = translations[language];
   const [activityDate, setActivityDate] = useState('');
+  const { dashboard_hero } = imageData;
 
   useEffect(() => {
     if (recentActivities.length > 0 && recentActivities[0].date) {
@@ -39,9 +42,20 @@ export default function DashboardContent({ weather, marketTrends, govSchemes, re
   return (
     <AppShell title={t.dashboard} activePage="dashboard">
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-        <div className="flex items-center">
-          <h1 className="text-lg font-semibold md:text-2xl">{t.welcome}</h1>
-        </div>
+        <Card className="relative overflow-hidden rounded-lg">
+          <Image
+            src={`https://picsum.photos/seed/${dashboard_hero.seed}/${dashboard_hero.width}/${dashboard_hero.height}`}
+            alt="Kerala farm landscape"
+            width={dashboard_hero.width}
+            height={dashboard_hero.height}
+            className="w-full h-48 object-cover"
+            data-ai-hint={dashboard_hero.hint}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute bottom-0 p-6">
+            <h1 className="text-2xl font-semibold text-white md:text-3xl">{t.welcome}</h1>
+          </div>
+        </Card>
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-2">
           <Card className="transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="flex flex-row items-center justify-between pb-2">

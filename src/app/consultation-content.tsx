@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -14,6 +15,8 @@ import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { ExternalLink, University, BookOpen, Users, LandPlot, ShieldCheck } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import Image from 'next/image';
+import imageData from '@/lib/placeholder-images.json';
 
 type ConsultationCategory = 'gov' | 'knowledge' | 'community';
 
@@ -77,7 +80,7 @@ const consultationLinks: ConsultationLink[] = [
         },
         description: {
             en: 'Get district-level scientific and technical support. Find your local KVK for personalized help.',
-            ml: 'ജില്ലാതല ശാസ്ത്രീയ-സാങ്കേതിക പിന്തുണ നേടുക. സഹായത്തിനായി നിങ്ങളുടെ പ്രാദേശിക KVK കണ്ടെത്തുക.',
+            ml: 'ജില്ലാതല ശാസ്ത്രീയ-സാങ്കേതിക പിന്തുണ നേടുക. സഹായത്തിനായി നിങ്ങളുടെ പ്രാഥേശിക KVK കണ്ടെത്തുക.',
         },
         link: 'http://kvk.kau.in/',
         icon: Users,
@@ -133,17 +136,28 @@ export default function ConsultationContent() {
   const { language } = useLanguage();
   const t = translations[language];
   const categoryInfo = categories(language);
+  const { consultation_banner } = imageData;
 
   return (
     <AppShell title={t.consultation} activePage="consultation">
-      <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-        <Card>
-            <CardHeader>
-                <CardTitle>{t.expertConsultation}</CardTitle>
-                <CardDescription>{t.consultationDesc}</CardDescription>
-            </CardHeader>
-        </Card>
+      <main className="flex flex-1 flex-col">
+        <div className="relative w-full h-48">
+            <Image
+                src={`https://picsum.photos/seed/${consultation_banner.seed}/${consultation_banner.width}/${consultation_banner.height}`}
+                alt="A farmer talking with an expert in a field"
+                layout="fill"
+                objectFit="cover"
+                className="opacity-90"
+                data-ai-hint={consultation_banner.hint}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+            <div className="absolute bottom-0 left-0 p-6">
+                <h1 className="text-2xl font-bold text-white tracking-tight">{t.expertConsultation}</h1>
+                <p className="text-white/90 max-w-2xl">{t.consultationDesc}</p>
+            </div>
+        </div>
         
+        <div className="flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
         {Object.keys(categoryInfo).map(catKey => {
             const category = categoryInfo[catKey as ConsultationCategory];
             const links = consultationLinks.filter(link => link.category === catKey);
@@ -181,6 +195,7 @@ export default function ConsultationContent() {
                 </div>
             )
         })}
+        </div>
       </main>
     </AppShell>
   );

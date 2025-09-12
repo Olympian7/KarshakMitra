@@ -14,6 +14,7 @@ import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
 import { diagnosePlant, DiagnosePlantOutput } from '@/ai/flows/diagnose-plant-flow';
 import { useToast } from '@/components/ui/use-toast';
+import imageData from '@/lib/placeholder-images.json';
 
 
 // Utility to convert file to data URI
@@ -35,6 +36,7 @@ function DiagnosisPageComponent() {
   const [description, setDescription] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<DiagnosePlantOutput | null>(null);
+  const { diagnosis_banner } = imageData;
   
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -74,12 +76,26 @@ function DiagnosisPageComponent() {
   };
 
   return (
-    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <main className="flex flex-1 flex-col">
+       <div className="relative w-full h-48">
+          <Image
+            src={`https://picsum.photos/seed/${diagnosis_banner.seed}/${diagnosis_banner.width}/${diagnosis_banner.height}`}
+            alt="Close-up of a plant leaf"
+            layout="fill"
+            objectFit="cover"
+            className="opacity-90"
+            data-ai-hint={diagnosis_banner.hint}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+          <div className="absolute bottom-0 left-0 p-6">
+            <h1 className="text-2xl font-bold text-white tracking-tight">{t.uploadAndDescribe}</h1>
+            <p className="text-white/90 max-w-2xl">{t.diagnosisDesc}</p>
+          </div>
+        </div>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 p-4 lg:p-6">
         <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle>{t.uploadAndDescribe}</CardTitle>
-            <CardDescription>{t.diagnosisDesc}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">

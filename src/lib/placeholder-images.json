@@ -1,0 +1,27 @@
+
+{
+  "dashboard_hero": {
+    "seed": "101",
+    "width": 1200,
+    "height": 400,
+    "hint": "kerala farm backwaters"
+  },
+  "diagnosis_banner": {
+    "seed": "102",
+    "width": 1000,
+    "height": 300,
+    "hint": "plant leaf disease"
+  },
+  "market_banner": {
+    "seed": "103",
+    "width": 1000,
+    "height": 300,
+    "hint": "market spice kerala"
+  },
+  "consultation_banner": {
+    "seed": "104",
+    "width": 1000,
+    "height": 300,
+    "hint": "farmer talking"
+  }
+}

@@ -12,6 +12,7 @@ import {
   BookUser,
   Stethoscope,
   Tractor,
+  Bot,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -22,7 +23,7 @@ import { translations } from '@/lib/translations';
 type AppShellProps = {
   children: React.ReactNode;
   title: string;
-  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer';
+  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer' | 'huggingface';
 };
 
 export default function AppShell({ children, title, activePage }: AppShellProps) {
@@ -39,6 +40,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
     { id: 'schemes', href: '/schemes', icon: Landmark, label: t.governmentSchemes },
     { id: 'market', href: '/market', icon: LineChart, label: t.marketTrends },
     { id: 'consultation', href: '/consultation', icon: BookUser, label: t.consultation },
+    { id: 'huggingface', href: '/huggingface', icon: Bot, label: 'Hugging Face' },
   ];
 
   return (

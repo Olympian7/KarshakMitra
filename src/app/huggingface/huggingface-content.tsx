@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState } from 'react';
@@ -38,7 +39,7 @@ export default function HuggingFaceContent() {
   };
 
   return (
-    <AppShell title="Hugging Face Integration" activePage="dashboard">
+    <AppShell title="Hugging Face Integration" activePage="huggingface">
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
         <Card>
           <CardHeader>
