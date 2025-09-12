@@ -6,7 +6,6 @@ import {
   Send,
   User,
   Languages,
-  Sparkles,
 } from 'lucide-react';
 import React, { useState, useRef, useEffect } from 'react';
 import AppShell from '@/components/app-shell';
@@ -17,7 +16,6 @@ import { assistantFlow } from '@/ai/flows/assistant-flow';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
-import Link from 'next/link';
 
 type Language = 'en' | 'ml';
 
@@ -197,12 +195,6 @@ function AssistantChat() {
         <div ref={messagesEndRef} />
       </div>
       <div className="p-4 border-t bg-background">
-        <Button asChild className="w-full mb-4 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white">
-            <Link href="/advanced-assistant.html" target="_blank" rel="noopener noreferrer">
-              Tap for Advanced AI
-              <Sparkles className="ml-2 h-4 w-4" />
-            </Link>
-        </Button>
         <div className="relative">
           <Input
             value={input}
