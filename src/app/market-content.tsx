@@ -14,7 +14,7 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import AppShell from '@/components/app-shell';
-import { ArrowDown, ArrowUp } from 'lucide-react';
+import { ArrowDown, ArrowUp, Store } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import React, { useEffect, useState, useMemo } from 'react';
 import { getMarketTrends, MarketTrend } from '@/services/market';
@@ -53,8 +53,15 @@ export default function MarketContent() {
     <AppShell title={t.marketTrends} activePage="market">
       <main className="flex flex-1 flex-col">
         <div className="relative w-full h-48 bg-gradient-primary flex flex-col justify-end p-6">
-          <h1 className="text-2xl font-bold text-white tracking-tight">{t.latestCropPrices}</h1>
-          <p className="text-white/90 max-w-2xl">{t.marketDescription}</p>
+            <div className="flex items-center gap-4">
+                <div className="bg-white/20 p-3 rounded-lg">
+                    <Store className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                    <h1 className="text-2xl font-bold text-white tracking-tight">{t.latestCropPrices}</h1>
+                    <p className="text-white/90 max-w-2xl">{t.marketDescription}</p>
+                </div>
+            </div>
         </div>
         <div className="p-4 lg:p-6">
         <Card>
