@@ -12,9 +12,6 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import AppShell from '@/components/app-shell';
 import { ArrowDown, ArrowUp } from 'lucide-react';
@@ -24,15 +21,12 @@ import { getMarketTrends, MarketTrend } from '@/services/market';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { Skeleton } from '@/components/ui/skeleton';
-import Image from 'next/image';
-import imageData from '@/lib/placeholder-images.json';
 
 export default function MarketContent() {
   const { language } = useLanguage();
   const t = translations[language];
   const [marketTrends, setMarketTrends] = useState<MarketTrend[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { market_banner } = imageData;
 
   useEffect(() => {
     const fetchTrends = async () => {
@@ -58,20 +52,9 @@ export default function MarketContent() {
   return (
     <AppShell title={t.marketTrends} activePage="market">
       <main className="flex flex-1 flex-col">
-        <div className="relative w-full h-48">
-          <Image
-            src={market_banner.url || `https://picsum.photos/seed/${market_banner.seed}/${market_banner.width}/${market_banner.height}`}
-            alt={market_banner.alt || "A vibrant market scene"}
-            layout="fill"
-            objectFit="cover"
-            className="opacity-90"
-            data-ai-hint={market_banner.hint}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-          <div className="absolute bottom-0 left-0 p-6">
-            <h1 className="text-2xl font-bold text-white tracking-tight">{t.latestCropPrices}</h1>
-            <p className="text-white/90 max-w-2xl">{t.marketDescription}</p>
-          </div>
+        <div className="relative w-full h-48 bg-gradient-primary flex flex-col justify-end p-6">
+          <h1 className="text-2xl font-bold text-white tracking-tight">{t.latestCropPrices}</h1>
+          <p className="text-white/90 max-w-2xl">{t.marketDescription}</p>
         </div>
         <div className="p-4 lg:p-6">
         <Card>
