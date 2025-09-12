@@ -34,6 +34,7 @@ const assistantPrompt = ai.definePrompt({
   input: { schema: AssistantInputSchema },
   output: { schema: AssistantOutputSchema },
   tools: [getWeatherForecastTool, getMarketTrendsTool, getGovSchemesTool],
+  model: 'googleai/gemini-2.5-flash',
   prompt: `You are Karshak Mitra, a friendly and knowledgeable AI assistant for farmers in Kerala, India.
 
   Your primary goal is to provide helpful, concise, and accurate information.
@@ -72,5 +73,5 @@ const assistantFlowInternal = ai.defineFlow(
 export async function assistantFlow(
   input: AssistantInput
 ): Promise<AssistantOutput> {
-  return assistantFlowInternal(input);
+  return await assistantFlowInternal(input);
 }
