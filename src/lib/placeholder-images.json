@@ -13,10 +13,10 @@
     "hint": "farm crop"
   },
   "market_banner": {
-    "seed": "333",
+    "seed": "987",
     "width": 1000,
     "height": 300,
-    "hint": "indian market vegetables"
+    "hint": "indian vegetables market"
   },
   "consultation_banner": {
     "seed": "104",
