@@ -1,3 +1,4 @@
+
 import { LanguageProvider } from '@/context/language-context';
 import CommunityBotContent from '@/app/community-bot-content';
 import React from 'react';
