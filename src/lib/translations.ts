@@ -1,3 +1,4 @@
+
 export const translations = {
     en: {
       // App Shell & Navigation
@@ -43,6 +44,7 @@ export const translations = {
       change: 'Change',
       'Spices': 'Spices',
       'Plantation Crops': 'Plantation Crops',
+      'yourCropPrices': 'Your Crop Prices',
   
       // Profile Page
       yourFarmProfile: 'Your Farm Profile',
@@ -152,6 +154,8 @@ export const translations = {
       Pesticide: 'Pesticide',
       Seed: 'Seed',
       Herbicide: 'Herbicide',
+      potentialIncome: 'Potential Income from Stock',
+      potentialIncomeDesc: 'Based on current stock and market prices. This is an estimate.',
     },
     ml: {
       // App Shell & Navigation
@@ -197,6 +201,7 @@ export const translations = {
       change: 'മാറ്റം',
       'Spices': 'സുഗന്ധവ്യഞ്ജനങ്ങൾ',
       'Plantation Crops': 'തോട്ടവിളകൾ',
+      'yourCropPrices': 'നിങ്ങളുടെ വിളകളുടെ വില',
   
       // Profile Page
       yourFarmProfile: 'നിങ്ങളുടെ ഫാം പ്രൊഫൈൽ',
@@ -306,5 +311,7 @@ export const translations = {
       Pesticide: 'കീടനാശിനി',
       Seed: 'വിത്ത്',
       Herbicide: 'കളനാശിനി',
+      potentialIncome: 'സ്റ്റോക്കിൽ നിന്നുള്ള സാധ്യതയുള്ള വരുമാനം',
+      potentialIncomeDesc: 'നിലവിലെ സ്റ്റോക്കും മാർക്കറ്റ് വിലയും അടിസ്ഥാനമാക്കി. ഇതൊരു ഏകദേശ കണക്കാണ്.',
     },
   };

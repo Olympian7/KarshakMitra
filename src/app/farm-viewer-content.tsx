@@ -1,14 +1,15 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import AppShell from '@/components/app-shell';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { getProfile, saveProfile, FarmProfile, PlotType, CropStock } from '@/services/profile';
+import { getMarketTrends, MarketTrend } from '@/services/market';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MapPin, Droplets, Sprout, Tractor, Package, Beaker, Pencil, Trash2, PlusCircle } from 'lucide-react';
+import { MapPin, Droplets, Sprout, Tractor, Package, Beaker, Pencil, Trash2, PlusCircle, IndianRupee } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import {
@@ -181,18 +182,21 @@ export default function FarmViewerContent() {
   const t = translations[language];
   const { toast } = useToast();
   const [profile, setProfile] = useState<FarmProfile | null>(null);
+  const [marketTrends, setMarketTrends] = useState<MarketTrend[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchProfile = async () => {
+  const fetchData = async () => {
     setIsLoading(true);
     try {
-      const data = await getProfile();
-      setProfile(data);
+      const profileData = await getProfile();
+      const marketData = await getMarketTrends();
+      setProfile(profileData);
+      setMarketTrends(marketData);
     } catch (error) {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to load farm profile for the digital twin.',
+        description: 'Failed to load farm and market data.',
       });
     } finally {
       setIsLoading(false);
@@ -200,8 +204,23 @@ export default function FarmViewerContent() {
   };
   
   useEffect(() => {
-    fetchProfile();
+    fetchData();
   }, [toast]);
+
+  const potentialIncome = useMemo(() => {
+    if (!profile || marketTrends.length === 0) return 0;
+
+    return profile.cropStock.reduce((total, stockItem) => {
+      const marketPrice = marketTrends.find(
+        trend => trend.name.toLowerCase() === stockItem.name.toLowerCase()
+      )?.price;
+
+      if (marketPrice) {
+        return total + stockItem.quantity * marketPrice;
+      }
+      return total;
+    }, 0);
+  }, [profile, marketTrends]);
 
   const handleStockSave = (updatedProfile: FarmProfile) => {
     setProfile(updatedProfile);
@@ -365,6 +384,22 @@ export default function FarmViewerContent() {
                   <p className="text-sm text-muted-foreground pt-2">{t.noStockData}</p>
                 )}
               </CardContent>
+            </Card>
+             <Card>
+                <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2">
+                    <IndianRupee className="h-6 w-6 text-muted-foreground" />
+                    <CardTitle>{t.potentialIncome}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {isLoading ? (
+                        <Skeleton className="h-10 w-1/2" />
+                    ) : (
+                        <div className="text-3xl font-bold">
+                            ₹{potentialIncome.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </div>
+                    )}
+                    <p className="text-xs text-muted-foreground pt-1">{t.potentialIncomeDesc}</p>
+                </CardContent>
             </Card>
           </div>
         </div>

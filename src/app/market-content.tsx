@@ -14,10 +14,11 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import AppShell from '@/components/app-shell';
-import { ArrowDown, ArrowUp, Store, ChevronsUpDown } from 'lucide-react';
+import { ArrowDown, ArrowUp, Store, ChevronsUpDown, UserCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import React, { useEffect, useState, useMemo, FC } from 'react';
 import { getMarketTrends, MarketTrend } from '@/services/market';
+import { getProfile, FarmProfile } from '@/services/profile';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -75,6 +76,8 @@ const CategoryTable: FC<{ trends: MarketTrend[], categoryName: string }> = ({ tr
     );
   };
 
+  if (trends.length === 0) return null;
+
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">{categoryName}</h2>
@@ -121,20 +124,40 @@ export default function MarketContent() {
   const { language } = useLanguage();
   const t = translations[language];
   const [marketTrends, setMarketTrends] = useState<MarketTrend[]>([]);
+  const [profile, setProfile] = useState<FarmProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTrends = async () => {
+    const fetchData = async () => {
       setIsLoading(true);
       const trends = await getMarketTrends();
+      const profileData = await getProfile();
       setMarketTrends(trends);
+      setProfile(profileData);
       setIsLoading(false);
     };
-    fetchTrends();
+    fetchData();
   }, []);
 
-  const categorizedTrends = useMemo(() => {
-    return marketTrends.reduce((acc, trend) => {
+  const { yourCropTrends, otherCategorizedTrends } = useMemo(() => {
+    if (!profile) {
+      return { yourCropTrends: [], otherCategorizedTrends: {} };
+    }
+
+    const yourCropNames = new Set(profile.cropStock.map(c => c.name.toLowerCase()));
+    
+    const yourTrends: MarketTrend[] = [];
+    const otherTrends: MarketTrend[] = [];
+
+    marketTrends.forEach(trend => {
+      if (yourCropNames.has(trend.name.toLowerCase())) {
+        yourTrends.push(trend);
+      } else {
+        otherTrends.push(trend);
+      }
+    });
+
+    const categorized = otherTrends.reduce((acc, trend) => {
       const category = trend.category;
       if (!acc[category]) {
         acc[category] = [];
@@ -142,7 +165,10 @@ export default function MarketContent() {
       acc[category].push(trend);
       return acc;
     }, {} as Record<string, MarketTrend[]>);
-  }, [marketTrends]);
+
+    return { yourCropTrends: yourTrends, otherCategorizedTrends: categorized };
+
+  }, [marketTrends, profile]);
   
   return (
     <AppShell title={t.marketTrends} activePage="market">
@@ -188,13 +214,24 @@ export default function MarketContent() {
                 </div>
                ))
             ) : (
-              Object.entries(categorizedTrends).map(([category, trends]) => (
-                <CategoryTable
-                  key={category}
-                  trends={trends}
-                  categoryName={t[category as keyof typeof t] || category}
-                />
-              ))
+              <>
+                {yourCropTrends.length > 0 && (
+                  <div className="p-4 border-2 border-primary/20 rounded-lg bg-primary/5">
+                     <div className="flex items-center gap-3 mb-4">
+                        <UserCheck className="h-6 w-6 text-primary" />
+                        <h2 className="text-xl font-semibold text-primary">{t.yourCropPrices}</h2>
+                     </div>
+                     <CategoryTable trends={yourCropTrends} categoryName="" />
+                  </div>
+                )}
+                {Object.entries(otherCategorizedTrends).map(([category, trends]) => (
+                  <CategoryTable
+                    key={category}
+                    trends={trends}
+                    categoryName={t[category as keyof typeof t] || category}
+                  />
+                ))}
+              </>
             )}
           </CardContent>
         </Card>
