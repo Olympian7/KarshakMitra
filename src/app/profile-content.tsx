@@ -42,7 +42,7 @@ const chartData = [
 
 
 const getColorForValue = (value: number, plotTypes: PlotType[]) => {
-    return plotTypes.find(p => p.value === value)?.color || 'bg-gray-200';
+    return plotTypes.find(p => p.value === value)?.color || 'hsl(0, 0%, 80%)'; // Default gray
 }
 
 function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile, onPaletteUpdate: (newPlotTypes: PlotType[]) => void }) {
@@ -109,7 +109,7 @@ function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile,
                 <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
                     {localPlotTypes.map(pt => (
                         <div key={pt.value} className="flex items-center gap-3">
-                            <div className={cn('w-6 h-6 rounded-md flex-shrink-0', !pt.color.startsWith('hsl') ? pt.color : '')} style={{ backgroundColor: pt.color.startsWith('hsl') ? pt.color : undefined }} />
+                            <div className="w-6 h-6 rounded-md flex-shrink-0" style={{ backgroundColor: pt.color }} />
                             <div className="flex-1">
                                 <p className="font-medium">{pt.label.en}</p>
                             </div>
@@ -377,7 +377,7 @@ function FarmProfileForm() {
                                             isLayoutLocked && 'opacity-50 cursor-not-allowed'
                                         )}
                                     >
-                                        <div className={cn('w-4 h-4 rounded-sm flex-shrink-0', !plot.color.startsWith('hsl') ? plot.color : '')} style={{ backgroundColor: plot.color.startsWith('hsl') ? plot.color : undefined }}/>
+                                        <div className="w-4 h-4 rounded-sm flex-shrink-0" style={{ backgroundColor: plot.color }}/>
                                         <span className="text-sm">{plot.label[language]}</span>
                                     </div>
                                 ))}
@@ -393,19 +393,15 @@ function FarmProfileForm() {
                                 onMouseLeave={() => setIsPainting(false)}
                             >
                                 {profile.farmGrid.map((row, rowIndex) => 
-                                    row.map((cellValue, colIndex) => {
-                                        const color = getColorForValue(cellValue, profile.plotTypes);
-                                        const isHsl = color.startsWith('hsl');
-                                        return (
-                                            <div 
-                                                key={`${rowIndex}-${colIndex}`}
-                                                className={cn('aspect-square w-full h-full rounded-sm', !isHsl ? color : '')}
-                                                style={{ backgroundColor: isHsl ? color : undefined }}
-                                                onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
-                                                onMouseOver={() => handleMouseOver(rowIndex, colIndex)}
-                                            />
-                                        )
-                                    })
+                                    row.map((cellValue, colIndex) => (
+                                        <div 
+                                            key={`${rowIndex}-${colIndex}`}
+                                            className="aspect-square w-full h-full rounded-sm"
+                                            style={{ backgroundColor: getColorForValue(cellValue, profile.plotTypes) }}
+                                            onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
+                                            onMouseOver={() => handleMouseOver(rowIndex, colIndex)}
+                                        />
+                                    ))
                                 )}
                             </div>
                         </div>

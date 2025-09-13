@@ -57,12 +57,12 @@ let userProfile: FarmProfile = {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ],
   plotTypes: [
-    { value: 0, color: 'bg-gray-200', label: { en: 'Empty', ml: 'ഒഴിഞ്ഞ' } },
-    { value: 100, color: 'bg-blue-400', label: { en: 'Paddy', ml: 'നെല്ല്' } },
-    { value: 90, color: 'bg-yellow-400', label: { en: 'Lentils', ml: 'പയർവർഗ്ഗങ്ങൾ' } },
-    { value: 80, color: 'bg-yellow-600', label: { en: 'Bananas', ml: 'വാഴ' } },
-    { value: 60, color: 'bg-green-500', label: { en: 'Okra', ml: 'വെണ്ട' } },
-    { value: 40, color: 'bg-red-500', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
+    { value: 0, color: 'hsl(0, 0%, 85%)', label: { en: 'Empty', ml: 'ഒഴിഞ്ഞ' } },
+    { value: 100, color: 'hsl(205, 90%, 60%)', label: { en: 'Paddy', ml: 'നെല്ല്' } },
+    { value: 90, color: 'hsl(50, 90%, 60%)', label: { en: 'Lentils', ml: 'പയർവർഗ്ഗങ്ങൾ' } },
+    { value: 80, color: 'hsl(45, 95%, 55%)', label: { en: 'Bananas', ml: 'വാഴ' } },
+    { value: 60, color: 'hsl(120, 70%, 50%)', label: { en: 'Okra', ml: 'വെണ്ട' } },
+    { value: 40, color: 'hsl(0, 80%, 60%)', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
   ],
   cropStock: [
     { name: 'Paddy', quantity: 1200, unit: 'kg' },
