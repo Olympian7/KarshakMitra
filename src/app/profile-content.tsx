@@ -53,22 +53,11 @@ function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile,
     const [newCropName, setNewCropName] = useState('');
 
     const generateRandomColor = () => {
-        const colors = [
-            'bg-sky-500', 'bg-indigo-500', 'bg-purple-500', 'bg-pink-500', 
-            'bg-teal-500', 'bg-cyan-500', 'bg-rose-500', 'bg-lime-500',
-            'bg-fuchsia-500', 'bg-violet-500', 'bg-emerald-500'
-        ];
-        
-        const usedColors = localPlotTypes.map(pt => pt.color);
-        const availableColors = colors.filter(c => !usedColors.includes(c));
-        
-        if (availableColors.length > 0) {
-            return availableColors[Math.floor(Math.random() * availableColors.length)];
-        }
-        
-        // Fallback for when all predefined colors are used
-        const randomHue = Math.floor(Math.random() * 360);
-        return `hsl(${randomHue} 70% 50%)`;
+        // Generate a random HSL color that is visually pleasing
+        const hue = Math.floor(Math.random() * 360);
+        const saturation = Math.floor(Math.random() * 20) + 70; // 70-90%
+        const lightness = Math.floor(Math.random() * 20) + 50; // 50-70%
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     };
 
     const handleAddCrop = () => {
@@ -120,7 +109,7 @@ function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile,
                 <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
                     {localPlotTypes.map(pt => (
                         <div key={pt.value} className="flex items-center gap-3">
-                            <div className={cn('w-6 h-6 rounded-md flex-shrink-0', pt.color)} style={{ backgroundColor: pt.color.startsWith('hsl') ? pt.color : undefined }} />
+                            <div className={cn('w-6 h-6 rounded-md flex-shrink-0', !pt.color.startsWith('hsl') ? pt.color : '')} style={{ backgroundColor: pt.color.startsWith('hsl') ? pt.color : undefined }} />
                             <div className="flex-1">
                                 <p className="font-medium">{pt.label.en}</p>
                             </div>
@@ -388,7 +377,7 @@ function FarmProfileForm() {
                                             isLayoutLocked && 'opacity-50 cursor-not-allowed'
                                         )}
                                     >
-                                        <div className={cn('w-4 h-4 rounded-sm flex-shrink-0', plot.color)} style={{ backgroundColor: plot.color.startsWith('hsl') ? plot.color : undefined }}/>
+                                        <div className={cn('w-4 h-4 rounded-sm flex-shrink-0', !plot.color.startsWith('hsl') ? plot.color : '')} style={{ backgroundColor: plot.color.startsWith('hsl') ? plot.color : undefined }}/>
                                         <span className="text-sm">{plot.label[language]}</span>
                                     </div>
                                 ))}
@@ -404,15 +393,19 @@ function FarmProfileForm() {
                                 onMouseLeave={() => setIsPainting(false)}
                             >
                                 {profile.farmGrid.map((row, rowIndex) => 
-                                    row.map((cellValue, colIndex) => (
-                                        <div 
-                                            key={`${rowIndex}-${colIndex}`}
-                                            className={cn('aspect-square w-full h-full rounded-sm', getColorForValue(cellValue, profile.plotTypes))}
-                                            style={{ backgroundColor: getColorForValue(cellValue, profile.plotTypes).startsWith('hsl') ? getColorForValue(cellValue, profile.plotTypes) : undefined }}
-                                            onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
-                                            onMouseOver={() => handleMouseOver(rowIndex, colIndex)}
-                                        />
-                                    ))
+                                    row.map((cellValue, colIndex) => {
+                                        const color = getColorForValue(cellValue, profile.plotTypes);
+                                        const isHsl = color.startsWith('hsl');
+                                        return (
+                                            <div 
+                                                key={`${rowIndex}-${colIndex}`}
+                                                className={cn('aspect-square w-full h-full rounded-sm', !isHsl ? color : '')}
+                                                style={{ backgroundColor: isHsl ? color : undefined }}
+                                                onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
+                                                onMouseOver={() => handleMouseOver(rowIndex, colIndex)}
+                                            />
+                                        )
+                                    })
                                 )}
                             </div>
                         </div>
