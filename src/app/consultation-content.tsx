@@ -147,12 +147,11 @@ export default function ConsultationContent() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Audio cleanup
-    const audioEl = audioRef.current;
+    // Audio cleanup on component unmount
     return () => {
-      if (audioEl) {
-        audioEl.pause();
-        audioEl.src = '';
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
       }
     };
   }, []);
@@ -162,6 +161,7 @@ export default function ConsultationContent() {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
     }
+    // Reset all playing states to idle
     setAudioState(prev => {
         const newState = { ...prev };
         Object.keys(newState).forEach(key => {
@@ -172,7 +172,7 @@ export default function ConsultationContent() {
   };
 
   const handlePlayAudio = async (cardId: string, title: string, description: string) => {
-      stopAudio();
+      stopAudio(); // Stop any currently playing audio
       
       const textToSpeak = `${title}. ${description}`;
 
@@ -180,14 +180,17 @@ export default function ConsultationContent() {
       try {
           const result = await generateSpeech({ text: textToSpeak, language: language });
           if (result && result.audioDataUri) {
-              if (!audioRef.current) {
-                  audioRef.current = new Audio();
-              }
-              // This line is crucial to reset the state when audio finishes
-              audioRef.current.onended = stopAudio;
-              audioRef.current.src = result.audioDataUri;
-              audioRef.current.play();
+              // Create a new Audio object for each playback
+              const audio = new Audio(result.audioDataUri);
+              audioRef.current = audio;
+
+              audio.play();
               setAudioState(prev => ({ ...prev, [cardId]: 'playing' }));
+
+              // When audio finishes, reset the state for this card
+              audio.onended = () => {
+                  setAudioState(prev => ({ ...prev, [cardId]: 'idle' }));
+              };
           } else {
               throw new Error("No audio data received.");
           }
@@ -210,8 +213,8 @@ export default function ConsultationContent() {
             <Image
                 src={`https://picsum.photos/seed/${consultation_banner.seed}/${consultation_banner.width}/${consultation_banner.height}`}
                 alt="A farmer talking with an expert in a field"
-                layout="fill"
-                objectFit="cover"
+                fill
+                style={{objectFit: 'cover'}}
                 className="opacity-90"
                 data-ai-hint={consultation_banner.hint}
             />
@@ -281,3 +284,5 @@ export default function ConsultationContent() {
     </AppShell>
   );
 }
+
+    
