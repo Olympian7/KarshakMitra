@@ -41,7 +41,9 @@ export default function VirtualKeyboard() {
   useEffect(() => {
     setIsClient(true);
     // Center keyboard on first open
-    setPosition({ x: window.innerWidth / 2 - 250, y: window.innerHeight / 2 - 150 });
+    if (typeof window !== 'undefined') {
+        setPosition({ x: window.innerWidth / 2 - 250, y: window.innerHeight / 2 - 150 });
+    }
   }, []);
 
   const handleFocus = useCallback((event: FocusEvent) => {
