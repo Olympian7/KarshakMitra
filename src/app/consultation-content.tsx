@@ -148,10 +148,11 @@ export default function ConsultationContent() {
 
   useEffect(() => {
     // Audio cleanup on component unmount
+    const audioEl = audioRef.current;
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = '';
+      if (audioEl) {
+        audioEl.pause();
+        audioEl.src = '';
       }
     };
   }, []);
@@ -161,7 +162,6 @@ export default function ConsultationContent() {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
     }
-    // Reset all playing states to idle
     setAudioState(prev => {
         const newState = { ...prev };
         Object.keys(newState).forEach(key => {
@@ -172,7 +172,7 @@ export default function ConsultationContent() {
   };
 
   const handlePlayAudio = async (cardId: string, title: string, description: string) => {
-      stopAudio(); // Stop any currently playing audio
+      stopAudio();
       
       const textToSpeak = `${title}. ${description}`;
 
@@ -180,17 +180,17 @@ export default function ConsultationContent() {
       try {
           const result = await generateSpeech({ text: textToSpeak, language: language });
           if (result && result.audioDataUri) {
-              // Create a new Audio object for each playback
-              const audio = new Audio(result.audioDataUri);
-              audioRef.current = audio;
-
-              audio.play();
+              if (!audioRef.current) {
+                audioRef.current = new Audio();
+                audioRef.current.onended = () => {
+                    setAudioState(prev => ({ ...prev, [cardId]: 'idle' }));
+                };
+              }
+              
+              audioRef.current.src = result.audioDataUri;
+              audioRef.current.play();
               setAudioState(prev => ({ ...prev, [cardId]: 'playing' }));
 
-              // When audio finishes, reset the state for this card
-              audio.onended = () => {
-                  setAudioState(prev => ({ ...prev, [cardId]: 'idle' }));
-              };
           } else {
               throw new Error("No audio data received.");
           }
