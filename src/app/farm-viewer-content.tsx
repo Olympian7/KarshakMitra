@@ -1,13 +1,13 @@
 
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import AppShell from '@/components/app-shell';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { getProfile, saveProfile, FarmProfile, PlotType, CropStock } from '@/services/profile';
-import { getMarketTrends, MarketTrend } from '@/services/market';
+import { getLiveCropPrices } from '@/services/live-market';
 import { Skeleton } from '@/components/ui/skeleton';
 import { MapPin, Droplets, Sprout, Tractor, Package, Beaker, Pencil, Trash2, PlusCircle, IndianRupee } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
@@ -50,7 +50,8 @@ const plotTypes: PlotType[] = [
 ];
 
 const getColorForValue = (value: number) => {
-    return plotTypes.find(item => item.value === value)?.color || 'bg-gray-200';
+    const plot = plotTypes.find(item => item.value === value);
+    return plot ? plot.color : 'hsl(0, 0%, 85%)';
 };
 
 
@@ -188,39 +189,55 @@ export default function FarmViewerContent() {
   const t = translations[language];
   const { toast } = useToast();
   const [profile, setProfile] = useState<FarmProfile | null>(null);
-  const [marketTrends, setMarketTrends] = useState<MarketTrend[]>([]);
+  const [livePrices, setLivePrices] = useState<Record<string, number>>({});
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
       const profileData = await getProfile();
-      const marketData = await getMarketTrends();
       setProfile(profileData);
-      setMarketTrends(marketData);
+
+      if (profileData && profileData.cropStock.length > 0) {
+        const pricePromises = profileData.cropStock.map(async (stockItem) => {
+          const prices = await getLiveCropPrices(stockItem.name);
+          // Find the most recent record with a valid modal price
+          const latestRecord = prices
+            .filter(p => p.modal_price && parseFloat(p.modal_price) > 0)
+            .sort((a, b) => new Date(b.arrival_date).getTime() - new Date(a.arrival_date).getTime())[0];
+          
+          if (latestRecord) {
+            // Price is per quintal (100kg), convert to per kg
+            const pricePerKg = parseFloat(latestRecord.modal_price) / 100;
+            return { [stockItem.name]: pricePerKg };
+          }
+          return { [stockItem.name]: 0 }; // Default to 0 if no price found
+        });
+        
+        const priceResults = await Promise.all(pricePromises);
+        const pricesMap = priceResults.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+        setLivePrices(pricesMap);
+      }
     } catch (error) {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to load farm and market data.',
+        description: 'Failed to load farm and live market data.',
       });
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
   
   useEffect(() => {
     fetchData();
-  }, [toast]);
+  }, [fetchData]);
 
   const incomeBreakdown = useMemo(() => {
-    if (!profile || marketTrends.length === 0) return { breakdown: [], total: 0 };
+    if (!profile || Object.keys(livePrices).length === 0) return { breakdown: [], total: 0 };
 
     const breakdown = profile.cropStock.map(stockItem => {
-        const marketTrend = marketTrends.find(
-            trend => trend.name.toLowerCase() === stockItem.name.toLowerCase()
-        );
-        const price = marketTrend ? marketTrend.price : 0;
+        const price = livePrices[stockItem.name] || 0;
         const subtotal = stockItem.quantity * price;
         return {
             name: stockItem.name,
@@ -233,10 +250,12 @@ export default function FarmViewerContent() {
     const total = breakdown.reduce((acc, item) => acc + item.subtotal, 0);
 
     return { breakdown, total };
-  }, [profile, marketTrends]);
+  }, [profile, livePrices]);
 
   const handleStockSave = (updatedProfile: FarmProfile) => {
     setProfile(updatedProfile);
+    // Refetch prices in case new crops were added
+    fetchData();
   };
 
 
@@ -257,16 +276,16 @@ export default function FarmViewerContent() {
                 ) : (
                   <div className="grid grid-cols-10 gap-1 w-full aspect-square max-w-lg border-2 border-dashed rounded-lg p-2 bg-muted/30">
                     {profile.farmGrid.flat().map((value, index) => (
-                        <div key={index} className={cn(`aspect-square w-full h-full rounded-sm`, getColorForValue(value))} title={`Value: ${value}`} />
+                        <div key={index} className={cn(`aspect-square w-full h-full rounded-sm`)} style={{ backgroundColor: profile.plotTypes.find(p => p.value === value)?.color || 'hsl(0, 0%, 85%)' }} title={`Value: ${value}`} />
                     ))}
                   </div>
                 )}
                 <div className="w-full md:w-48">
                     <h3 className="font-semibold mb-2">{t.legend}</h3>
                     <div className="space-y-2">
-                        {plotTypes.map(item => (
+                        {profile?.plotTypes.map(item => (
                             <div key={item.value} className="flex items-center gap-2">
-                                <div className={cn(`w-4 h-4 rounded-sm`, item.color)} />
+                                <div className={cn(`w-4 h-4 rounded-sm`)} style={{ backgroundColor: item.color }} />
                                 <span className="text-sm">{item.label[language]}</span>
                             </div>
                         ))}
