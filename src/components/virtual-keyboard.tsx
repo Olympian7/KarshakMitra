@@ -24,6 +24,7 @@ export default function VirtualKeyboard() {
   const [isOpen, setIsOpen] = useState(false);
   const [isShifted, setIsShifted] = useState(false);
   const activeInputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
+  const keyboardRef = useRef<HTMLDivElement | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -37,22 +38,22 @@ export default function VirtualKeyboard() {
     }
   }, []);
 
-  const handleBlur = useCallback((event: FocusEvent) => {
-    // We don't nullify on blur to allow clicking on keyboard without losing focus
-  }, []);
-  
   useEffect(() => {
     if (!isClient) return;
 
     document.addEventListener('focusin', handleFocus);
-    document.addEventListener('focusout', handleBlur);
 
     return () => {
       document.removeEventListener('focusin', handleFocus);
-      document.removeEventListener('focusout', handleBlur);
     };
-  }, [isClient, handleFocus, handleBlur]);
+  }, [isClient, handleFocus]);
 
+  useEffect(() => {
+    if (keyboardRef.current) {
+      const keyboardHeight = isOpen ? keyboardRef.current.offsetHeight : 0;
+      document.documentElement.style.setProperty('--virtual-keyboard-height', `${keyboardHeight}px`);
+    }
+  }, [isOpen]);
 
   const handleKeyPress = (key: string) => {
     const input = activeInputRef.current;
@@ -67,14 +68,10 @@ export default function VirtualKeyboard() {
       key + 
       value.substring(selectionEnd);
       
-    // Manually update the input value
     input.value = newValue;
-    
-    // Create and dispatch an 'input' event to notify frameworks like React
     const event = new Event('input', { bubbles: true });
     input.dispatchEvent(event);
     
-    // Set cursor position after the inserted character
     const newCursorPosition = selectionStart + key.length;
     input.focus();
     input.setSelectionRange(newCursorPosition, newCursorPosition);
@@ -91,11 +88,9 @@ export default function VirtualKeyboard() {
     let newCursorPosition;
 
     if (selectionStart === selectionEnd && selectionStart > 0) {
-      // No selection, just backspace one character
       newValue = value.substring(0, selectionStart - 1) + value.substring(selectionEnd);
       newCursorPosition = selectionStart - 1;
     } else {
-      // A selection exists, delete it
       newValue = value.substring(0, selectionStart) + value.substring(selectionEnd);
       newCursorPosition = selectionStart;
     }
@@ -132,8 +127,9 @@ export default function VirtualKeyboard() {
       </div>
 
       <div
+        ref={keyboardRef}
         className={cn(
-          'fixed bottom-0 left-0 right-0 z-[60] bg-muted/95 backdrop-blur-sm border-t border-border shadow-2xl transition-transform duration-300 ease-in-out',
+          'sticky bottom-0 left-0 right-0 z-[60] bg-muted/95 backdrop-blur-sm border-t border-border shadow-2xl transition-transform duration-300 ease-in-out',
           isOpen ? 'translate-y-0' : 'translate-y-full'
         )}
       >

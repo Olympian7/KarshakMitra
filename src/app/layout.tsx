@@ -23,7 +23,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
         <Providers>
-          {children}
+          <main className="transition-[padding] duration-300 ease-in-out pb-[var(--virtual-keyboard-height,0px)]">
+            {children}
+          </main>
           <VirtualKeyboard />
         </Providers>
       </body>
