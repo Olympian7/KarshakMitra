@@ -103,7 +103,7 @@ export default function MarketContent() {
       }
     });
 
-    return { yourCropTrends, otherTrends };
+    return { yourCropTrends: yourTrends, otherTrends: others };
 
   }, [marketTrends, profile]);
 
