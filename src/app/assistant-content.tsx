@@ -34,16 +34,16 @@ function AdvancedAssistantChat() {
   const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
+    // Set initial online state
+    if (typeof navigator !== 'undefined') {
+      setIsOnline(navigator.onLine);
+    }
+    
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
     
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
-
-    // Set initial state
-    if (typeof navigator.onLine !== 'undefined') {
-        setIsOnline(navigator.onLine);
-    }
 
     return () => {
       window.removeEventListener('online', handleOnline);
