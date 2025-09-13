@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Keyboard, X, Delete, ArrowUp, Type } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useKeyboard } from '@/context/keyboard-context';
 
 // Simplified Malayalam Keyboard Layout
 const malayalamLayout = [
@@ -21,7 +22,7 @@ const shiftedLayout = [
 ];
 
 export default function VirtualKeyboard() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, setIsOpen } = useKeyboard();
   const [isShifted, setIsShifted] = useState(false);
   const activeInputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const [isClient, setIsClient] = useState(false);
@@ -95,17 +96,6 @@ export default function VirtualKeyboard() {
 
   return (
     <>
-      <div className="fixed bottom-4 right-4 z-50">
-        <Button
-          size="icon"
-          className="rounded-full h-14 w-14 shadow-lg"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Toggle Virtual Keyboard"
-        >
-          <Keyboard className="h-6 w-6" />
-        </Button>
-      </div>
-
       <div
         className={cn(
           'fixed z-[60] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-muted/95 backdrop-blur-sm border border-border shadow-2xl rounded-lg transition-opacity duration-300 ease-in-out',

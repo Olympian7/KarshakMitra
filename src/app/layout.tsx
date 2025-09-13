@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from '@/components/providers';
 import VirtualKeyboard from '@/components/virtual-keyboard';
+import { KeyboardProvider } from '@/context/keyboard-context';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,8 +24,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
         <Providers>
-          {children}
-          <VirtualKeyboard />
+          <KeyboardProvider>
+            {children}
+            <VirtualKeyboard />
+          </KeyboardProvider>
         </Providers>
       </body>
     </html>

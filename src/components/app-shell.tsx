@@ -12,12 +12,14 @@ import {
   Stethoscope,
   Tractor,
   Bot,
+  Keyboard,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
+import { useKeyboard } from '@/context/keyboard-context';
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -27,6 +29,7 @@ type AppShellProps = {
 
 export default function AppShell({ children, title, activePage }: AppShellProps) {
   const { language, toggleLanguage } = useLanguage();
+  const { setIsOpen } = useKeyboard();
   const t = translations[language];
 
   const navItems = [
@@ -114,6 +117,10 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
           <Button variant="outline" size="icon" className="h-8 w-8" onClick={toggleLanguage}>
             <Languages className="h-4 w-4" />
             <span className="sr-only">Toggle Language</span>
+          </Button>
+           <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setIsOpen(prev => !prev)}>
+            <Keyboard className="h-4 w-4" />
+            <span className="sr-only">Toggle Virtual Keyboard</span>
           </Button>
           <Button variant="outline" size="icon" className="h-8 w-8">
             <Bell className="h-4 w-4" />
