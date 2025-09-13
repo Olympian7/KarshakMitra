@@ -13,8 +13,14 @@ import {
   Card,
   CardContent,
 } from '@/components/ui/card';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import AppShell from '@/components/app-shell';
-import { Store, ChevronsUpDown, UserCheck, ArrowUp, ArrowDown } from 'lucide-react';
+import { Store, UserCheck, IndianRupee } from 'lucide-react';
 import React, { useEffect, useState, useMemo, FC } from 'react';
 import { getMarketTrends, MarketTrend } from '@/services/market';
 import { getProfile, FarmProfile } from '@/services/profile';
@@ -22,92 +28,35 @@ import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { Skeleton } from '@/components/ui/skeleton';
 
-type SortConfig = {
-  key: keyof MarketTrend | null;
-  direction: 'ascending' | 'descending';
-};
-
-const CategoryTable: FC<{ trends: MarketTrend[], categoryName: string, showDistrict?: boolean }> = ({ trends, categoryName, showDistrict = true }) => {
+const CropMarketTable: FC<{ trends: MarketTrend[] }> = ({ trends }) => {
   const { language } = useLanguage();
   const t = translations[language];
-  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'name', direction: 'ascending' });
-
-  const handleSort = (key: keyof MarketTrend) => {
-    let direction: 'ascending' | 'descending' = 'ascending';
-    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
-    }
-    setSortConfig({ key, direction });
-  };
-
-  const sortedTrends = useMemo(() => {
-    let sortableItems = [...trends];
-    if (sortConfig.key !== null) {
-      sortableItems.sort((a, b) => {
-        const valA = a[sortConfig.key!];
-        const valB = b[sortConfig.key!];
-
-        if (typeof valA === 'string' && typeof valB === 'string') {
-          return sortConfig.direction === 'ascending' ? valA.localeCompare(valB) : valB.localeCompare(valA);
-        }
-        
-        if (typeof valA === 'number' && typeof valB === 'number') {
-           return sortConfig.direction === 'ascending' ? valA - valB : valB - valA;
-        }
-
-        return 0;
-      });
-    }
-    return sortableItems;
-  }, [trends, sortConfig]);
-
-  const SortableHeader = ({ columnKey, label }: { columnKey: keyof MarketTrend, label: string }) => {
-    const isSorting = sortConfig.key === columnKey;
-    return (
-        <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort(columnKey)}>
-            <div className="flex items-center gap-2">
-                {label}
-                {isSorting ? (
-                    sortConfig.direction === 'ascending' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />
-                ) : (
-                    <ChevronsUpDown className="h-4 w-4 text-muted-foreground" />
-                )}
-            </div>
-        </TableHead>
-    );
-  };
 
   if (trends.length === 0) return null;
 
   return (
-    <div>
-      {categoryName && <h2 className="text-xl font-semibold mb-4">{categoryName}</h2>}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <SortableHeader columnKey="name" label={t.crop} />
-            <SortableHeader columnKey="variety" label={t.variety} />
-            {showDistrict && <SortableHeader columnKey="district" label="District" />}
-            <SortableHeader columnKey="market" label="Market" />
-            <SortableHeader columnKey="price" label={t.pricePerKg} />
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>{t.variety}</TableHead>
+          <TableHead>District</TableHead>
+          <TableHead>Market</TableHead>
+          <TableHead className="text-right">{t.pricePerKg}</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {trends.map((crop, index) => (
+          <TableRow key={`${crop.name}-${crop.variety}-${crop.market}-${index}`}>
+            <TableCell>{crop.variety}</TableCell>
+            <TableCell>{crop.district}</TableCell>
+            <TableCell>{crop.market}</TableCell>
+            <TableCell className="text-right">₹{crop.price.toFixed(2)}</TableCell>
           </TableRow>
-        </TableHeader>
-        <TableBody>
-          {sortedTrends.map((crop, index) => (
-            <TableRow key={`${crop.name}-${crop.variety}-${crop.market}-${index}`}>
-              <TableCell className="font-medium">{crop.name}</TableCell>
-              <TableCell>{crop.variety}</TableCell>
-              {showDistrict && <TableCell>{crop.district}</TableCell>}
-              <TableCell>{crop.market}</TableCell>
-              <TableCell>₹{crop.price.toFixed(2)}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+        ))}
+      </TableBody>
+    </Table>
   );
 };
-
 
 export default function MarketContent() {
   const { language } = useLanguage();
@@ -129,26 +78,43 @@ export default function MarketContent() {
   }, []);
 
   const { yourCropTrends, otherTrends } = useMemo(() => {
+    const trendsByCrop: { [key: string]: MarketTrend[] } = marketTrends.reduce((acc, trend) => {
+        if (!acc[trend.name]) {
+            acc[trend.name] = [];
+        }
+        acc[trend.name].push(trend);
+        return acc;
+    }, {} as { [key: string]: MarketTrend[] });
+
     if (!profile) {
-      return { yourCropTrends: [], otherTrends: marketTrends };
+      return { yourCropTrends: {}, otherTrends: trendsByCrop };
     }
 
     const yourCropNames = new Set(profile.cropStock.map(c => c.name.toLowerCase()));
     
-    const yourTrends: MarketTrend[] = [];
-    const others: MarketTrend[] = [];
+    const yourTrends: { [key: string]: MarketTrend[] } = {};
+    const others: { [key: string]: MarketTrend[] } = {};
 
-    marketTrends.forEach(trend => {
-      if (yourCropNames.has(trend.name.toLowerCase())) {
-        yourTrends.push(trend);
+    Object.entries(trendsByCrop).forEach(([cropName, trends]) => {
+      if (yourCropNames.has(cropName.toLowerCase())) {
+        yourTrends[cropName] = trends;
       } else {
-        others.push(trend);
+        others[cropName] = trends;
       }
     });
 
-    return { yourCropTrends: yourTrends, otherTrends: others };
+    return { yourCropTrends, otherTrends };
 
   }, [marketTrends, profile]);
+
+  const getPriceRange = (trends: MarketTrend[]) => {
+      if (trends.length === 0) return '';
+      const prices = trends.map(t => t.price);
+      const min = Math.min(...prices);
+      const max = Math.max(...prices);
+      if (min === max) return `₹${min.toFixed(2)}`;
+      return `₹${min.toFixed(2)} - ₹${max.toFixed(2)}`;
+  }
   
   return (
     <AppShell title={t.marketTrends} activePage="market">
@@ -169,49 +135,64 @@ export default function MarketContent() {
           <CardContent className="space-y-8 pt-6">
             {isLoading ? (
                Array.from({ length: 2 }).map((_, i) => (
-                <div key={i}>
+                <div key={i} className="space-y-4">
                     <Skeleton className="h-6 w-1/4 mb-4" />
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>{t.crop}</TableHead>
-                                <TableHead>{t.variety}</TableHead>
-                                <TableHead>District</TableHead>
-                                <TableHead>Market</TableHead>
-                                <TableHead>{t.pricePerKg}</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {Array.from({ length: 3 }).map((_, j) => (
-                                <TableRow key={j}>
-                                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                                    <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                                     <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                                    <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                    <div className="border rounded-md p-4 space-y-2">
+                        <Skeleton className="h-6 w-3/4" />
+                    </div>
                 </div>
                ))
             ) : (
               <>
-                {yourCropTrends.length > 0 && (
+                {Object.keys(yourCropTrends).length > 0 && (
                   <div className="p-4 border-2 border-primary/20 rounded-lg bg-primary/5">
                      <div className="flex items-center gap-3 mb-4">
                         <UserCheck className="h-6 w-6 text-primary" />
                         <h2 className="text-xl font-semibold text-primary">{t.yourCropPrices}</h2>
                      </div>
-                     <CategoryTable trends={yourCropTrends} categoryName="" showDistrict={true} />
+                     <Accordion type="single" collapsible className="w-full">
+                        {Object.entries(yourCropTrends).map(([cropName, trends]) => (
+                             <AccordionItem value={cropName} key={cropName}>
+                                <AccordionTrigger>
+                                    <div className="flex justify-between w-full pr-2">
+                                        <span className="font-semibold">{cropName}</span>
+                                        <span className="text-muted-foreground">{getPriceRange(trends)}</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    <CropMarketTable trends={trends} />
+                                </AccordionContent>
+                            </AccordionItem>
+                        ))}
+                     </Accordion>
                   </div>
                 )}
-                {otherTrends.length > 0 && (
-                    <CategoryTable
-                        trends={otherTrends}
-                        categoryName="Other Market Prices"
-                    />
-                )}
+                
+                <div>
+                    <div className="flex items-center gap-3 mb-4">
+                        <IndianRupee className="h-6 w-6 text-muted-foreground" />
+                        <h2 className="text-xl font-semibold">Other Market Prices</h2>
+                    </div>
+                    {Object.keys(otherTrends).length > 0 ? (
+                        <Accordion type="single" collapsible className="w-full">
+                            {Object.entries(otherTrends).map(([cropName, trends]) => (
+                                <AccordionItem value={cropName} key={cropName}>
+                                    <AccordionTrigger>
+                                        <div className="flex justify-between w-full pr-2">
+                                            <span className="font-semibold">{cropName}</span>
+                                            <span className="text-muted-foreground">{getPriceRange(trends)}</span>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        <CropMarketTable trends={trends} />
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
+                    ) : (
+                        <p className="text-sm text-muted-foreground">No other market data available.</p>
+                    )}
+                </div>
               </>
             )}
           </CardContent>
