@@ -1,3 +1,4 @@
+
 import { LanguageProvider } from '@/context/language-context';
 import LiveMarketContent from '@/app/live-market-content';
 import React from 'react';
@@ -7,6 +8,6 @@ export default function LiveMarketPage() {
   return (
     <LanguageProvider>
       <LiveMarketContent />
-    </Language-Provider>
+    </LanguageProvider>
   );
 }
