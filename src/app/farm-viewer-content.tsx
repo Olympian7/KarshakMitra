@@ -20,6 +20,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -207,19 +213,26 @@ export default function FarmViewerContent() {
     fetchData();
   }, [toast]);
 
-  const potentialIncome = useMemo(() => {
-    if (!profile || marketTrends.length === 0) return 0;
+  const incomeBreakdown = useMemo(() => {
+    if (!profile || marketTrends.length === 0) return { breakdown: [], total: 0 };
 
-    return profile.cropStock.reduce((total, stockItem) => {
-      const marketPrice = marketTrends.find(
-        trend => trend.name.toLowerCase() === stockItem.name.toLowerCase()
-      )?.price;
+    const breakdown = profile.cropStock.map(stockItem => {
+        const marketTrend = marketTrends.find(
+            trend => trend.name.toLowerCase() === stockItem.name.toLowerCase()
+        );
+        const price = marketTrend ? marketTrend.price : 0;
+        const subtotal = stockItem.quantity * price;
+        return {
+            name: stockItem.name,
+            quantity: stockItem.quantity,
+            price: price,
+            subtotal: subtotal
+        };
+    });
 
-      if (marketPrice) {
-        return total + stockItem.quantity * marketPrice;
-      }
-      return total;
-    }, 0);
+    const total = breakdown.reduce((acc, item) => acc + item.subtotal, 0);
+
+    return { breakdown, total };
   }, [profile, marketTrends]);
 
   const handleStockSave = (updatedProfile: FarmProfile) => {
@@ -386,20 +399,48 @@ export default function FarmViewerContent() {
               </CardContent>
             </Card>
              <Card>
-                <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2">
-                    <IndianRupee className="h-6 w-6 text-muted-foreground" />
-                    <CardTitle>{t.potentialIncome}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {isLoading ? (
-                        <Skeleton className="h-10 w-1/2" />
-                    ) : (
-                        <div className="text-3xl font-bold">
-                            ₹{potentialIncome.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </div>
-                    )}
-                    <p className="text-xs text-muted-foreground pt-1">{t.potentialIncomeDesc}</p>
-                </CardContent>
+                <Accordion type="single" collapsible>
+                    <AccordionItem value="item-1" className="border-b-0">
+                        <AccordionTrigger className="p-6">
+                            <div className="flex items-center gap-4 space-y-0">
+                                <IndianRupee className="h-6 w-6 text-muted-foreground" />
+                                <div className="text-left">
+                                    <h3 className="text-base font-semibold leading-none tracking-tight">{t.potentialIncome}</h3>
+                                    {isLoading ? (
+                                        <Skeleton className="h-8 w-32 mt-2" />
+                                    ) : (
+                                        <div className="text-3xl font-bold">
+                                            ₹{incomeBreakdown.total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-6 pb-6">
+                            <p className="text-xs text-muted-foreground pb-4">{t.potentialIncomeDesc}</p>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>{t.crop}</TableHead>
+                                        <TableHead className="text-center">{t.quantityKg}</TableHead>
+                                        <TableHead className="text-center">{t.pricePerKg}</TableHead>
+                                        <TableHead className="text-right">{t.subtotal}</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {incomeBreakdown.breakdown.map((item) => (
+                                        <TableRow key={item.name}>
+                                            <TableCell className="font-medium">{item.name}</TableCell>
+                                            <TableCell className="text-center">{item.quantity.toLocaleString()}</TableCell>
+                                            <TableCell className="text-center">₹{item.price.toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">₹{item.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
             </Card>
           </div>
         </div>

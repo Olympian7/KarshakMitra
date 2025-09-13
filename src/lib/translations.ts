@@ -156,6 +156,7 @@ export const translations = {
       Herbicide: 'Herbicide',
       potentialIncome: 'Potential Income from Stock',
       potentialIncomeDesc: 'Based on current stock and market prices. This is an estimate.',
+      subtotal: 'Subtotal',
     },
     ml: {
       // App Shell & Navigation
@@ -313,5 +314,6 @@ export const translations = {
       Herbicide: 'കളനാശിനി',
       potentialIncome: 'സ്റ്റോക്കിൽ നിന്നുള്ള സാധ്യതയുള്ള വരുമാനം',
       potentialIncomeDesc: 'നിലവിലെ സ്റ്റോക്കും മാർക്കറ്റ് വിലയും അടിസ്ഥാനമാക്കി. ഇതൊരു ഏകദേശ കണക്കാണ്.',
+      subtotal: 'ഉപ മൊത്തം',
     },
   };
