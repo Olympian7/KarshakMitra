@@ -93,10 +93,6 @@ export default function VirtualKeyboard() {
 
   const currentLayout = isShifted ? shiftedLayout : malayalamLayout;
 
-  const sizeClasses = {
-    container: 'w-[550px]', key: 'h-10 text-base', gap: 'gap-1'
-  };
-
   return (
     <>
       <div className="fixed bottom-4 right-4 z-50">
@@ -113,7 +109,7 @@ export default function VirtualKeyboard() {
       <div
         className={cn(
           'fixed z-[60] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-muted/95 backdrop-blur-sm border border-border shadow-2xl rounded-lg transition-opacity duration-300 ease-in-out',
-          sizeClasses.container,
+          'min-w-min max-w-2xl',
           isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         )}
       >
@@ -127,28 +123,28 @@ export default function VirtualKeyboard() {
             </Button>
         </div>
 
-        <div className={cn('p-2 space-y-1', sizeClasses.gap)}>
+        <div className={'p-2 space-y-1'}>
           {currentLayout.map((row, rowIndex) => (
-            <div key={rowIndex} className={cn('flex justify-center', sizeClasses.gap)}>
+            <div key={rowIndex} className={'flex justify-center gap-1'}>
               {row.map((key) => (
                 <Button
                   key={key}
                   onClick={() => handleKeyPress(key)}
-                  className={cn('flex-1 bg-background/80 text-foreground hover:bg-primary hover:text-primary-foreground shadow-sm', sizeClasses.key)}
+                  className={cn('h-10 text-base flex-1 min-w-[36px] bg-background/80 text-foreground hover:bg-primary hover:text-primary-foreground shadow-sm')}
                 >
                   {key}
                 </Button>
               ))}
             </div>
           ))}
-          <div className={cn('flex justify-center', sizeClasses.gap)}>
-            <Button onClick={() => setIsShifted(!isShifted)} className={cn('w-16 shadow', sizeClasses.key)} variant={isShifted ? "default" : "secondary"}>
+          <div className={'flex justify-center gap-1'}>
+            <Button onClick={() => setIsShifted(!isShifted)} className={cn('w-16 shadow h-10')} variant={isShifted ? "default" : "secondary"}>
               <ArrowUp className="h-5 w-5" />
             </Button>
-            <Button onClick={handleSpacebar} className={cn('flex-1 shadow', sizeClasses.key)} variant="secondary">
+            <Button onClick={handleSpacebar} className={cn('flex-1 shadow h-10')} variant="secondary">
               <Type className="h-5 w-5" />
             </Button>
-            <Button onClick={handleBackspace} className={cn('w-16 shadow', sizeClasses.key)} variant="secondary">
+            <Button onClick={handleBackspace} className={cn('w-16 shadow h-10')} variant="secondary">
               <Delete className="h-5 w-5" />
             </Button>
           </div>
