@@ -15,10 +15,18 @@ import {
 } from '@/components/ui/table';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
-import { getLiveCropPrices, LiveMarketRecord, COMMODITIES } from '@/services/live-market';
+import { getLiveCropPrices, LiveMarketRecord } from '@/services/live-market';
 import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Cable, RefreshCw } from 'lucide-react';
+
+// List of commodities for the dropdown
+const COMMODITIES = [
+  'Tomato', 'Onion', 'Paddy', 'Coconut', 'Banana', 'Rubber', 
+  'Rice', 'Arecanut', 'Mango', 'Potato', 'Black Pepper', 'Cardamom',
+  'Ginger', 'Tapioca'
+];
+
 
 export default function LiveMarketContent() {
   const { language } = useLanguage();
