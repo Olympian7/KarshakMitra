@@ -182,8 +182,9 @@ export default function ConsultationContent() {
           if (result && result.audioDataUri) {
               if (!audioRef.current) {
                   audioRef.current = new Audio();
-                  audioRef.current.onended = stopAudio;
               }
+              // This line is crucial to reset the state when audio finishes
+              audioRef.current.onended = stopAudio;
               audioRef.current.src = result.audioDataUri;
               audioRef.current.play();
               setAudioState(prev => ({ ...prev, [cardId]: 'playing' }));
