@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -11,6 +12,7 @@ import { MessageCircle, User, Send, Languages, Loader2, ExternalLink } from 'luc
 import { assistantFlow, AssistantOutput } from '@/ai/flows/assistant-flow';
 import { useToast } from '@/components/ui/use-toast';
 import Link from 'next/link';
+import { getOfflineResponse } from '@/lib/offline-data';
 
 interface Message {
   id: string;
@@ -29,6 +31,26 @@ function AdvancedAssistantChat() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [translatedMessages, setTranslatedMessages] = useState<Record<string, boolean>>({});
+  const [isOnline, setIsOnline] = useState(true);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Set initial state
+    if (typeof navigator.onLine !== 'undefined') {
+        setIsOnline(navigator.onLine);
+    }
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -52,15 +74,26 @@ function AdvancedAssistantChat() {
     setInput('');
 
     try {
-      const result: AssistantOutput = await assistantFlow({ query: input });
-      const assistantMessage: Message = {
-        id: `assistant-${Date.now()}`,
-        sender: 'assistant',
-        englishText: result.englishResponse,
-        malayalamText: result.malayalamResponse,
-        link: result.link,
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
+        let assistantMessage: Message;
+        if (!isOnline) {
+            const offlineResponse = getOfflineResponse(input);
+            assistantMessage = {
+                id: `assistant-${Date.now()}`,
+                sender: 'assistant',
+                englishText: offlineResponse.en,
+                malayalamText: offlineResponse.ml,
+            };
+        } else {
+            const result: AssistantOutput = await assistantFlow({ query: input });
+            assistantMessage = {
+                id: `assistant-${Date.now()}`,
+                sender: 'assistant',
+                englishText: result.englishResponse,
+                malayalamText: result.malayalamResponse,
+                link: result.link,
+            };
+        }
+        setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error("Error calling assistant flow:", error);
       toast({
@@ -157,6 +190,11 @@ function AdvancedAssistantChat() {
         <div ref={messagesEndRef} />
       </div>
       <div className="p-4 border-t bg-background">
+         {!isOnline && (
+            <div className="text-center text-xs text-muted-foreground mb-2">
+              You are currently offline. Responses are limited.
+            </div>
+          )}
         <div className="relative">
           <Input
             value={input}
