@@ -1,83 +1,42 @@
-// This service now fetches real-time market data from data.gov.in.
 'use server';
+
+// This is a mock service that simulates fetching market trend data.
+// In a real application, you would replace this with a call to a real data API.
 
 export type MarketTrend = {
   name: string;
   variety: string;
-  price: number; // Price per Quintal (100kg)
+  price: number; // Price per Kg
   market: string;
   district: string;
 };
 
-// This type represents the raw record from the data.gov.in API
-type ApiRecord = {
-    state: string;
-    district: string;
-    market: string;
-    commodity: string;
-    variety: string;
-    arrival_date: string;
-    min_price: string;
-    max_price: string;
-    modal_price: string;
-};
+// Mock data that includes all crops from the user's profile stock.
+const mockMarketData: MarketTrend[] = [
+  // Crops from Farm Profile
+  { name: 'Paddy', variety: 'Jaya', price: 20.50, market: 'Alappuzha', district: 'Alappuzha' },
+  { name: 'Paddy', variety: 'Uma', price: 21.00, market: 'Kuttanad', district: 'Alappuzha' },
+  { name: 'Lentils', variety: 'Red', price: 95.00, market: 'Thrissur', district: 'Thrissur' },
+  { name: 'Banana', variety: 'Nendran', price: 45.00, market: 'Ernakulam', district: 'Ernakulam' },
+  { name: 'Banana', variety: 'Robusta', price: 30.00, market: 'Kottayam', district: 'Kottayam' },
+  { name: 'Ginger', variety: 'Cochin', price: 120.00, market: 'Idukki', district: 'Idukki' },
+  { name: 'Okra', variety: 'Arka Anamika', price: 35.00, market: 'Palakkad', district: 'Palakkad' },
+  
+  // Additional common crops for variety
+  { name: 'Coconut', variety: 'West Coast Tall', price: 32.00, market: 'Kozhikode', district: 'Kozhikode' },
+  { name: 'Coconut', variety: 'Chowghat Orange', price: 35.00, market: 'Malappuram', district: 'Malappuram' },
+  { name: 'Rubber', variety: 'RSS-4', price: 175.00, market: 'Kottayam', district: 'Kottayam' },
+  { name: 'Black Pepper', variety: 'Tellicherry', price: 550.00, market: 'Wayanad', district: 'Wayanad' },
+  { name: 'Cardamom', variety: 'Green', price: 1500.00, market: 'Idukki', district: 'Idukki' },
+  { name: 'Tapioca', variety: 'Malayan-4', price: 25.00, market: 'Pathanamthitta', district: 'Pathanamthitta' },
+  { name: 'Tomato', variety: 'Hybrid', price: 40.00, market: 'Thrissur', district: 'Thrissur' },
+];
 
-const API_ENDPOINT = 'https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070';
-const API_KEY = '579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b';
-
-// A simple in-memory cache to avoid hitting the API on every single request
-let cache = {
-    data: null as MarketTrend[] | null,
-    lastFetch: 0,
-};
-const CACHE_DURATION = 1000 * 60 * 60; // Cache for 1 hour
 
 export async function getMarketTrends(): Promise<MarketTrend[]> {
-    const now = Date.now();
-    if (cache.data && (now - cache.lastFetch < CACHE_DURATION)) {
-        return cache.data;
-    }
-    
-    // We fetch a large number of records and filter for Kerala, as the API is national.
-    const url = `${API_ENDPOINT}?api-key=${API_KEY}&format=json&limit=1000`;
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 300));
 
-    try {
-        const response = await fetch(url, { next: { revalidate: 3600 } }); // Revalidate every hour
-        if (!response.ok) {
-            console.error('Failed to fetch market data:', response.statusText);
-            return [];
-        }
-        
-        const json = await response.json();
-        const records: ApiRecord[] = json.records;
-
-        const keralaRecords = records.filter(record => record.state === 'Kerala');
-
-        // We only want the most recent, unique entry for each commodity/market combination
-        const latestUniqueRecords = new Map<string, ApiRecord>();
-        keralaRecords.forEach(record => {
-            const key = `${record.commodity}-${record.market}-${record.variety}`;
-            const existing = latestUniqueRecords.get(key);
-            if (!existing || new Date(record.arrival_date) > new Date(existing.arrival_date)) {
-                latestUniqueRecords.set(key, record);
-            }
-        });
-
-        const transformedData: MarketTrend[] = Array.from(latestUniqueRecords.values()).map(record => ({
-            name: record.commodity,
-            variety: record.variety,
-            price: parseFloat(record.modal_price) / 100, // Price is per quintal, convert to per kg
-            market: record.market,
-            district: record.district,
-        }));
-        
-        cache.data = transformedData;
-        cache.lastFetch = now;
-        
-        return transformedData;
-
-    } catch (error) {
-        console.error('Error fetching or parsing market data:', error);
-        return [];
-    }
+  // Return mock data
+  return mockMarketData;
 }
