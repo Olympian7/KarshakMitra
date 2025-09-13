@@ -14,8 +14,7 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import AppShell from '@/components/app-shell';
-import { ArrowDown, ArrowUp, Store, ChevronsUpDown, UserCheck } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Store, ChevronsUpDown, UserCheck, ArrowUp, ArrowDown } from 'lucide-react';
 import React, { useEffect, useState, useMemo, FC } from 'react';
 import { getMarketTrends, MarketTrend } from '@/services/market';
 import { getProfile, FarmProfile } from '@/services/profile';
@@ -28,10 +27,10 @@ type SortConfig = {
   direction: 'ascending' | 'descending';
 };
 
-const CategoryTable: FC<{ trends: MarketTrend[], categoryName: string }> = ({ trends, categoryName }) => {
+const CategoryTable: FC<{ trends: MarketTrend[], categoryName: string, showDistrict?: boolean }> = ({ trends, categoryName, showDistrict = true }) => {
   const { language } = useLanguage();
   const t = translations[language];
-  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'ascending' });
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'name', direction: 'ascending' });
 
   const handleSort = (key: keyof MarketTrend) => {
     let direction: 'ascending' | 'descending' = 'ascending';
@@ -47,6 +46,10 @@ const CategoryTable: FC<{ trends: MarketTrend[], categoryName: string }> = ({ tr
       sortableItems.sort((a, b) => {
         const valA = a[sortConfig.key!];
         const valB = b[sortConfig.key!];
+
+        if (typeof valA === 'string' && typeof valB === 'string') {
+          return sortConfig.direction === 'ascending' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        }
 
         if (valA < valB) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
@@ -80,37 +83,25 @@ const CategoryTable: FC<{ trends: MarketTrend[], categoryName: string }> = ({ tr
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">{categoryName}</h2>
+      {categoryName && <h2 className="text-xl font-semibold mb-4">{categoryName}</h2>}
       <Table>
         <TableHeader>
           <TableRow>
             <SortableHeader columnKey="name" label={t.crop} />
             <SortableHeader columnKey="variety" label={t.variety} />
+            {showDistrict && <SortableHeader columnKey="district" label="District" />}
+            <SortableHeader columnKey="market" label="Market" />
             <SortableHeader columnKey="price" label={t.pricePerKg} />
-            <TableHead className="text-right">{t.change}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {sortedTrends.map((crop) => (
-            <TableRow key={`${crop.name}-${crop.variety}`}>
+          {sortedTrends.map((crop, index) => (
+            <TableRow key={`${crop.name}-${crop.variety}-${crop.market}-${index}`}>
               <TableCell className="font-medium">{crop.name}</TableCell>
               <TableCell>{crop.variety}</TableCell>
+              {showDistrict && <TableCell>{crop.district}</TableCell>}
+              <TableCell>{crop.market}</TableCell>
               <TableCell>₹{crop.price.toFixed(2)}</TableCell>
-              <TableCell className="text-right">
-                <Badge
-                  variant={crop.changeDirection === 'up' ? 'default' : 'destructive'}
-                  className={`flex items-center justify-end gap-1 w-20 ml-auto ${
-                    crop.changeDirection === 'up' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                  }`}
-                >
-                  {crop.changeDirection === 'up' ? (
-                    <ArrowUp className="h-3 w-3" />
-                  ) : (
-                    <ArrowDown className="h-3 w-3" />
-                  )}
-                  <span>{crop.change.toFixed(2)}%</span>
-                </Badge>
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -139,34 +130,25 @@ export default function MarketContent() {
     fetchData();
   }, []);
 
-  const { yourCropTrends, otherCategorizedTrends } = useMemo(() => {
+  const { yourCropTrends, otherTrends } = useMemo(() => {
     if (!profile) {
-      return { yourCropTrends: [], otherCategorizedTrends: {} };
+      return { yourCropTrends: [], otherTrends: marketTrends };
     }
 
     const yourCropNames = new Set(profile.cropStock.map(c => c.name.toLowerCase()));
     
     const yourTrends: MarketTrend[] = [];
-    const otherTrends: MarketTrend[] = [];
+    const others: MarketTrend[] = [];
 
     marketTrends.forEach(trend => {
       if (yourCropNames.has(trend.name.toLowerCase())) {
         yourTrends.push(trend);
       } else {
-        otherTrends.push(trend);
+        others.push(trend);
       }
     });
 
-    const categorized = otherTrends.reduce((acc, trend) => {
-      const category = trend.category;
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(trend);
-      return acc;
-    }, {} as Record<string, MarketTrend[]>);
-
-    return { yourCropTrends: yourTrends, otherCategorizedTrends: categorized };
+    return { yourCropTrends: yourTrends, otherTrends: others };
 
   }, [marketTrends, profile]);
   
@@ -196,8 +178,8 @@ export default function MarketContent() {
                             <TableRow>
                                 <TableHead>{t.crop}</TableHead>
                                 <TableHead>{t.variety}</TableHead>
+                                <TableHead>Market</TableHead>
                                 <TableHead>{t.pricePerKg}</TableHead>
-                                <TableHead className="text-right">{t.change}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -205,8 +187,8 @@ export default function MarketContent() {
                                 <TableRow key={j}>
                                     <TableCell><Skeleton className="h-4 w-24" /></TableCell>
                                     <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
                                     <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                                    <TableCell className="text-right"><Skeleton className="h-6 w-20 ml-auto" /></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -221,16 +203,15 @@ export default function MarketContent() {
                         <UserCheck className="h-6 w-6 text-primary" />
                         <h2 className="text-xl font-semibold text-primary">{t.yourCropPrices}</h2>
                      </div>
-                     <CategoryTable trends={yourCropTrends} categoryName="" />
+                     <CategoryTable trends={yourCropTrends} categoryName="" showDistrict={false} />
                   </div>
                 )}
-                {Object.entries(otherCategorizedTrends).map(([category, trends]) => (
-                  <CategoryTable
-                    key={category}
-                    trends={trends}
-                    categoryName={t[category as keyof typeof t] || category}
-                  />
-                ))}
+                {otherTrends.length > 0 && (
+                    <CategoryTable
+                        trends={otherTrends}
+                        categoryName="Other Market Prices"
+                    />
+                )}
               </>
             )}
           </CardContent>
