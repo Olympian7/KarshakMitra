@@ -7,16 +7,20 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import AppShell from '@/components/app-shell';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
-import { ExternalLink, University, BookOpen, Users, LandPlot, ShieldCheck } from 'lucide-react';
+import { ExternalLink, University, BookOpen, Users, LandPlot, ShieldCheck, Speaker, Loader2, Square } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import Image from 'next/image';
 import imageData from '@/lib/placeholder-images.json';
+import React, { useState, useRef, useEffect } from 'react';
+import { generateSpeech } from '@/ai/flows/tts-flow';
+import { useToast } from '@/components/ui/use-toast';
 
 type ConsultationCategory = 'gov' | 'knowledge' | 'community';
 
@@ -137,6 +141,66 @@ export default function ConsultationContent() {
   const t = translations[language];
   const categoryInfo = categories(language);
   const { consultation_banner } = imageData;
+  const { toast } = useToast();
+
+  const [audioState, setAudioState] = useState<{ [key: string]: 'idle' | 'loading' | 'playing' }>({});
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    // Audio cleanup
+    const audioEl = audioRef.current;
+    return () => {
+      if (audioEl) {
+        audioEl.pause();
+        audioEl.src = '';
+      }
+    };
+  }, []);
+
+  const stopAudio = () => {
+    if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+    }
+    setAudioState(prev => {
+        const newState = { ...prev };
+        Object.keys(newState).forEach(key => {
+            if (newState[key] === 'playing') newState[key] = 'idle';
+        });
+        return newState;
+    });
+  };
+
+  const handlePlayAudio = async (cardId: string, title: string, description: string) => {
+      stopAudio();
+      
+      const textToSpeak = `${title}. ${description}`;
+
+      setAudioState(prev => ({ ...prev, [cardId]: 'loading' }));
+      try {
+          const result = await generateSpeech({ text: textToSpeak, language: language });
+          if (result && result.audioDataUri) {
+              if (!audioRef.current) {
+                  audioRef.current = new Audio();
+                  audioRef.current.onended = stopAudio;
+              }
+              audioRef.current.src = result.audioDataUri;
+              audioRef.current.play();
+              setAudioState(prev => ({ ...prev, [cardId]: 'playing' }));
+          } else {
+              throw new Error("No audio data received.");
+          }
+      } catch (error) {
+          console.error("Error generating speech:", error);
+          toast({
+              variant: "destructive",
+              title: "Speech Error",
+              description: "Could not generate audio for this message.",
+          });
+          setAudioState(prev => ({ ...prev, [cardId]: 'idle' }));
+      }
+  };
+
 
   return (
     <AppShell title={t.consultation} activePage="consultation">
@@ -171,7 +235,9 @@ export default function ConsultationContent() {
                         <p className="text-muted-foreground">{category.description}</p>
                     </div>
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        {links.map((item) => (
+                        {links.map((item) => {
+                            const currentAudioState = audioState[item.id] || 'idle';
+                            return (
                              <Card key={item.id} className="flex flex-col">
                                 <CardHeader className="flex-row items-start gap-4 space-y-0">
                                    <div className="p-3 rounded-md bg-primary/10 text-primary border border-primary/20">
@@ -182,15 +248,29 @@ export default function ConsultationContent() {
                                     <CardDescription className="mt-1">{item.description[language]}</CardDescription>
                                    </div>
                                 </CardHeader>
-                                <CardContent className="mt-auto">
-                                    <Button asChild className="w-full">
+                                <CardContent className="flex-grow flex flex-col justify-end">
+                                    {/* This spacer pushes the footer to the bottom */}
+                                </CardContent>
+                                <CardFooter className="flex items-center justify-between gap-2 pt-4">
+                                    <Button asChild className="flex-1">
                                         <Link href={item.link} target="_blank" rel="noopener noreferrer">
                                             {t.visitWebsite} <ExternalLink className="ml-2 h-4 w-4" />
                                         </Link>
                                     </Button>
-                                </CardContent>
+                                    <Button 
+                                        variant="outline"
+                                        size="icon"
+                                        onClick={() => currentAudioState === 'playing' ? stopAudio() : handlePlayAudio(item.id, item.title[language], item.description[language])}
+                                        className="h-10 w-10 flex-shrink-0"
+                                    >
+                                        {currentAudioState === 'loading' && <Loader2 className="h-5 w-5 animate-spin" />}
+                                        {currentAudioState === 'playing' && <Square className="h-5 w-5" />}
+                                        {currentAudioState === 'idle' && <Speaker className="h-5 w-5" />}
+                                        <span className="sr-only">{t.playAudio}</span>
+                                    </Button>
+                                </CardFooter>
                             </Card>
-                        ))}
+                        )})}
                     </div>
                 </div>
             )
