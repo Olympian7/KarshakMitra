@@ -13,6 +13,7 @@ import {
   Tractor,
   Bot,
   Keyboard,
+  Cable,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -24,7 +25,7 @@ import { useKeyboard } from '@/context/keyboard-context';
 type AppShellProps = {
   children: React.ReactNode;
   title: string;
-  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer' | 'community-bot';
+  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer' | 'community-bot' | 'live-market';
 };
 
 export default function AppShell({ children, title, activePage }: AppShellProps) {
@@ -42,6 +43,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
     { id: 'tracking', href: '/tracking', icon: ClipboardList, label: t.activityTracking },
     { id: 'schemes', href: '/schemes', icon: Landmark, label: t.governmentSchemes },
     { id: 'market', href: '/market', icon: LineChart, label: t.marketTrends },
+    { id: 'live-market', href: '/live-market', icon: Cable, label: t.liveMarket },
     { id: 'consultation', href: '/consultation', icon: BookUser, label: t.consultation },
   ];
 

@@ -1,4 +1,3 @@
-
 export const translations = {
     en: {
       // App Shell & Navigation
@@ -9,6 +8,7 @@ export const translations = {
       activityTracking: 'Activity Tracking',
       governmentSchemes: 'Government Schemes',
       marketTrends: 'Market Trends',
+      liveMarket: 'Live Market',
       consultation: 'Consultation',
       diagnosis: 'Pest & Disease Diagnosis',
       farmViewer: 'Farm Viewer',
@@ -157,6 +157,18 @@ export const translations = {
       potentialIncome: 'Potential Income from Stock',
       potentialIncomeDesc: 'Based on current stock and market prices. This is an estimate.',
       subtotal: 'Subtotal',
+
+      // Live Market Page
+      liveMarketDesc: 'Live daily market prices for common crops in Kerala. Data is sourced from data.gov.in (Agmarknet).',
+      selectCommodity: 'Select Commodity',
+      refresh: 'Refresh',
+      date: 'Date',
+      market: 'Market',
+      minPrice: 'Min Price (Rs/qtl)',
+      maxPrice: 'Max Price (Rs/qtl)',
+      modalPrice: 'Modal Price (Rs/qtl)',
+      noDataFound: 'No data found for this crop. Please try another.',
+      dataSource: 'Data source:',
     },
     ml: {
       // App Shell & Navigation
@@ -167,6 +179,7 @@ export const translations = {
       activityTracking: 'പ്രവർത്തന ട്രാക്കിംഗ്',
       governmentSchemes: 'സർക്കാർ പദ്ധതികൾ',
       marketTrends: 'വിപണി പ്രവണതകൾ',
+      liveMarket: 'തത്സമയ വിപണി',
       consultation: 'കൺസൾട്ടേഷൻ',
       diagnosis: 'കീടരോഗ നിർണ്ണയം',
       farmViewer: 'ഫാം വ്യൂവർ',
@@ -315,5 +328,17 @@ export const translations = {
       potentialIncome: 'സ്റ്റോക്കിൽ നിന്നുള്ള സാധ്യതയുള്ള വരുമാനം',
       potentialIncomeDesc: 'നിലവിലെ സ്റ്റോക്കും മാർക്കറ്റ് വിലയും അടിസ്ഥാനമാക്കി. ഇതൊരു ഏകദേശ കണക്കാണ്.',
       subtotal: 'ഉപ മൊത്തം',
+
+      // Live Market Page
+      liveMarketDesc: 'കേരളത്തിലെ സാധാരണ വിളകളുടെ തത്സമയ പ്രതിദിന വിപണി വിലകൾ. ഡാറ്റ data.gov.in (Agmarknet)-ൽ നിന്ന് ഉറവിടമാക്കിയത്.',
+      selectCommodity: 'വിള തിരഞ്ഞെടുക്കുക',
+      refresh: 'പുതുക്കുക',
+      date: 'തീയതി',
+      market: 'വിപണി',
+      minPrice: 'കുറഞ്ഞ വില (രൂപ/ക്വിന്റൽ)',
+      maxPrice: 'കൂടിയ വില (രൂപ/ക്വിന്റൽ)',
+      modalPrice: 'സാധാരണ വില (രൂപ/ക്വിന്റൽ)',
+      noDataFound: 'ഈ വിളയ്ക്ക് ഡാറ്റയൊന്നും കണ്ടെത്തിയില്ല. ദയവായി മറ്റൊന്ന് ശ്രമിക്കുക.',
+      dataSource: 'ഡാറ്റ ഉറവിടം:',
     },
   };
