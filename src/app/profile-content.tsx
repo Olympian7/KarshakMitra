@@ -54,12 +54,21 @@ function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile,
 
     const generateRandomColor = () => {
         const colors = [
-            'bg-sky-500', 'bg-indigo-500', 'bg-purple-500', 'bg-pink-500', 'bg-teal-500', 'bg-cyan-500'
+            'bg-sky-500', 'bg-indigo-500', 'bg-purple-500', 'bg-pink-500', 
+            'bg-teal-500', 'bg-cyan-500', 'bg-rose-500', 'bg-lime-500',
+            'bg-fuchsia-500', 'bg-violet-500', 'bg-emerald-500'
         ];
-        // Avoid colors already in use
+        
         const usedColors = localPlotTypes.map(pt => pt.color);
         const availableColors = colors.filter(c => !usedColors.includes(c));
-        return availableColors.length > 0 ? availableColors[Math.floor(Math.random() * availableColors.length)] : colors[Math.floor(Math.random() * colors.length)];
+        
+        if (availableColors.length > 0) {
+            return availableColors[Math.floor(Math.random() * availableColors.length)];
+        }
+        
+        // Fallback for when all predefined colors are used
+        const randomHue = Math.floor(Math.random() * 360);
+        return `hsl(${randomHue} 70% 50%)`;
     };
 
     const handleAddCrop = () => {
@@ -73,7 +82,7 @@ function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile,
         }
 
         const newPlotType: PlotType = {
-            value: Math.max(...localPlotTypes.map(pt => pt.value)) + 1, // Ensure unique value
+            value: Math.max(0, ...localPlotTypes.map(pt => pt.value)) + 1, // Ensure unique value
             color: generateRandomColor(),
             label: { en: newCropName.trim(), ml: newCropName.trim() },
         };
@@ -111,7 +120,7 @@ function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile,
                 <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
                     {localPlotTypes.map(pt => (
                         <div key={pt.value} className="flex items-center gap-3">
-                            <div className={cn('w-6 h-6 rounded-md flex-shrink-0', pt.color)} />
+                            <div className={cn('w-6 h-6 rounded-md flex-shrink-0', pt.color)} style={{ backgroundColor: pt.color.startsWith('hsl') ? pt.color : undefined }} />
                             <div className="flex-1">
                                 <p className="font-medium">{pt.label.en}</p>
                             </div>
@@ -379,7 +388,7 @@ function FarmProfileForm() {
                                             isLayoutLocked && 'opacity-50 cursor-not-allowed'
                                         )}
                                     >
-                                        <div className={cn('w-4 h-4 rounded-sm flex-shrink-0', plot.color)} />
+                                        <div className={cn('w-4 h-4 rounded-sm flex-shrink-0', plot.color)} style={{ backgroundColor: plot.color.startsWith('hsl') ? plot.color : undefined }}/>
                                         <span className="text-sm">{plot.label[language]}</span>
                                     </div>
                                 ))}
@@ -399,6 +408,7 @@ function FarmProfileForm() {
                                         <div 
                                             key={`${rowIndex}-${colIndex}`}
                                             className={cn('aspect-square w-full h-full rounded-sm', getColorForValue(cellValue, profile.plotTypes))}
+                                            style={{ backgroundColor: getColorForValue(cellValue, profile.plotTypes).startsWith('hsl') ? getColorForValue(cellValue, profile.plotTypes) : undefined }}
                                             onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                                             onMouseOver={() => handleMouseOver(rowIndex, colIndex)}
                                         />
