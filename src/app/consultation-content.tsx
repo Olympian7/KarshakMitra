@@ -172,37 +172,33 @@ export default function ConsultationContent() {
   };
 
   const handlePlayAudio = async (cardId: string, title: string, description: string) => {
-      stopAudio();
-      
-      const textToSpeak = `${title}. ${description}`;
+    stopAudio();
+    const textToSpeak = `${title}. ${description}`;
 
-      setAudioState(prev => ({ ...prev, [cardId]: 'loading' }));
-      try {
-          const result = await generateSpeech({ text: textToSpeak, language: language });
-          if (result && result.audioDataUri) {
-              if (!audioRef.current) {
-                audioRef.current = new Audio();
-                audioRef.current.onended = () => {
-                    setAudioState(prev => ({ ...prev, [cardId]: 'idle' }));
-                };
-              }
-              
-              audioRef.current.src = result.audioDataUri;
-              audioRef.current.play();
-              setAudioState(prev => ({ ...prev, [cardId]: 'playing' }));
-
-          } else {
-              throw new Error("No audio data received.");
-          }
-      } catch (error) {
-          console.error("Error generating speech:", error);
-          toast({
-              variant: "destructive",
-              title: "Speech Error",
-              description: "Could not generate audio for this message.",
-          });
-          setAudioState(prev => ({ ...prev, [cardId]: 'idle' }));
-      }
+    setAudioState(prev => ({ ...prev, [cardId]: 'loading' }));
+    try {
+        const result = await generateSpeech({ text: textToSpeak, language: language });
+        if (result && result.audioDataUri) {
+            if (!audioRef.current) {
+              audioRef.current = new Audio();
+              audioRef.current.onended = stopAudio;
+            }
+            
+            audioRef.current.src = result.audioDataUri;
+            audioRef.current.play();
+            setAudioState(prev => ({ ...prev, [cardId]: 'playing' }));
+        } else {
+            throw new Error("No audio data received.");
+        }
+    } catch (error) {
+        console.error("Error generating speech:", error);
+        toast({
+            variant: "destructive",
+            title: "Speech Error",
+            description: "Could not generate audio for this message.",
+        });
+        setAudioState(prev => ({ ...prev, [cardId]: 'idle' }));
+    }
   };
 
 
