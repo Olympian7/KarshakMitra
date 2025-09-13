@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { Bar, BarChart as RechartsBarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart as RechartsBarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 import { useToast } from '@/components/ui/use-toast';
 import { getProfile, saveProfile, FarmProfile, PlotType } from '@/services/profile';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -33,18 +33,6 @@ import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { cn } from '@/lib/utils';
 
-const chartData = [
-  { name: 'Rice', value: 45 },
-  { name: 'Coconut', value: 30 },
-  { name: 'Banana', value: 15 },
-  { name: 'Other', value: 10 },
-];
-
-
-const getColorForValue = (value: number, plotTypes: PlotType[]) => {
-    return plotTypes.find(p => p.value === value)?.color || 'hsl(0, 0%, 80%)'; // Default gray
-}
-
 function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile, onPaletteUpdate: (newPlotTypes: PlotType[]) => void }) {
     const { language } = useLanguage();
     const t = translations[language];
@@ -53,7 +41,6 @@ function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile,
     const [newCropName, setNewCropName] = useState('');
 
     const generateRandomColor = () => {
-        // Generate a random HSL color that is visually pleasing
         const hue = Math.floor(Math.random() * 360);
         const saturation = Math.floor(Math.random() * 20) + 70; // 70-90%
         const lightness = Math.floor(Math.random() * 20) + 50; // 50-70%
@@ -160,6 +147,32 @@ function FarmProfileForm() {
 
     const [selectedPlot, setSelectedPlot] = useState<number | null>(100);
     const [isPainting, setIsPainting] = useState(false);
+    
+    const cropDistributionData = useMemo(() => {
+        if (!profile) return [];
+
+        const cellCounts: Record<number, number> = {};
+        let totalPlantedCells = 0;
+
+        profile.farmGrid.flat().forEach(cellValue => {
+            if (cellValue !== 0) { // Exclude empty plots
+                cellCounts[cellValue] = (cellCounts[cellValue] || 0) + 1;
+                totalPlantedCells++;
+            }
+        });
+        
+        if (totalPlantedCells === 0) return [];
+
+        return profile.plotTypes
+            .filter(pt => cellCounts[pt.value] > 0)
+            .map(pt => ({
+                name: pt.label[language],
+                value: parseFloat(((cellCounts[pt.value] / totalPlantedCells) * 100).toFixed(1)),
+                fill: pt.color,
+            }));
+
+    }, [profile, language]);
+
 
     const paddyPercentage = useMemo(() => {
         if (!profile) return 0;
@@ -397,7 +410,7 @@ function FarmProfileForm() {
                                         <div 
                                             key={`${rowIndex}-${colIndex}`}
                                             className="aspect-square w-full h-full rounded-sm"
-                                            style={{ backgroundColor: getColorForValue(cellValue, profile.plotTypes) }}
+                                            style={{ backgroundColor: profile.plotTypes.find(p => p.value === cellValue)?.color || 'hsl(0, 0%, 80%)' }}
                                             onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                                             onMouseOver={() => handleMouseOver(rowIndex, colIndex)}
                                         />
@@ -425,27 +438,41 @@ function FarmProfileForm() {
                     <BarChart className="h-5 w-5 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="h-[200px] w-full">
-                       <ResponsiveContainer width="100%" height="100%">
-                            <RechartsBarChart data={chartData}>
-                            <XAxis
-                                dataKey="name"
-                                stroke="#888888"
-                                fontSize={12}
-                                tickLine={false}
-                                axisLine={false}
-                            />
-                            <YAxis
-                                stroke="#888888"
-                                fontSize={12}
-                                tickLine={false}
-                                axisLine={false}
-                                tickFormatter={(value) => `${value}%`}
-                            />
-                            <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                            </RechartsBarChart>
-                        </ResponsiveContainer>
-                    </div>
+                    {cropDistributionData.length > 0 ? (
+                        <div className="h-[200px] w-full">
+                           <ResponsiveContainer width="100%" height="100%">
+                                <RechartsBarChart data={cropDistributionData}>
+                                <XAxis
+                                    dataKey="name"
+                                    stroke="#888888"
+                                    fontSize={12}
+                                    tickLine={false}
+                                    axisLine={false}
+                                />
+                                <YAxis
+                                    stroke="#888888"
+                                    fontSize={12}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tickFormatter={(value) => `${value}%`}
+                                />
+                                <Tooltip
+                                    cursor={{ fill: 'hsl(var(--muted))' }}
+                                    contentStyle={{
+                                        backgroundColor: 'hsl(var(--background))',
+                                        borderColor: 'hsl(var(--border))',
+                                    }}
+                                    formatter={(value: number) => [`${value}%`, 'Distribution']}
+                                />
+                                <Bar dataKey="value" radius={[4, 4, 0, 0]} />
+                                </RechartsBarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    ) : (
+                        <div className="flex items-center justify-center h-[200px]">
+                            <p className="text-sm text-muted-foreground">No crop data to display.</p>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
              <Card>
