@@ -177,7 +177,7 @@ export default function ConsultationContent() {
 
     setAudioState(prev => ({ ...prev, [cardId]: 'loading' }));
     try {
-        const result = await generateSpeech({ text: textToSpeak, language: language });
+        const result = await generateSpeech({ text: textToSpeak, language });
         if (result && result.audioDataUri) {
             if (!audioRef.current) {
               audioRef.current = new Audio();
@@ -280,5 +280,3 @@ export default function ConsultationContent() {
     </AppShell>
   );
 }
-
-    
