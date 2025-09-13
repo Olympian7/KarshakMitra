@@ -1,46 +1,29 @@
-import React from 'react';
-import { getWeatherForecast } from '@/services/weather';
-import { getMarketTrends } from '@/services/market';
-import { getGovSchemes } from '@/services/govSchemes';
-import { getActivities } from '@/services/activity';
-import { LanguageProvider } from '@/context/language-context';
-import DashboardContent from './dashboard-content';
 
+'use client';
 
-// This is a server component, so we can fetch data directly.
-// We wrap the content in a client component to access the language context.
-export default async function Dashboard() {
-  const weatherData = await getWeatherForecast();
-  const marketData = await getMarketTrends();
-  const schemesData = await getGovSchemes();
-  const activitiesData = await getActivities();
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '@/lib/firebase';
+import { Loader2 } from 'lucide-react';
 
-  // For the dashboard, we find the 3 most common crops to show a snapshot
-  const cropFrequency = marketData.reduce((acc, trend) => {
-    acc[trend.name] = (acc[trend.name] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+export default function Home() {
+  const [user, loading] = useAuthState(auth);
+  const router = useRouter();
 
-  const sortedCrops = Object.keys(cropFrequency).sort((a, b) => cropFrequency[b] - cropFrequency[a]);
-  const topCrops = new Set(sortedCrops.slice(0, 3));
-
-  // Find the first market entry for each of the top crops
-  const marketTrends = sortedCrops.slice(0,3).map(cropName => {
-      return marketData.find(trend => trend.name === cropName);
-  }).filter(Boolean);
-
-
-  const govSchemes = schemesData.slice(0, 2);
-  const recentActivities = activitiesData.slice(0, 1);
+  useEffect(() => {
+    if (!loading) {
+      if (user) {
+        router.replace('/dashboard');
+      } else {
+        router.replace('/login');
+      }
+    }
+  }, [user, loading, router]);
 
   return (
-    <LanguageProvider>
-      <DashboardContent
-        weather={weatherData}
-        marketTrends={marketTrends}
-        govSchemes={govSchemes}
-        recentActivities={recentActivities}
-      />
-    </LanguageProvider>
+    <div className="flex h-screen items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    </div>
   );
 }

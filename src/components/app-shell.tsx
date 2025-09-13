@@ -13,6 +13,7 @@ import {
   Tractor,
   Bot,
   Keyboard,
+  LogOut,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,10 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { useKeyboard } from '@/context/keyboard-context';
+import { auth } from '@/lib/firebase';
+import { signOut } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
+import { useToast } from './ui/use-toast';
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -31,9 +36,30 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
   const { language, toggleLanguage } = useLanguage();
   const { setIsOpen } = useKeyboard();
   const t = translations[language];
+  const router = useRouter();
+  const { toast } = useToast();
+
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      toast({
+        title: 'Logged Out',
+        description: 'You have been successfully logged out.',
+      });
+      router.push('/login');
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Logout Failed',
+        description: 'Could not log you out. Please try again.',
+      });
+    }
+  };
+
 
   const navItems = [
-    { id: 'dashboard', href: '/', icon: Home, label: t.dashboard },
+    { id: 'dashboard', href: '/dashboard', icon: Home, label: t.dashboard },
     { id: 'assistant', href: '/assistant', icon: MessageCircle, label: t.conversationalAssistant },
     { id: 'community-bot', href: '/community-bot', icon: Bot, label: t.communityBot },
     { id: 'diagnosis', href: '/diagnosis', icon: Stethoscope, label: t.diagnosis },
@@ -50,7 +76,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
       <div className="hidden border-r bg-muted/40 md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold">
+            <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
               <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -94,15 +120,21 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
               ))}
             </nav>
           </div>
-           <div className="mt-auto p-4">
-            <div className="flex items-center gap-3">
-              <Avatar>
-                  <AvatarFallback className="bg-primary text-primary-foreground">N</AvatarFallback>
-              </Avatar>
-              <div>
-                  <p className="font-semibold text-sm">Narayanan</p>
-                  <p className="text-xs text-muted-foreground">{t.farmer}</p>
+           <div className="mt-auto p-4 border-t">
+            <div className="flex items-center justify-between gap-3">
+              <div className='flex items-center gap-3'>
+                <Avatar>
+                    <AvatarFallback className="bg-primary text-primary-foreground">N</AvatarFallback>
+                </Avatar>
+                <div>
+                    <p className="font-semibold text-sm">Narayanan</p>
+                    <p className="text-xs text-muted-foreground">{t.farmer}</p>
+                </div>
               </div>
+               <Button variant="ghost" size="icon" onClick={handleLogout} className="h-8 w-8">
+                  <LogOut className="h-4 w-4" />
+                  <span className="sr-only">Logout</span>
+                </Button>
             </div>
            </div>
         </div>
