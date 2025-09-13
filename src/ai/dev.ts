@@ -2,3 +2,4 @@
 import './flows/activity-flow';
 import './flows/assistant-flow';
 import './flows/diagnose-plant-flow';
+import './flows/tts-flow';

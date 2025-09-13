@@ -36,6 +36,7 @@ export const translations = {
       assistantError: "Sorry, I'm having trouble connecting. Please try again later.",
       translate: 'Translate',
       learnMore: 'Learn More',
+      playAudio: 'Play Audio',
   
       // Market Page
       latestCropPrices: 'Latest Crop Prices',
@@ -207,6 +208,7 @@ export const translations = {
       assistantError: 'ക്ഷമിക്കണം, എനിക്ക് കണക്റ്റുചെയ്യുന്നതിൽ പ്രശ്‌നമുണ്ട്. ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.',
       translate: 'വിവർത്തനം ചെയ്യുക',
       learnMore: 'കൂടുതലറിയുക',
+      playAudio: 'ഓഡിയോ പ്ലേ ചെയ്യുക',
   
       // Market Page
       latestCropPrices: 'ഏറ്റവും പുതിയ വിള വിലകൾ',
@@ -292,7 +294,7 @@ export const translations = {
       diagnosePlant: 'രോഗം നിർണ്ണയിക്കുക',
       diagnosing: 'നിർണ്ണയിക്കുന്നു...',
       diagnosisResult: 'രോഗനിർണ്ണയ ഫലം',
-      aiAnalysis: 'ഇതൊരു പ്രാഥമിക AI വിശകലനമാണ്. സ്ഥിരീകരണത്തിനായി എപ്പോഴും ഒരു പ്രാദേശിക വിദഗ്ദ്ധനുമായി ബന്ധപ്പെടുക.',
+      aiAnalysis: 'ഇതൊരു പ്രാഥമിക AI വിശകലനമാണ്. സ്ഥിരീകരണത്തിനായി എപ്പോഴും ഒരു പ്രാഥമിക വിദഗ്ദ്ധനുമായി ബന്ധപ്പെടുക.',
       uploadForDiagnosis: 'AI സഹായത്തോടെയുള്ള രോഗനിർണ്ണയം ലഭിക്കുന്നതിന് ഒരു ഫോട്ടോ അപ്‌ലോഡ് ചെയ്ത് വിവരണം നൽകുക.',
       plantIdentification: 'ചെടി തിരിച്ചറിയൽ',
       commonName: 'സാധാരണ പേര്',

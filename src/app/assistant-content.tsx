@@ -8,8 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
-import { MessageCircle, User, Send, Languages, Loader2, ExternalLink } from 'lucide-react';
+import { MessageCircle, User, Send, Languages, Loader2, ExternalLink, Speaker, Square } from 'lucide-react';
 import { assistantFlow, AssistantOutput } from '@/ai/flows/assistant-flow';
+import { generateSpeech } from '@/ai/flows/tts-flow';
 import { useToast } from '@/components/ui/use-toast';
 import Link from 'next/link';
 import { getOfflineResponse } from '@/lib/offline-data';
@@ -41,6 +42,10 @@ function AdvancedAssistantChat() {
   const [translatedMessages, setTranslatedMessages] = useState<Record<string, boolean>>({});
   const [isOnline, setIsOnline] = useState(true);
 
+  const [audioState, setAudioState] = useState<{ [key: string]: 'idle' | 'loading' | 'playing' }>({});
+  const [audioData, setAudioData] = useState<{ [key: string]: string }>({});
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   useEffect(() => {
     // Set initial online state
     if (typeof navigator !== 'undefined') {
@@ -53,9 +58,15 @@ function AdvancedAssistantChat() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
+    // Audio cleanup
+    const audioEl = audioRef.current;
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
+      if (audioEl) {
+        audioEl.pause();
+        audioEl.src = '';
+      }
     };
   }, []);
 
@@ -121,17 +132,77 @@ function AdvancedAssistantChat() {
   };
   
   const toggleTranslation = (id: string) => {
+      stopAudio();
       setTranslatedMessages(prev => ({ ...prev, [id]: !prev[id] }));
   };
+
+  const stopAudio = () => {
+    if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+    }
+    setAudioState(prev => {
+        const newState = { ...prev };
+        Object.keys(newState).forEach(key => {
+            if (newState[key] === 'playing') newState[key] = 'idle';
+        });
+        return newState;
+    });
+  };
+
+  const handlePlayAudio = async (messageId: string, text: string, lang: 'en' | 'ml') => {
+    stopAudio();
+    const uniqueId = `${messageId}-${lang}`;
+
+    if (audioData[uniqueId]) {
+      // Audio is cached, just play it
+      if (!audioRef.current) {
+        audioRef.current = new Audio();
+        audioRef.current.onended = stopAudio;
+      }
+      audioRef.current.src = audioData[uniqueId];
+      audioRef.current.play();
+      setAudioState(prev => ({ ...prev, [uniqueId]: 'playing' }));
+      return;
+    }
+
+    setAudioState(prev => ({ ...prev, [uniqueId]: 'loading' }));
+    try {
+        const result = await generateSpeech({ text, language: lang });
+        if (result && result.audioDataUri) {
+            setAudioData(prev => ({ ...prev, [uniqueId]: result.audioDataUri }));
+            
+            if (!audioRef.current) {
+                audioRef.current = new Audio();
+                audioRef.current.onended = stopAudio;
+            }
+            audioRef.current.src = result.audioDataUri;
+            audioRef.current.play();
+            setAudioState(prev => ({ ...prev, [uniqueId]: 'playing' }));
+        } else {
+            throw new Error("No audio data received.");
+        }
+    } catch (error) {
+        console.error("Error generating speech:", error);
+        toast({
+            variant: "destructive",
+            title: "Speech Error",
+            description: "Could not generate audio for this message.",
+        });
+        setAudioState(prev => ({ ...prev, [uniqueId]: 'idle' }));
+    }
+  };
+
 
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => {
             const isTranslated = translatedMessages[message.id];
-            const currentText = language === 'en' 
-                ? (isTranslated ? message.malayalamText : message.englishText)
-                : (isTranslated ? message.englishText : message.malayalamText);
+            const currentLang = language === 'en' ? (isTranslated ? 'ml' : 'en') : (isTranslated ? 'en' : 'ml');
+            const currentText = currentLang === 'en' ? message.englishText : message.malayalamText;
+            const uniqueId = `${message.id}-${currentLang}`;
+            const currentAudioState = audioState[uniqueId] || 'idle';
 
             return (
                 <div
@@ -170,6 +241,17 @@ function AdvancedAssistantChat() {
                             <Button variant="ghost" size="sm" onClick={() => toggleTranslation(message.id)} className="flex items-center gap-1 text-xs h-auto py-1 px-2 text-muted-foreground">
                                <Languages className="h-3 w-3" />
                                {language === 'en' ? (isTranslated ? 'Show in English' : 'Malayalam') : (isTranslated ? 'Show in Malayalam' : 'English')}
+                            </Button>
+                            <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                onClick={() => currentAudioState === 'playing' ? stopAudio() : handlePlayAudio(message.id, currentText, currentLang)}
+                                className="flex items-center gap-1 text-xs h-auto py-1 px-2 text-muted-foreground"
+                            >
+                                {currentAudioState === 'loading' && <Loader2 className="h-3 w-3 animate-spin" />}
+                                {currentAudioState === 'playing' && <Square className="h-3 w-3" />}
+                                {currentAudioState === 'idle' && <Speaker className="h-3 w-3" />}
+                                {t.playAudio}
                             </Button>
                             {message.link && (
                                 <Button asChild variant="outline" size="sm" className="flex items-center gap-1 text-xs h-auto py-1 px-2 text-muted-foreground">
