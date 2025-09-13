@@ -23,7 +23,7 @@ type ApiRecord = {
 };
 
 const API_ENDPOINT = 'https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070';
-const API_KEY = process.env.DATA_GOV_IN_API_KEY;
+const API_KEY = '579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b';
 
 // A simple in-memory cache to avoid hitting the API on every single request
 let cache = {
@@ -36,11 +36,6 @@ export async function getMarketTrends(): Promise<MarketTrend[]> {
     const now = Date.now();
     if (cache.data && (now - cache.lastFetch < CACHE_DURATION)) {
         return cache.data;
-    }
-
-    if (!API_KEY || API_KEY === 'your_api_key_here') {
-        console.error("API Key for data.gov.in is not configured. Please add it to your .env file.");
-        return [];
     }
     
     // We fetch a large number of records and filter for Kerala, as the API is national.
