@@ -1,27 +1,125 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Keyboard, X } from 'lucide-react';
+import { Keyboard, X, Delete, ArrowUp, Type } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+// Simplified Malayalam Keyboard Layout
+const malayalamLayout = [
+  ['്', 'ാ', 'ി', 'ീ', 'ു', 'ൂ', 'ൃ', 'െ', 'േ', 'ൈ', 'ൊ', 'ോ', 'ൌ'],
+  ['ക', 'ഖ', 'ഗ', 'ഘ', 'ങ', 'ച', 'ഛ', 'ജ', 'ഝ', 'ഞ', 'ട', 'ഠ', 'ഡ', 'ഢ', 'ണ'],
+  ['ത', 'ഥ', 'ദ', 'ധ', 'ന', 'പ', 'ഫ', 'ബ', 'ഭ', 'മ'],
+  ['യ', 'ര', 'ല', 'വ', 'ശ', 'ഷ', 'സ', 'ഹ', 'ള', 'ഴ', 'റ'],
+];
+
+const shiftedLayout = [
+  ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+'],
+  ['അ', 'ആ', 'ഇ', 'ഈ', 'ഉ', 'ഊ', 'ഋ', 'എ', 'ഏ', 'ഐ', 'ഒ', 'ഓ', 'ഔ'],
+  ['ൺ', 'ൻ', 'ർ', 'ൽ', 'ൾ', 'ക്ക', 'ങ്ക', 'ങ്ങ', 'ച്ച', 'ഞ്ച', 'ഞ്ഞ'],
+  ['ട്ട', 'ണ്ട', 'ണ്ണ', 'ത്ത', 'ന്ത', 'ന്ന', 'പ്പ', 'മ്പ', 'മ്മ', 'യ്യ'],
+];
 
 export default function VirtualKeyboard() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isShifted, setIsShifted] = useState(false);
+  const activeInputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // This component should only render on the client to avoid hydration errors
-    // with logic that might depend on window/document.
     setIsClient(true);
   }, []);
 
+  const handleFocus = useCallback((event: FocusEvent) => {
+    const target = event.target;
+    if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
+      activeInputRef.current = target;
+    }
+  }, []);
+
+  const handleBlur = useCallback((event: FocusEvent) => {
+    // We don't nullify on blur to allow clicking on keyboard without losing focus
+  }, []);
+  
+  useEffect(() => {
+    if (!isClient) return;
+
+    document.addEventListener('focusin', handleFocus);
+    document.addEventListener('focusout', handleBlur);
+
+    return () => {
+      document.removeEventListener('focusin', handleFocus);
+      document.removeEventListener('focusout', handleBlur);
+    };
+  }, [isClient, handleFocus, handleBlur]);
+
+
+  const handleKeyPress = (key: string) => {
+    const input = activeInputRef.current;
+    if (!input) return;
+
+    const { selectionStart, selectionEnd, value } = input;
+    
+    if (selectionStart === null || selectionEnd === null) return;
+
+    const newValue = 
+      value.substring(0, selectionStart) + 
+      key + 
+      value.substring(selectionEnd);
+      
+    // Manually update the input value
+    input.value = newValue;
+    
+    // Create and dispatch an 'input' event to notify frameworks like React
+    const event = new Event('input', { bubbles: true });
+    input.dispatchEvent(event);
+    
+    // Set cursor position after the inserted character
+    const newCursorPosition = selectionStart + key.length;
+    input.focus();
+    input.setSelectionRange(newCursorPosition, newCursorPosition);
+  };
+  
+  const handleBackspace = () => {
+     const input = activeInputRef.current;
+    if (!input) return;
+
+    const { selectionStart, selectionEnd, value } = input;
+    if (selectionStart === null || selectionEnd === null) return;
+
+    let newValue;
+    let newCursorPosition;
+
+    if (selectionStart === selectionEnd && selectionStart > 0) {
+      // No selection, just backspace one character
+      newValue = value.substring(0, selectionStart - 1) + value.substring(selectionEnd);
+      newCursorPosition = selectionStart - 1;
+    } else {
+      // A selection exists, delete it
+      newValue = value.substring(0, selectionStart) + value.substring(selectionEnd);
+      newCursorPosition = selectionStart;
+    }
+    
+    input.value = newValue;
+    const event = new Event('input', { bubbles: true });
+    input.dispatchEvent(event);
+
+    input.focus();
+    input.setSelectionRange(newCursorPosition, newCursorPosition);
+  };
+  
+  const handleSpacebar = () => {
+    handleKeyPress(' ');
+  };
+  
   if (!isClient) {
     return null;
   }
 
+  const currentLayout = isShifted ? shiftedLayout : malayalamLayout;
+
   return (
     <>
-      {/* Floating Action Button to toggle the keyboard */}
       <div className="fixed bottom-4 right-4 z-50">
         <Button
           size="icon"
@@ -33,16 +131,14 @@ export default function VirtualKeyboard() {
         </Button>
       </div>
 
-      {/* The Keyboard Panel */}
       <div
         className={cn(
-          'fixed bottom-0 left-0 right-0 z-[60] bg-muted border-t border-border shadow-2xl transition-transform duration-300 ease-in-out',
+          'fixed bottom-0 left-0 right-0 z-[60] bg-muted/95 backdrop-blur-sm border-t border-border shadow-2xl transition-transform duration-300 ease-in-out',
           isOpen ? 'translate-y-0' : 'translate-y-full'
         )}
       >
-        <div className="container mx-auto p-4 max-w-4xl">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-4">
+        <div className="container mx-auto p-2 sm:p-4 max-w-4xl">
+          <div className="flex justify-between items-center mb-2">
             <h3 className="font-semibold text-lg text-foreground">
               Virtual Malayalam Keyboard
             </h3>
@@ -56,11 +152,32 @@ export default function VirtualKeyboard() {
             </Button>
           </div>
           
-          {/* Keyboard Body - Placeholder for now */}
-          <div className="flex items-center justify-center h-48 bg-background/50 rounded-lg">
-            <p className="text-muted-foreground">Keyboard keys will be added here in the next step.</p>
+          <div className="space-y-1 sm:space-y-2">
+            {currentLayout.map((row, rowIndex) => (
+              <div key={rowIndex} className="flex justify-center gap-1 sm:gap-2">
+                {row.map((key) => (
+                  <Button
+                    key={key}
+                    onClick={() => handleKeyPress(key)}
+                    className="h-10 text-lg flex-1 bg-background/80 text-foreground hover:bg-primary hover:text-primary-foreground shadow"
+                  >
+                    {key}
+                  </Button>
+                ))}
+              </div>
+            ))}
+            <div className="flex justify-center gap-1 sm:gap-2">
+               <Button onClick={() => setIsShifted(!isShifted)} className="h-10 w-16 shadow" variant={isShifted ? "default" : "secondary"}>
+                  <ArrowUp className="h-5 w-5" />
+               </Button>
+               <Button onClick={handleSpacebar} className="h-10 flex-1 shadow" variant="secondary">
+                  <Type className="h-5 w-5" />
+               </Button>
+               <Button onClick={handleBackspace} className="h-10 w-16 shadow" variant="secondary">
+                  <Delete className="h-5 w-5" />
+               </Button>
+            </div>
           </div>
-
         </div>
       </div>
     </>
