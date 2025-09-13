@@ -22,11 +22,19 @@ interface Message {
   link?: string;
 }
 
+const initialMessage: Message = {
+  id: `assistant-initial-${Date.now()}`,
+  sender: 'assistant',
+  englishText: "Hello! I am your Karshak Mitra assistant. How can I help you today?",
+  malayalamText: "നമസ്കാരം! ഞാൻ നിങ്ങളുടെ കർഷക മിത്രയാണ്. ഇന്ന് ഞാൻ നിങ്ങളെ എങ്ങനെ സഹായിക്കണം?",
+};
+
+
 function AdvancedAssistantChat() {
   const { language } = useLanguage();
   const t = translations[language];
   const { toast } = useToast();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
