@@ -50,13 +50,11 @@ const CategoryTable: FC<{ trends: MarketTrend[], categoryName: string, showDistr
         if (typeof valA === 'string' && typeof valB === 'string') {
           return sortConfig.direction === 'ascending' ? valA.localeCompare(valB) : valB.localeCompare(valA);
         }
+        
+        if (typeof valA === 'number' && typeof valB === 'number') {
+           return sortConfig.direction === 'ascending' ? valA - valB : valB - valA;
+        }
 
-        if (valA < valB) {
-          return sortConfig.direction === 'ascending' ? -1 : 1;
-        }
-        if (valA > valB) {
-          return sortConfig.direction === 'ascending' ? 1 : -1;
-        }
         return 0;
       });
     }
