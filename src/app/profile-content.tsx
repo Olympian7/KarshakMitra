@@ -14,11 +14,21 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import AppShell from '@/components/app-shell';
-import { BarChart, Lightbulb, Lock, Pencil } from 'lucide-react';
+import { BarChart, Lightbulb, Pencil, Trash2, PlusCircle, Palette } from 'lucide-react';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { cn } from '@/lib/utils';
@@ -30,18 +40,116 @@ const chartData = [
   { name: 'Other', value: 10 },
 ];
 
-const plotTypes: PlotType[] = [
-    { value: 0, color: 'bg-gray-200', label: { en: 'Empty', ml: 'ഒഴിഞ്ഞ' } },
-    { value: 100, color: 'bg-blue-400', label: { en: 'Paddy', ml: 'നെല്ല്' } },
-    { value: 90, color: 'bg-yellow-400', label: { en: 'Lentils', ml: 'പയർവർഗ്ഗങ്ങൾ' } },
-    { value: 80, color: 'bg-yellow-600', label: { en: 'Bananas', ml: 'വാഴ' } },
-    { value: 60, color: 'bg-green-500', label: { en: 'Okra', ml: 'വെണ്ട' } },
-    { value: 40, color: 'bg-red-500', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
-];
 
-const getColorForValue = (value: number) => {
+const getColorForValue = (value: number, plotTypes: PlotType[]) => {
     return plotTypes.find(p => p.value === value)?.color || 'bg-gray-200';
 }
+
+function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile, onPaletteUpdate: (newPlotTypes: PlotType[]) => void }) {
+    const { language } = useLanguage();
+    const t = translations[language];
+    const { toast } = useToast();
+    const [localPlotTypes, setLocalPlotTypes] = useState<PlotType[]>(JSON.parse(JSON.stringify(profile.plotTypes)));
+    const [newCropName, setNewCropName] = useState('');
+
+    const generateRandomColor = () => {
+        const colors = [
+            'bg-sky-500', 'bg-indigo-500', 'bg-purple-500', 'bg-pink-500', 'bg-teal-500', 'bg-cyan-500'
+        ];
+        // Avoid colors already in use
+        const usedColors = localPlotTypes.map(pt => pt.color);
+        const availableColors = colors.filter(c => !usedColors.includes(c));
+        return availableColors.length > 0 ? availableColors[Math.floor(Math.random() * availableColors.length)] : colors[Math.floor(Math.random() * colors.length)];
+    };
+
+    const handleAddCrop = () => {
+        if (newCropName.trim() === '') {
+            toast({ variant: 'destructive', title: 'Crop name cannot be empty.' });
+            return;
+        }
+        if (localPlotTypes.some(pt => pt.label.en.toLowerCase() === newCropName.trim().toLowerCase())) {
+            toast({ variant: 'destructive', title: 'This crop already exists in the palette.' });
+            return;
+        }
+
+        const newPlotType: PlotType = {
+            value: Math.max(...localPlotTypes.map(pt => pt.value)) + 1, // Ensure unique value
+            color: generateRandomColor(),
+            label: { en: newCropName.trim(), ml: newCropName.trim() },
+        };
+
+        setLocalPlotTypes(current => [...current, newPlotType]);
+        setNewCropName('');
+    };
+
+    const handleRemoveCrop = (value: number) => {
+        if (value === 0) {
+            toast({ variant: 'destructive', title: 'Cannot remove the "Empty" plot type.' });
+            return;
+        }
+        setLocalPlotTypes(current => current.filter(pt => pt.value !== value));
+    };
+
+    const handleSaveChanges = () => {
+        onPaletteUpdate(localPlotTypes);
+        toast({ title: 'Palette Updated', description: 'Your crop palette has been saved.' });
+    };
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                    <Palette className="h-4 w-4" />
+                    Edit Palette
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Edit Crop Palette</DialogTitle>
+                    <DialogDescription>Add or remove crop types from your farm layout editor.</DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
+                    {localPlotTypes.map(pt => (
+                        <div key={pt.value} className="flex items-center gap-3">
+                            <div className={cn('w-6 h-6 rounded-md flex-shrink-0', pt.color)} />
+                            <div className="flex-1">
+                                <p className="font-medium">{pt.label.en}</p>
+                            </div>
+                            {pt.value !== 0 && (
+                                <Button variant="ghost" size="icon" onClick={() => handleRemoveCrop(pt.value)} className="text-destructive hover:text-destructive">
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            )}
+                        </div>
+                    ))}
+                    <div className="pt-4 border-t">
+                        <Label>Add New Crop</Label>
+                        <div className="flex items-center gap-2 mt-2">
+                            <Input
+                                placeholder="e.g., Tomato"
+                                value={newCropName}
+                                onChange={(e) => setNewCropName(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && handleAddCrop()}
+                            />
+                            <Button onClick={handleAddCrop} size="icon">
+                                <PlusCircle className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button type="button" variant="secondary">Cancel</Button>
+                    </DialogClose>
+                    <DialogClose asChild>
+                        <Button onClick={handleSaveChanges}>Save Changes</Button>
+                    </DialogClose>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    );
+}
+
 
 function FarmProfileForm() {
     const { language } = useLanguage();
@@ -70,6 +178,9 @@ function FarmProfileForm() {
             try {
                 const data = await getProfile();
                 setProfile(data);
+                if(data.plotTypes.length > 0) {
+                    setSelectedPlot(data.plotTypes.find(pt => pt.value === 100)?.value ?? data.plotTypes[0].value);
+                }
             } catch (error) {
                 toast({
                     variant: 'destructive',
@@ -112,6 +223,11 @@ function FarmProfileForm() {
         if (isPainting && !isLayoutLocked) {
             handleGridCellChange(rowIndex, colIndex);
         }
+    };
+    
+    const handlePaletteUpdate = (newPlotTypes: PlotType[]) => {
+        if (!profile) return;
+        setProfile({ ...profile, plotTypes: newPlotTypes });
     };
 
 
@@ -246,10 +362,13 @@ function FarmProfileForm() {
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col md:flex-row gap-6">
-                        <div className="space-y-2 md:w-48">
-                            <Label>{t.cropPalette}</Label>
+                        <div className="space-y-2 md:w-56">
+                            <div className='flex items-center justify-between'>
+                                <Label>{t.cropPalette}</Label>
+                                {!isLayoutLocked && <EditPaletteDialog profile={profile} onPaletteUpdate={handlePaletteUpdate} />}
+                            </div>
                             <fieldset disabled={isLayoutLocked} className="space-y-2">
-                                {plotTypes.map(plot => (
+                                {profile.plotTypes.map(plot => (
                                     <div 
                                         key={plot.value}
                                         onClick={() => !isLayoutLocked && setSelectedPlot(plot.value)}
@@ -279,7 +398,7 @@ function FarmProfileForm() {
                                     row.map((cellValue, colIndex) => (
                                         <div 
                                             key={`${rowIndex}-${colIndex}`}
-                                            className={cn('aspect-square w-full h-full rounded-sm', getColorForValue(cellValue))}
+                                            className={cn('aspect-square w-full h-full rounded-sm', getColorForValue(cellValue, profile.plotTypes))}
                                             onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                                             onMouseOver={() => handleMouseOver(rowIndex, colIndex)}
                                         />

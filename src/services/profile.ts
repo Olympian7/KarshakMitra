@@ -36,20 +36,6 @@ export interface FarmProfile {
   farmInputs: FarmInput[];
 }
 
-// A non-symmetrical 10x10 grid to start
-const defaultGrid = Array(10).fill(Array(10).fill(0));
-
-
-const defaultPlotTypes: PlotType[] = [
-    { value: 0, color: 'bg-gradient-to-br from-gray-50 to-gray-200', label: { en: 'Empty', ml: 'ഒഴിഞ്ഞ' } },
-    { value: 100, color: 'bg-gradient-to-br from-blue-300 to-blue-500', label: { en: 'Paddy', ml: 'നെല്ല്' } },
-    { value: 90, color: 'bg-gradient-to-br from-yellow-200 to-yellow-400', label: { en: 'Lentils', ml: 'പയർവർഗ്ഗങ്ങൾ' } },
-    { value: 80, color: 'bg-gradient-to-br from-amber-300 to-amber-500', label: { en: 'Bananas', ml: 'വാഴ' } },
-    { value: 60, color: 'bg-gradient-to-br from-green-300 to-green-500', label: { en: 'Okra', ml: 'വെണ്ട' } },
-    { value: 40, color: 'bg-gradient-to-br from-red-300 to-red-500', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
-];
-
-
 // Default/mock data
 let userProfile: FarmProfile = {
   farmerName: 'Narayanan',
@@ -70,7 +56,14 @@ let userProfile: FarmProfile = {
     [0, 0, 0, 0, 0, 0, 0, 40, 40, 40],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ],
-  plotTypes: defaultPlotTypes,
+  plotTypes: [
+    { value: 0, color: 'bg-gray-200', label: { en: 'Empty', ml: 'ഒഴിഞ്ഞ' } },
+    { value: 100, color: 'bg-blue-400', label: { en: 'Paddy', ml: 'നെല്ല്' } },
+    { value: 90, color: 'bg-yellow-400', label: { en: 'Lentils', ml: 'പയർവർഗ്ഗങ്ങൾ' } },
+    { value: 80, color: 'bg-yellow-600', label: { en: 'Bananas', ml: 'വാഴ' } },
+    { value: 60, color: 'bg-green-500', label: { en: 'Okra', ml: 'വെണ്ട' } },
+    { value: 40, color: 'bg-red-500', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
+  ],
   cropStock: [
     { name: 'Paddy', quantity: 1200, unit: 'kg' },
     { name: 'Lentils', quantity: 150, unit: 'kg' },
