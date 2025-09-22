@@ -1,8 +1,7 @@
-
 'use server';
 
-// This is a mock service that simulates fetching and storing farm profile data.
-// In a real application, you would replace this with a call to a real database.
+import { db } from '@/lib/firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export interface PlotType {
     value: number;
@@ -36,8 +35,12 @@ export interface FarmProfile {
   farmInputs: FarmInput[];
 }
 
-// Default/mock data
-let userProfile: FarmProfile = {
+// For this demo, we'll use a single, hardcoded user profile document.
+// In a real app, this ID would be dynamic based on the logged-in user.
+const USER_PROFILE_ID = 'user_narayanan';
+
+// Default/mock data to initialize the profile if it doesn't exist
+const defaultProfile: FarmProfile = {
   farmerName: 'Narayanan',
   farmName: 'Narayanan Farms',
   location: 'Kuttanad, Kerala',
@@ -80,14 +83,37 @@ let userProfile: FarmProfile = {
 };
 
 export async function getProfile(): Promise<FarmProfile> {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  return JSON.parse(JSON.stringify(userProfile)); // Deep copy to prevent mutation issues
+  const profileDocRef = doc(db, 'profiles', USER_PROFILE_ID);
+  
+  try {
+    const docSnap = await getDoc(profileDocRef);
+
+    if (docSnap.exists()) {
+      console.log("Profile data fetched from Firestore.");
+      return docSnap.data() as FarmProfile;
+    } else {
+      // Document doesn't exist, so create it with the default data
+      console.log("No profile found. Creating one with default data.");
+      await setDoc(profileDocRef, defaultProfile);
+      return defaultProfile;
+    }
+  } catch (error) {
+    console.error("Error fetching or creating profile:", error);
+    // If there's an error, return the default profile to prevent the app from crashing.
+    return defaultProfile;
+  }
 }
 
 export async function saveProfile(newProfile: FarmProfile): Promise<FarmProfile> {
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    userProfile = JSON.parse(JSON.stringify(newProfile)); // Store a deep copy
-    return userProfile;
+    const profileDocRef = doc(db, 'profiles', USER_PROFILE_ID);
+    
+    try {
+        await setDoc(profileDocRef, newProfile, { merge: true }); // Use merge to avoid overwriting fields
+        console.log("Profile data saved to Firestore.");
+        return newProfile;
+    } catch (error) {
+        console.error("Error saving profile:", error);
+        // In case of an error, re-throw it so the UI can handle it.
+        throw new Error("Failed to save profile to the database.");
+    }
 }
