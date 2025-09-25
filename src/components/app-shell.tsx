@@ -14,6 +14,7 @@ import {
   Bot,
   Keyboard,
   Cable,
+  FlaskConical,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -25,7 +26,7 @@ import { useKeyboard } from '@/context/keyboard-context';
 type AppShellProps = {
   children: React.ReactNode;
   title: string;
-  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer' | 'community-bot' | 'live-market';
+  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer' | 'community-bot' | 'live-market' | 'soil-analysis';
 };
 
 export default function AppShell({ children, title, activePage }: AppShellProps) {
@@ -38,6 +39,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
     { id: 'assistant', href: '/assistant', icon: MessageCircle, label: t.conversationalAssistant },
     { id: 'community-bot', href: '/community-bot', icon: Bot, label: t.communityBot },
     { id: 'diagnosis', href: '/diagnosis', icon: Stethoscope, label: t.diagnosis },
+    { id: 'soil-analysis', href: '/soil-analysis', icon: FlaskConical, label: t.soilAnalysis },
     { id: 'farm-viewer', href: '/farm-viewer', icon: Tractor, label: t.farmViewer },
     { id: 'profile', href: '/profile', icon: User, label: t.farmProfile },
     { id: 'tracking', href: '/tracking', icon: ClipboardList, label: t.activityTracking },
