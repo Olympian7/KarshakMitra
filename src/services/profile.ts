@@ -1,3 +1,4 @@
+
 'use server';
 
 import { db } from '@/lib/firebase';
@@ -108,7 +109,8 @@ export async function saveProfile(newProfile: FarmProfile): Promise<FarmProfile>
     const profileDocRef = doc(db, 'profiles', USER_PROFILE_ID);
     
     try {
-        await setDoc(profileDocRef, newProfile, { merge: true }); // Use merge to avoid overwriting fields
+        // Use a direct setDoc without merge to ensure the entire object, including nested arrays, is overwritten.
+        await setDoc(profileDocRef, newProfile);
         console.log("Profile data saved to Firestore.");
         return newProfile;
     } catch (error) {
