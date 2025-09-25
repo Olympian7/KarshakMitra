@@ -3,6 +3,7 @@
 
 import { db } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export interface PlotType {
     value: number;
@@ -84,6 +85,9 @@ const defaultProfile: FarmProfile = {
 };
 
 export async function getProfile(): Promise<FarmProfile> {
+  // Opt out of caching for this function.
+  noStore();
+  
   const profileDocRef = doc(db, 'profiles', USER_PROFILE_ID);
   
   try {
