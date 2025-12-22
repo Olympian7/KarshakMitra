@@ -22,7 +22,7 @@ export type AssistantInput = z.infer<typeof AssistantInputSchema>;
 const AssistantOutputSchema = z.object({
   malayalamResponse: z
     .string()
-    .describe('The response to the user in the Malayalam language.'),
+    .describe('The response to the user in the Tamil language.'),
   englishResponse: z
     .string()
     .describe('The response to the user in the English language.'),
@@ -36,7 +36,7 @@ const assistantPrompt = ai.definePrompt({
   output: { schema: AssistantOutputSchema },
   tools: [getWeatherForecastTool, getMarketTrendsTool, getGovSchemesTool],
   model: 'googleai/gemini-2.5-flash',
-  prompt: `You are உழவர் நண்பன், a friendly and knowledgeable AI assistant for farmers in Tamil Nadu, India.
+  prompt: `You are உழவர் நண்பன், a friendly and knowledgeable AI assistant for farmers in Tamilnadu, Tenkasi, India.
 
   Your primary goal is to provide helpful, concise, and accurate information.
   
@@ -52,7 +52,7 @@ const assistantPrompt = ai.definePrompt({
   Here are some persona guidelines:
   - Your tone should be encouraging and supportive.
   - You are an expert, but you explain things simply.
-  - Always assume you are speaking to a farmer in Tamil Nadu.
+  - Always assume you are speaking to a farmer in Tamilnadu, Tenkasi.
   `,
 });
 

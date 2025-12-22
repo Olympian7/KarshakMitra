@@ -35,44 +35,44 @@ interface ConsultationLink {
 
 const consultationLinks: ConsultationLink[] = [
     {
-        id: 'kau',
+        id: 'tnau',
         title: {
-            en: 'Kerala Agricultural University (KAU)',
-            ml: 'കേരള കാർഷിക സർവ്വകലാശാല (KAU)',
+            en: 'Tamil Nadu Agricultural University (TNAU)',
+            ml: 'தமிழ்நாடு வேளாண்மைப் பல்கலைக்கழகம் (TNAU)',
         },
         description: {
             en: 'Access research, courses, and farmer advisories from the leading agricultural university.',
             ml: 'പ്രമുഖ കാർഷിക സർവകലാശാലയിൽ നിന്നുള്ള ഗവേഷണങ്ങൾ, കോഴ്‌സുകൾ, കർഷകർക്കുള്ള ഉപദേശങ്ങൾ എന്നിവ നേടുക.',
         },
-        link: 'http://www.kau.in/',
+        link: 'https://tnau.ac.in/',
         icon: University,
         category: 'gov',
     },
     {
-        id: 'agri-dept',
+        id: 'agri-dept-tn',
         title: {
-            en: 'Dept. of Agriculture Development',
-            ml: 'കൃഷി വകുപ്പ്, കർഷകക്ഷേമം',
+            en: 'Dept. of Agriculture Development, TN',
+            ml: 'வேளாண்மைத் துறை, தமிழ்நாடு',
         },
         description: {
-            en: 'Official portal for agricultural schemes, subsidies, and announcements in Kerala.',
-            ml: 'കേരളത്തിലെ സർക്കാർ പദ്ധതികൾ, സബ്‌സിഡികൾ, അറിയിപ്പുകൾ എന്നിവയ്ക്കുള്ള ഔദ്യോഗിക പോർട്ടൽ.',
+            en: 'Official portal for agricultural schemes, subsidies, and announcements in Tamil Nadu.',
+            ml: 'தமிழ்நாட்டில் സർക്കാർ திட்டங்கள், மானியங்கள் மற்றும் அறிவிப்புகளுக்கான அதிகாரப்பூர்வ போர்டல்.',
         },
-        link: 'https://keralaagriculture.gov.in/',
+        link: 'https://www.tn.gov.in/department/1',
         icon: University,
         category: 'gov',
     },
     {
-        id: 'fib',
+        id: 'uzhavan',
         title: {
-            en: 'Farm Information Bureau (FIB)',
-            ml: 'ഫാം ഇൻഫർമേഷൻ ബ്യൂറോ (FIB)',
+            en: 'Uzhavan App Resources',
+            ml: 'உழவன் செயலி',
         },
         description: {
-            en: 'Find publications and media resources like "Kerala Karshakan" to stay updated.',
-            ml: '"കേരള കർഷകൻ" പോലുള്ള പ്രസിദ്ധീകരണങ്ങളും മറ്റ് മീഡിയ ഉറവിടങ്ങളും കണ്ടെത്തുക.',
+            en: 'Find publications and media resources to stay updated.',
+            ml: 'தகவல்களுடன் இருக்க പ്രസിദ്ധീകരണங்களையும் பிற ஊடகங்களையும் கண்டறியவும்.',
         },
-        link: 'http://www.fibkerala.gov.in/',
+        link: 'https://www.tnagrisnet.tn.gov.in/uzhavanapp/',
         icon: BookOpen,
         category: 'knowledge',
     },
@@ -80,13 +80,13 @@ const consultationLinks: ConsultationLink[] = [
         id: 'kvk',
         title: {
             en: 'Krishi Vigyan Kendra (KVK)',
-            ml: 'കൃഷി വിജ്ഞാന കേന്ദ്രം (KVK)',
+            ml: 'கிருஷி विज्ञान కేంద్రం (KVK)',
         },
         description: {
             en: 'Get district-level scientific and technical support. Find your local KVK for personalized help.',
-            ml: 'ജില്ലാതല ശാസ്ത്രീയ-സാങ്കേതിക പിന്തുണ നേടുക. സഹായത്തിനായി നിങ്ങളുടെ പ്രാഥേശിക KVK കണ്ടെത്തുക.',
+            ml: 'மாவட்ட அளவிலான அறிவியல் மற்றும் தொழில்நுட்ப ஆதரவைப் பெறுங்கள். உதவிக்கு உங்கள் உள்ளூர் KVK-ஐக் கண்டறியவும்.',
         },
-        link: 'http://kvk.kau.in/',
+        link: 'https://www.icar.org.in/content/krishi-vigyan-kendras',
         icon: Users,
         category: 'community',
     },
@@ -94,13 +94,13 @@ const consultationLinks: ConsultationLink[] = [
         id: 'soil-testing',
         title: {
             en: 'Soil Testing Labs',
-            ml: 'മണ്ണ് പരിശോധന ലാബുകൾ',
+            ml: 'மண் பரிசோதனை ஆய்வகங்கள்',
         },
         description: {
             en: 'Find a nearby soil testing laboratory to analyze your soil for better crop management.',
-            ml: 'മികച്ച വിള പരിപാലനത്തിനായി നിങ്ങളുടെ മണ്ണ് വിശകലനം ചെയ്യാൻ അടുത്തുള്ള മണ്ണ് പരിശോധന ലാബ് കണ്ടെത്തുക.',
+            ml: 'சிறந்த பயிர் நிர்வாகத்திற்காக உங்கள் மண்ணை பகுப்பாய்வு செய்ய அருகிலுள்ள மண் பரிசோதனை ஆய்வகத்தைக் கண்டறியவும்.',
         },
-        link: 'http://www.keralasoil.gov.in/index.php/testing-labs',
+        link: 'https://agrisnet.tn.gov.in/stl/',
         icon: LandPlot,
         category: 'knowledge',
     },
@@ -108,11 +108,11 @@ const consultationLinks: ConsultationLink[] = [
         id: 'pmfby',
         title: {
             en: 'Crop Insurance Portal',
-            ml: 'വിള ഇൻഷുറൻസ് പോർട്ടൽ',
+            ml: 'பயிர் காப்பீட்டு போர்டல்',
         },
         description: {
             en: 'National portal for Pradhan Mantri Fasal Bima Yojana (PMFBY) for crop insurance.',
-            ml: 'വിള ഇൻഷുറൻസിനായുള്ള പ്രധാൻ മന്ത്രി ഫസൽ ബീമാ യോജനയുടെ (PMFBY) ദേശീയ പോർട്ടൽ.',
+            ml: 'பயிர் காப்பீட்டுக்கான பிரதான் மந்திரி ஃபசல் பீமா யோஜனா (PMFBY) தேசிய போர்டல்.',
         },
         link: 'https://pmfby.gov.in/',
         icon: ShieldCheck,
@@ -122,16 +122,16 @@ const consultationLinks: ConsultationLink[] = [
 
 const categories = (language: 'en' | 'ml') => ({
     gov: {
-        title: language === 'en' ? 'Government & University Portals' : 'സർക്കാർ & സർവകലാശാല പോർട്ടലുകൾ',
-        description: language === 'en' ? 'Official sources for schemes, subsidies, and research.' : 'പദ്ധതികൾ, സബ്‌സിഡികൾ, ഗവേഷണങ്ങൾ എന്നിവയ്ക്കുള്ള ഔദ്യോഗിക ഉറവിടങ്ങൾ.',
+        title: language === 'en' ? 'Government & University Portals' : 'அரசு மற்றும் பல்கலைக்கழக இணையதளங்கள்',
+        description: language === 'en' ? 'Official sources for schemes, subsidies, and research.' : 'திட்டங்கள், மானியங்கள் மற்றும் ஆராய்ச்சிக்கான அதிகாரப்பூர்வ ஆதாரங்கள்.',
     },
     knowledge: {
-        title: language === 'en' ? 'Knowledge & Learning' : 'അറിവും പഠനവും',
-        description: language === 'en' ? 'Resources to improve your farming techniques and knowledge.' : 'നിങ്ങളുടെ കാർഷിക രീതികളും അറിവും മെച്ചപ്പെടുത്തുന്നതിനുള്ള ഉറവിടങ്ങൾ.',
+        title: language === 'en' ? 'Knowledge & Learning' : 'அறிவு மற்றும் கற்றல்',
+        description: language === 'en' ? 'Resources to improve your farming techniques and knowledge.' : 'உங்கள் விவசாய நுட்பங்களையும் அறிவையும் மேம்படுத்துவதற்கான ஆதாரங்கள்.',
     },
     community: {
-        title: language === 'en' ? 'Community & Support' : 'കമ്മ്യൂണിറ്റിയും പിന്തുണയും',
-        description: language === 'en' ? 'Connect with local centers and farmer communities for direct support.' : 'നേരിട്ടുള്ള പിന്തുണയ്ക്കായി പ്രാദേശിക കേന്ദ്രങ്ങളുമായും കർഷക സമൂഹങ്ങളുമായും ബന്ധപ്പെടുക.',
+        title: language === 'en' ? 'Community & Support' : 'சமூகம் மற்றும் ஆதரவு',
+        description: language === 'en' ? 'Connect with local centers and farmer communities for direct support.' : 'நேரடி ஆதரவிற்காக உள்ளூர் மையங்கள் மற்றும் விவசாய சமூகங்களுடன் இணையுங்கள்.',
     },
 });
 

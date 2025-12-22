@@ -161,7 +161,7 @@ export const translations = {
       subtotal: 'Subtotal',
 
       // Live Market Page
-      liveMarketDesc: 'Live daily market prices for common crops in Tamil Nadu. Data is sourced from data.gov.in (Agmarknet).',
+      liveMarketDesc: 'Live daily market prices for common crops in Tamilnadu, Tenkasi. Data is sourced from data.gov.in (Agmarknet).',
       selectCommodity: 'Select Commodity',
       refresh: 'Refresh',
       date: 'Date',
@@ -240,7 +240,7 @@ export const translations = {
       aiPoweredInsight: 'AI-இயங்கும் நுண்ணறிவு',
       aiInsightText1: (percentage: string) => `${percentage}% உங்கள் பண்ணையில் நெல்லுக்கு அர்ப்பணிக்கப்பட்டுள்ளதால்`,
       aiInsightText2: 'மற்றும்',
-      aiInsightText3: 'மண்ணின் தன்மையால், நெல் அறுவடைக்குப் பிறகு தட்டைப்பயறு போன்ற ஒரு மூடு பயிரை நடுவதன் மூலம் மண்ணின் நைட்ரஜன் அளவை இயற்கையாக மேம்படுத்தலாம்.',
+aiInsightText3: 'மண்ணின் தன்மையால், நெல் அறுவடைக்குப் பிறகு தட்டைப்பயறு போன்ற ஒரு மூடு பயிரை நடுவதன் மூலம் மண்ணின் நைட்ரஜன் அளவை இயற்கையாக மேம்படுத்தலாம்.',
       profileSavedTitle: 'சுயவிவரம் சேமிக்கப்பட்டது!',
       profileSavedDesc: 'உங்கள் பண்ணை சுயவிவரம் வெற்றிகரமாகப் புதுப்பிக்கப்பட்டது.',
       profileSaveFailedTitle: 'சேமிப்பு தோல்வியுற்றது',
@@ -334,7 +334,7 @@ export const translations = {
       subtotal: 'துணை மொத்தம்',
 
       // Live Market Page
-      liveMarketDesc: 'தமிழ்நாட்டில் பொதுவான பயிர்களுக்கான நேரடி தினசரி சந்தை விலைகள். தரவு data.gov.in (Agmarknet) இலிருந்து பெறப்பட்டது.',
+      liveMarketDesc: 'தென்காசி, தமிழ்நாட்டில் பொதுவான பயிர்களுக்கான நேரடி தினசரி சந்தை விலைகள். தரவு data.gov.in (Agmarknet) இலிருந்து பெறப்பட்டது.',
       selectCommodity: 'பொருளைத் தேர்ந்தெடுக்கவும்',
       refresh: 'புதுப்பிக்கவும்',
       date: 'தேதி',

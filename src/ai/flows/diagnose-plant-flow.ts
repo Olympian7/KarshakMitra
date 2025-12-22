@@ -52,7 +52,7 @@ const prompt = ai.definePrompt({
   name: 'diagnosePlantPrompt',
   input: { schema: DiagnosePlantInputSchema },
   output: { schema: DiagnosePlantOutputSchema },
-  prompt: `You are an expert botanist and plant pathologist specializing in diagnosing plant illnesses, particularly for crops found in Kerala, India.
+  prompt: `You are an expert botanist and plant pathologist specializing in diagnosing plant illnesses, particularly for crops found in Tamilnadu, Tenkasi, India.
 
   Analyze the provided image and description to identify the plant and diagnose any issues it may have.
 

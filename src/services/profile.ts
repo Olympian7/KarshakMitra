@@ -45,7 +45,7 @@ const USER_PROFILE_ID = 'user_narayanan';
 const defaultProfile: FarmProfile = {
   farmerName: 'Narayanan',
   farmName: 'Narayanan Farms',
-  location: 'Kuttanad, Kerala',
+  location: 'Tamilnadu, Tenkasi',
   farmSize: '15',
   soilType: 'Alluvial Soil',
   mainCrops: 'Paddy (High-Yield), Lentils, Bananas, Okra, Ginger',
@@ -64,9 +64,9 @@ const defaultProfile: FarmProfile = {
   plotTypes: [
     { value: 0, color: 'hsl(0, 0%, 85%)', label: { en: 'Empty', ml: 'ഒഴിഞ്ഞ' } },
     { value: 100, color: 'hsl(205, 90%, 60%)', label: { en: 'Paddy', ml: 'നെല്ല്' } },
-    { value: 90, color: 'hsl(50, 90%, 60%)', label: { en: 'Lentils', ml: 'പയർവർഗ്ഗങ്ങൾ' } },
+    { value: 90, color: 'hsl(50, 90%, 60%)', label: { en: 'Lentils', ml: 'பயறு' } },
     { value: 80, color: 'hsl(45, 95%, 55%)', label: { en: 'Bananas', ml: 'വാഴ' } },
-    { value: 60, color: 'hsl(120, 70%, 50%)', label: { en: 'Okra', ml: 'വെണ്ട' } },
+    { value: 60, color: 'hsl(120, 70%, 50%)', label: { en: 'Okra', ml: 'வெണ്ട' } },
     { value: 40, color: 'hsl(0, 80%, 60%)', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
   ],
   cropStock: [
@@ -113,7 +113,6 @@ export async function saveProfile(newProfile: FarmProfile): Promise<FarmProfile>
     const profileDocRef = doc(db, 'profiles', USER_PROFILE_ID);
     
     try {
-        // Use a direct setDoc without merge to ensure the entire object, including nested arrays, is overwritten.
         await setDoc(profileDocRef, newProfile);
         console.log("Profile data saved to Firestore.");
         return newProfile;

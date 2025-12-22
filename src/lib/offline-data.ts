@@ -26,20 +26,20 @@ const offlineResponses: OfflineResponse[] = [
   // Weather
   {
     keywords: ['weather', 'rain', 'temperature', 'climate'],
-    en: 'General weather in Tamil Nadu is typically warm and humid. For a specific forecast for your location, please connect to the internet.',
-    ml: 'தமிழ்நாட்டில் பொதுவான வானிலை பொதுவாக வெப்பமாகவும் ஈரப்பதமாகவும் இருக்கும். உங்கள் இருப்பிடத்திற்கான குறிப்பிட்ட முன்னறிவிப்புக்கு, இணையத்துடன் இணைக்கவும்.',
+    en: 'General weather in Tamilnadu, Tenkasi is typically warm and humid. For a specific forecast for your location, please connect to the internet.',
+    ml: 'தென்காசி, தமிழ்நாட்டில் பொதுவான வானிலை பொதுவாக வெப்பமாகவும் ஈரப்பதமாகவும் இருக்கும். உங்கள் இருப்பிடத்திற்கான குறிப்பிட்ட முன்னறிவிப்புக்கு, இணையத்துடன் இணைக்கவும்.',
   },
   {
     keywords: ['monsoon', 'rainy season'],
-    en: 'The main monsoon season in Tamil Nadu is the North-East monsoon from October to December.',
-    ml: 'தமிழ்நாட்டில் முக்கிய மழைக்காலம் அக்டோபர் முதல் டிசம்பர் வரை வடகிழக்கு பருவமழை ஆகும்.',
+    en: 'The main monsoon season in Tamilnadu, Tenkasi is the North-East monsoon from October to December.',
+    ml: 'தென்காசி, தமிழ்நாட்டில் முக்கிய மழைக்காலம் அக்டோபர் முதல் டிசம்பர் வரை வடகிழக்கு பருவமழை ஆகும்.',
   },
 
   // Crop Specific
   {
     keywords: ['paddy', 'rice', 'nel'],
-    en: 'Paddy is a major crop in Tamil Nadu, often planted during the monsoon season. For specific variety recommendations, please go online.',
-    ml: 'தமிழ்நாட்டில் நெல் ஒரு முக்கிய பயிர், இது பெரும்பாலும் பருவமழை காலத்தில் நடப்படுகிறது. குறிப்பிட்ட வகை பரிந்துரைகளுக்கு, ஆன்லைனில் செல்லவும்.',
+    en: 'Paddy is a major crop in Tamilnadu, Tenkasi, often planted during the monsoon season. For specific variety recommendations, please go online.',
+    ml: 'தென்காசி, தமிழ்நாட்டில் நெல் ஒரு முக்கிய பயிர், இது பெரும்பாலும் பருவமழை காலத்தில் நடப்படுகிறது. குறிப்பிட்ட வகை பரிந்துரைகளுக்கு, ஆன்லைனில் செல்லவும்.',
   },
   {
     keywords: ['coconut', 'thenga'],
@@ -49,7 +49,7 @@ const offlineResponses: OfflineResponse[] = [
   {
     keywords: ['banana', 'vazha'],
     en: 'Bananas are heavy feeders and require rich soil and plenty of water. Bunchy top virus is a major disease.',
-    ml: 'வாழைப்பழம் அதிக ஊட்டச்சத்துக்களை எடுத்துக்கொள்ளும் மற்றும் வளமான மண் மற்றும் நிறைய தண்ணீர் தேவை. கொத்து நோய் ஒரு பெரிய நோயாகும்.',
+    ml: 'வாழைப்பழம் அதிக ஊட்டச்சத்துக்களை எடுத்துக்கொள்ளும் మరియు வளமான மண் மற்றும் நிறைய தண்ணீர் தேவை. கொத்து நோய் ஒரு பெரிய நோயாகும்.',
   },
   {
     keywords: ['pepper', 'kurumulaku'],
