@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview Defines AI tools for Karshak Mitra to interact with external services.
+ * @fileOverview Defines AI tools for உழவர் நண்பன் to interact with external services.
  *
  * - getWeatherForecastTool - Fetches the current weather forecast.
  * - getMarketTrendsTool - Fetches the latest market prices for crops.

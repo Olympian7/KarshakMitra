@@ -77,7 +77,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
                 <path d="m6 9.5 6 2.5" />
               </svg>
               </div>
-              <span className="">Karshak Mitra</span>
+              <span className="">உழவர் நண்பன்</span>
             </Link>
           </div>
           <div className="flex-1">

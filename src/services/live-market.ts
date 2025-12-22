@@ -13,7 +13,7 @@ export interface LiveMarketRecord {
 // --- CONFIG ---
 const API_KEY = '579b464db66ec23bdd000001fafcf228efd042c75a7d9ea9384e5b79';
 const RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070';
-const STATE = 'Kerala';
+const STATE = 'Tamil Nadu';
 
 export async function getLiveCropPrices(commodity: string): Promise<LiveMarketRecord[]> {
     const url = new URL(`https://api.data.gov.in/resource/${RESOURCE_ID}`);
