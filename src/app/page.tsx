@@ -37,7 +37,7 @@ export default async function Dashboard() {
     <LanguageProvider>
       <DashboardContent
         weather={weatherData}
-        marketTrends={marketTrends}
+        marketTrends={marketTrends as any[]}
         govSchemes={govSchemes}
         recentActivities={recentActivities}
       />

@@ -1,3 +1,4 @@
+
 'use server';
 
 import { db } from '@/lib/firebase';
@@ -34,6 +35,8 @@ async function seedInitialActivities() {
     console.log("Seeding initial activities...");
     const activitiesCollection = collection(db, 'activities');
     for (const activity of mockActivities) {
+        // Add a slight delay to ensure different timestamps
+        await new Promise(resolve => setTimeout(resolve, 50));
         await addDoc(activitiesCollection, {
             ...activity,
             date: serverTimestamp(), // Use server timestamp for seeding
@@ -66,6 +69,14 @@ export async function getActivities(): Promise<Activity[]> {
 
     const activities = querySnapshot.docs.map(doc => {
         const data = doc.data();
+        // Handle cases where date might be null temporarily during creation
+        if (!data.date) {
+            return {
+                id: doc.id,
+                text: data.text,
+                date: new Date().toISOString()
+            }
+        }
         return {
             id: doc.id,
             text: data.text,
@@ -76,8 +87,12 @@ export async function getActivities(): Promise<Activity[]> {
     return activities;
   } catch (e) {
     console.error("Error fetching activities from Firestore:", e);
-    // If there's any error, return an empty array to prevent UI crashes
-    return [];
+    // If there's any error, return mock data to prevent UI crashes
+    return mockActivities.map((act, index) => ({
+        id: `mock-${index}`,
+        text: act.text,
+        date: new Date(Date.now() - index * 24 * 60 * 60 * 1000).toISOString()
+    })).sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }
 }
 

@@ -1,3 +1,4 @@
+
 'use server';
 
 // This service fetches live agricultural market data from data.gov.in.
@@ -11,69 +12,33 @@ export type MarketTrend = {
 };
 
 // --- CONFIG ---
-const API_KEY = '579b464db66ec23bdd000001fafcf228efd042c75a7d9ea9384e5b79';
-const RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070';
-const STATE = 'Tamil Nadu';
-// List of common commodities to fetch for the market page.
-const COMMODITIES_TO_FETCH = [
-  'Paddy', 'Lentils', 'Banana', 'Ginger', 'Okra', // From profile
-  'Coconut', 'Rubber', 'Black Pepper', 'Cardamom', 'Tapioca', 'Tomato'
+// This is a mock service now, so no API key is needed.
+
+const MOCK_MARKET_DATA: MarketTrend[] = [
+    // Tenkasi specific crops
+    { name: "Paddy", variety: "ADT-45", price: 21.50, market: "Tenkasi", district: "Tenkasi" },
+    { name: "Groundnut", variety: "TMV-7", price: 75.00, market: "Sankarankovil", district: "Tenkasi" },
+    { name: "Chilli", variety: "K-1", price: 90.00, market: "Kadayanallur", district: "Tenkasi" },
+    { name: "Mango", variety: "Alphonso", price: 120.00, market: "Tenkasi", district: "Tenkasi" },
+    { name: "Brinjal", variety: "Long Green", price: 30.00, market: "Tenkasi", district: "Tenkasi" },
+    
+    // Other crops
+    { name: "Lentils", variety: "Local", price: 85.00, market: "Tirunelveli", district: "Tirunelveli" },
+    { name: "Banana", variety: "Nendran", price: 45.00, market: "Tenkasi", district: "Tenkasi" },
+    { name: "Ginger", variety: "Local", price: 150.00, market: "Sivagiri (Tenkasi)", district: "Tenkasi" },
+    { name: "Okra", variety: "Hybrid", price: 28.00, market: "Tenkasi", district: "Tenkasi" },
+    { name: "Coconut", variety: "Tall", price: 25.00, market: "Alangulam", district: "Tenkasi" },
+    { name: "Tapioca", variety: "Local", price: 15.00, market: "Sankarankovil", district: "Tenkasi" },
+    { name: "Tomato", variety: "Hybrid", price: 26.00, market: "Tenkasi", district: "Tenkasi" },
 ];
 
 
-async function fetchCropPrices(commodity: string): Promise<any[]> {
-    const url = new URL(`https://api.data.gov.in/resource/${RESOURCE_ID}`);
-    url.searchParams.set('api-key', API_KEY);
-    url.searchParams.set('format', 'json');
-    url.searchParams.set('limit', '20'); // Get up to 20 recent entries per commodity
-    url.searchParams.set('filters[state]', STATE);
-    url.searchParams.set('filters[commodity]', commodity);
-    
-    try {
-        const res = await fetch(url.toString());
-        if (!res.ok) {
-            console.error(`API error for ${commodity}: ${res.status}`);
-            return [];
-        }
-        const data = await res.json();
-        return Array.isArray(data.records) ? data.records : [];
-    } catch (e) {
-        console.error(`Failed to fetch data for ${commodity}:`, e);
-        return [];
-    }
-}
-
-
 export async function getMarketTrends(): Promise<MarketTrend[]> {
-  console.log("Fetching live market trends...");
+  console.log("Fetching mock market trends for Tenkasi...");
   
-  // Fetch all commodities in parallel for speed
-  const promises = COMMODITIES_TO_FETCH.map(fetchCropPrices);
-  const results = await Promise.all(promises);
+  // Simulate network delay to mimic a real API call
+  await new Promise(resolve => setTimeout(resolve, 300));
   
-  const allRecords = results.flat();
-
-  if (allRecords.length === 0) {
-    console.warn("No market data was fetched from the API.");
-    return [];
-  }
-
-  // Transform the raw API records into our application's data structure
-  const formattedTrends: MarketTrend[] = allRecords
-    .map(record => {
-      // The API returns price per quintal (100kg). We convert it to per kg.
-      const pricePerKg = record.modal_price ? parseFloat(record.modal_price) / 100 : 0;
-      
-      return {
-        name: record.commodity,
-        variety: record.variety,
-        price: pricePerKg,
-        market: record.market,
-        district: record.district,
-      };
-    })
-    .filter(trend => trend.price > 0) // Filter out entries with no price data
-    .sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically by crop name
-
-  return formattedTrends;
+  // Return the mock data
+  return MOCK_MARKET_DATA;
 }
