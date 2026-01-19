@@ -15,6 +15,7 @@ import {
   Keyboard,
   Cable,
   FlaskConical,
+  BarChart,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -26,7 +27,7 @@ import { useKeyboard } from '@/context/keyboard-context';
 type AppShellProps = {
   children: React.ReactNode;
   title: string;
-  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer' | 'community-bot' | 'live-market' | 'soil-analysis';
+  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer' | 'community-bot' | 'live-market' | 'soil-analysis' | 'diagnosis-training-graph';
 };
 
 export default function AppShell({ children, title, activePage }: AppShellProps) {
@@ -39,6 +40,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
     { id: 'assistant', href: '/assistant', icon: MessageCircle, label: t.conversationalAssistant },
     { id: 'community-bot', href: '/community-bot', icon: Bot, label: t.communityBot },
     { id: 'diagnosis', href: '/diagnosis', icon: Stethoscope, label: t.diagnosis },
+    { id: 'diagnosis-training-graph', href: '/diagnosis-training-graph', icon: BarChart, label: t.diagnosisTrainingGraph },
     { id: 'soil-analysis', href: '/soil-analysis', icon: FlaskConical, label: t.soilAnalysis },
     { id: 'farm-viewer', href: '/farm-viewer', icon: Tractor, label: t.farmViewer },
     { id: 'profile', href: '/profile', icon: User, label: t.farmProfile },
