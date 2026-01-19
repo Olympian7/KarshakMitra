@@ -28,7 +28,7 @@ import { useKeyboard } from '@/context/keyboard-context';
 type AppShellProps = {
   children: React.ReactNode;
   title: string;
-  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer' | 'community-bot' | 'live-market' | 'soil-analysis' | 'diagnosis-training-graph' | 'diagnosis-training-loss-graph';
+  activePage: 'dashboard' | 'assistant' | 'profile' | 'tracking' | 'schemes' | 'market' | 'consultation' | 'diagnosis' | 'farm-viewer' | 'community-bot' | 'live-market' | 'soil-analysis' | 'diagnosis-training-graph' | 'diagnosis-training-loss-graph' | 'lstm-loss-graph';
 };
 
 export default function AppShell({ children, title, activePage }: AppShellProps) {
@@ -43,6 +43,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
     { id: 'diagnosis', href: '/diagnosis', icon: Stethoscope, label: t.diagnosis },
     { id: 'diagnosis-training-graph', href: '/diagnosis-training-graph', icon: BarChart, label: t.diagnosisTrainingGraph },
     { id: 'diagnosis-training-loss-graph', href: '/diagnosis-training-loss-graph', icon: TrendingDown, label: t.diagnosisTrainingLossGraph },
+    { id: 'lstm-loss-graph', href: '/lstm-loss-graph', icon: LineChart, label: t.lstmLossGraph },
     { id: 'soil-analysis', href: '/soil-analysis', icon: FlaskConical, label: t.soilAnalysis },
     { id: 'farm-viewer', href: '/farm-viewer', icon: Tractor, label: t.farmViewer },
     { id: 'profile', href: '/profile', icon: User, label: t.farmProfile },
