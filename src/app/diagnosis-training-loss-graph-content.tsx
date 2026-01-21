@@ -117,11 +117,11 @@ export default function DiagnosisTrainingLossGraphContent() {
 
     return (
         <AppShell title={t.diagnosisTrainingLossGraph} activePage="diagnosis-training-loss-graph">
-            <main className="flex flex-1 flex-col items-center justify-center p-4 bg-muted/40">
-                <Card className="w-full max-w-3xl">
+            <main className="flex flex-1 flex-col p-4 lg:p-8 bg-background">
+                <Card className="w-full max-w-4xl mx-auto border-2 border-dashed">
                     <CardHeader>
-                    <CardTitle>Pest & Disease Diagnosis Model Performance</CardTitle>
-                    <CardDescription>Training & Validation Loss over 20 epochs</CardDescription>
+                    <CardTitle className="text-2xl">Pest & Disease Diagnosis Model Performance</CardTitle>
+                    <CardDescription>Training & Validation Loss over 20 epochs. This chart shows how the model's error rate decreased as it learned.</CardDescription>
                     </CardHeader>
                     <CardContent>
                     <DynamicLossChart />

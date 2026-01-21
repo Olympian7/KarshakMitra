@@ -118,11 +118,11 @@ export default function LstmLossGraphContent() {
 
     return (
         <AppShell title={t.lstmLossGraph} activePage="lstm-loss-graph">
-            <main className="flex flex-1 flex-col items-center justify-center p-4 bg-muted/40">
-                <Card className="w-full max-w-3xl">
+            <main className="flex flex-1 flex-col p-4 lg:p-8 bg-background">
+                <Card className="w-full max-w-4xl mx-auto border-2 border-dashed">
                     <CardHeader>
-                    <CardTitle>LSTM Model Performance</CardTitle>
-                    <CardDescription>Training & Validation Loss over 20 epochs</CardDescription>
+                    <CardTitle className="text-2xl">LSTM Model Performance</CardTitle>
+                    <CardDescription>Training & Validation Loss over 20 epochs. This chart tracks the error reduction for the market price prediction model.</CardDescription>
                     </CardHeader>
                     <CardContent>
                     <DynamicLossChart />

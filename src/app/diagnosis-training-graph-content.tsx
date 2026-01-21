@@ -118,11 +118,11 @@ export default function DiagnosisTrainingGraphContent() {
 
     return (
         <AppShell title={t.diagnosisTrainingGraph} activePage="diagnosis-training-graph">
-            <main className="flex flex-1 flex-col items-center justify-center p-4 bg-muted/40">
-                <Card className="w-full max-w-3xl">
+            <main className="flex flex-1 flex-col p-4 lg:p-8 bg-background">
+                <Card className="w-full max-w-4xl mx-auto border-2 border-dashed">
                     <CardHeader>
-                    <CardTitle>Pest & Disease Diagnosis Model Performance</CardTitle>
-                    <CardDescription>Training & Validation Accuracy over 20 epochs</CardDescription>
+                    <CardTitle className="text-2xl">Pest & Disease Diagnosis Model Performance</CardTitle>
+                    <CardDescription>Training & Validation Accuracy over 20 epochs. This chart visualizes how the model's accuracy improved on both the training data and unseen validation data.</CardDescription>
                     </CardHeader>
                     <CardContent>
                     <DynamicAccuracyChart />

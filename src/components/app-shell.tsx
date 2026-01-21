@@ -15,9 +15,9 @@ import {
   Keyboard,
   Cable,
   FlaskConical,
-  BarChart,
-  TrendingDown,
   BrainCircuit,
+  TrendingDown,
+  TrendingUp,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -148,17 +148,26 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
                 <span className="sr-only">{t.adminMenu}</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-64">
               <DropdownMenuLabel>{t.adminAnalytics}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href="/diagnosis-training-graph">{t.diagnosisTrainingGraph}</Link>
+                <Link href="/diagnosis-training-graph">
+                  <TrendingUp className="mr-2 h-4 w-4" />
+                  <span>{t.diagnosisTrainingGraph}</span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/diagnosis-training-loss-graph">{t.diagnosisTrainingLossGraph}</Link>
+                <Link href="/diagnosis-training-loss-graph">
+                  <TrendingDown className="mr-2 h-4 w-4" />
+                  <span>{t.diagnosisTrainingLossGraph}</span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/lstm-loss-graph">{t.lstmLossGraph}</Link>
+                <Link href="/lstm-loss-graph">
+                  <TrendingDown className="mr-2 h-4 w-4" />
+                  <span>{t.lstmLossGraph}</span>
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
