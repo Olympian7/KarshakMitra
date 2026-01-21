@@ -2,9 +2,10 @@
 export const translations = {
     en: {
       // App Shell & Navigation
+      appName: 'Karshak Mitra',
       dashboard: 'Dashboard',
       conversationalAssistant: 'Conversational Assistant',
-      communityBot: 'Community Bot',
+      communityBot: 'Mitra',
       farmProfile: 'Farm Profile',
       activityTracking: 'Activity Tracking',
       governmentSchemes: 'Government Schemes',
@@ -182,9 +183,10 @@ export const translations = {
     },
     ml: {
       // App Shell & Navigation
+      appName: 'കർഷക മിത്ര',
       dashboard: 'ഡാഷ്ബോർഡ്',
       conversationalAssistant: 'സംഭാഷണ സഹായി',
-      communityBot: 'കമ്മ്യൂണിറ്റി ബോട്ട്',
+      communityBot: 'മിത്ര',
       farmProfile: 'ഫാം പ്രൊഫൈൽ',
       activityTracking: 'പ്രവർത്തന ട്രാക്കിംഗ്',
       governmentSchemes: 'സർക്കാർ പദ്ധതികൾ',
@@ -307,7 +309,7 @@ export const translations = {
       diagnosePlant: 'രോഗം നിർണ്ണയിക്കുക',
       diagnosing: 'രോഗനിർണയം നടത്തുന്നു...',
       diagnosisResult: 'രോഗനിർണ്ണയ ഫലം',
-      aiAnalysis: 'ഇതൊരു AI സഹായത്തോടെയുള്ള പ്രാഥമിക വിശകലനമാണ്. സ്ഥിരീകരണത്തിനായി എപ്പോഴും ഒരു പ്രാദേശിക വിദഗ്ദ്ധനുമായി ബന്ധപ്പെടുക.',
+      aiAnalysis: 'ഇതൊരു AI സഹായത്തോടെയുള്ള പ്രാഥമിക വിശകലനമാണ്. സ്ഥിരീകരണത്തിനായി എപ്പോഴും ഒരു പ്രാദേശസിക വിദഗ്ദ്ധനുമായി ബന്ധപ്പെടുക.',
       uploadForDiagnosis: 'നിങ്ങളുടെ AI- പവർഡ് പ്ലാന്റ് രോഗനിർണയം ലഭിക്കുന്നതിന് ഒരു ഫോട്ടോ അപ്‌ലോഡ് ചെയ്ത് ഒരു വിവരണം നൽകുക.',
       plantIdentification: 'സസ്യ തിരിച്ചറിയൽ',
       commonName: 'സാധാരണ പേര്',
