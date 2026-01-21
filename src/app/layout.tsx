@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
@@ -11,8 +12,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'உழவர் நண்பன்',
-  description: "An AI-powered personal farming assistant for Tamilnadu, Tenkasi's farmers.",
+  title: 'Karshak Mitra',
+  description: "An AI-powered personal farming assistant for Kerala's farmers.",
 };
 
 export default function RootLayout({

@@ -26,8 +26,8 @@ interface Message {
 const initialMessage: Message = {
   id: `assistant-initial-${Date.now()}`,
   sender: 'assistant',
-  englishText: "Hello! I am your உழவர் நண்பன் assistant. How can I help you today?",
-  malayalamText: "வணக்கம்! நான் உங்கள் உழவர் நண்பன். இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?",
+  englishText: "Hello! I am your Karshak Mitra assistant. How can I help you today?",
+  malayalamText: "നമസ്കാരം! ഞാൻ നിങ്ങളുടെ കർഷക മിത്ര. ഇന്ന് ഞാൻ നിങ്ങളെ എങ്ങനെ സഹായിക്കും?",
 };
 
 
@@ -240,7 +240,7 @@ function AdvancedAssistantChat() {
                         <div className="flex items-center gap-2 -mt-1 ml-12">
                             <Button variant="ghost" size="sm" onClick={() => toggleTranslation(message.id)} className="flex items-center gap-1 text-xs h-auto py-1 px-2 text-muted-foreground">
                                <Languages className="h-3 w-3" />
-                               {language === 'en' ? (isTranslated ? 'Show in English' : 'Tamil') : (isTranslated ? 'Show in Tamil' : 'English')}
+                               {language === 'en' ? (isTranslated ? 'Show in English' : 'Malayalam') : (isTranslated ? 'Show in Malayalam' : 'English')}
                             </Button>
                             <Button 
                                 variant="ghost" 

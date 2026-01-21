@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import {
   Bell,
@@ -89,7 +90,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
                 <path d="m6 9.5 6 2.5" />
               </svg>
               </div>
-              <span className="">உழவர் நண்பன்</span>
+              <span className="">Karshak Mitra</span>
             </Link>
           </div>
           <div className="flex-1">

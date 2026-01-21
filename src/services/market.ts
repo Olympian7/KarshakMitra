@@ -15,26 +15,25 @@ export type MarketTrend = {
 // This is a mock service now, so no API key is needed.
 
 const MOCK_MARKET_DATA: MarketTrend[] = [
-    // Tenkasi specific crops
-    { name: "Paddy", variety: "ADT-45", price: 21.50, market: "Tenkasi", district: "Tenkasi" },
-    { name: "Groundnut", variety: "TMV-7", price: 75.00, market: "Sankarankovil", district: "Tenkasi" },
-    { name: "Chilli", variety: "K-1", price: 90.00, market: "Kadayanallur", district: "Tenkasi" },
-    { name: "Mango", variety: "Alphonso", price: 120.00, market: "Tenkasi", district: "Tenkasi" },
-    { name: "Brinjal", variety: "Long Green", price: 30.00, market: "Tenkasi", district: "Tenkasi" },
-    
-    // Other crops
-    { name: "Lentils", variety: "Local", price: 85.00, market: "Tirunelveli", district: "Tirunelveli" },
-    { name: "Banana", variety: "Nendran", price: 45.00, market: "Tenkasi", district: "Tenkasi" },
-    { name: "Ginger", variety: "Local", price: 150.00, market: "Sivagiri (Tenkasi)", district: "Tenkasi" },
-    { name: "Okra", variety: "Hybrid", price: 28.00, market: "Tenkasi", district: "Tenkasi" },
-    { name: "Coconut", variety: "Tall", price: 25.00, market: "Alangulam", district: "Tenkasi" },
-    { name: "Tapioca", variety: "Local", price: 15.00, market: "Sankarankovil", district: "Tenkasi" },
-    { name: "Tomato", variety: "Hybrid", price: 26.00, market: "Tenkasi", district: "Tenkasi" },
+    // Kerala specific crops
+    { name: "Paddy", variety: "Uma", price: 22.50, market: "Alappuzha", district: "Alappuzha" },
+    { name: "Coconut", variety: "WCT", price: 32.00, market: "Kochi", district: "Ernakulam" },
+    { name: "Rubber", variety: "RSS-4", price: 175.00, market: "Kottayam", district: "Kottayam" },
+    { name: "Banana", variety: "Nendran", price: 48.00, market: "Thrissur", district: "Thrissur" },
+    { name: "Black Pepper", variety: "Tellicherry", price: 650.00, market: "Idukki", district: "Idukki" },
+    { name: "Ginger", variety: "Cochin", price: 160.00, market: "Kochi", district: "Ernakulam" },
+    { name: "Cardamom", variety: "Green", price: 1800.00, market: "Vandanmedu", district: "Idukki" },
+    { name: "Tapioca", variety: "M-4", price: 18.00, market: "Thiruvananthapuram", district: "Thiruvananthapuram" },
+    { name: "Arecanut", variety: "Ripe", price: 280.00, market: "Kasaragod", district: "Kasaragod" },
+    { name: "Okra", variety: "Arka Anamika", price: 35.00, market: "Palakkad", district: "Palakkad" },
+    { name: "Brinjal", variety: "Long Green", price: 32.00, market: "Kochi", district: "Ernakulam" },
+    { name: "Tomato", variety: "Hybrid", price: 25.00, market: "Kochi", district: "Ernakulam" },
+    { name: "Lentils", variety: "Local", price: 90.00, market: "Palakkad", district: "Palakkad" },
 ];
 
 
 export async function getMarketTrends(): Promise<MarketTrend[]> {
-  console.log("Fetching mock market trends for Tenkasi...");
+  console.log("Fetching mock market trends for Kerala...");
   
   // Simulate network delay to mimic a real API call
   await new Promise(resolve => setTimeout(resolve, 300));

@@ -45,10 +45,10 @@ const USER_PROFILE_ID = 'user_narayanan';
 const defaultProfile: FarmProfile = {
   farmerName: 'Narayanan',
   farmName: 'Narayanan Farms',
-  location: 'Tamilnadu, Tenkasi',
+  location: 'Kuttanad, Kerala',
   farmSize: '15',
   soilType: 'Alluvial Soil',
-  mainCrops: 'Paddy (High-Yield), Lentils, Bananas, Okra, Ginger',
+  mainCrops: 'Paddy, Coconuts, Bananas, Black Pepper',
   farmGrid: [
     [100, 100, 100, 100, 100, 80, 80, 80, 0, 0],
     [100, 100, 100, 100, 100, 80, 80, 80, 0, 0],
@@ -64,17 +64,17 @@ const defaultProfile: FarmProfile = {
   plotTypes: [
     { value: 0, color: 'hsl(0, 0%, 85%)', label: { en: 'Empty', ml: 'ഒഴിഞ്ഞ' } },
     { value: 100, color: 'hsl(205, 90%, 60%)', label: { en: 'Paddy', ml: 'നെല്ല്' } },
-    { value: 90, color: 'hsl(50, 90%, 60%)', label: { en: 'Lentils', ml: 'பயறு' } },
+    { value: 90, color: 'hsl(80, 80%, 40%)', label: { en: 'Pepper', ml: 'കുരുമുളക്' } },
     { value: 80, color: 'hsl(45, 95%, 55%)', label: { en: 'Bananas', ml: 'വാഴ' } },
-    { value: 60, color: 'hsl(120, 70%, 50%)', label: { en: 'Okra', ml: 'வெണ്ട' } },
+    { value: 60, color: 'hsl(30, 60%, 50%)', label: { en: 'Coconut', ml: 'തെങ്ങ്' } },
     { value: 40, color: 'hsl(0, 80%, 60%)', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
   ],
   cropStock: [
-    { name: 'Paddy', quantity: 1200, unit: 'kg' },
-    { name: 'Lentils', quantity: 150, unit: 'kg' },
-    { name: 'Banana', quantity: 400, unit: 'kg' },
+    { name: 'Paddy', quantity: 2500, unit: 'kg' },
+    { name: 'Coconut', quantity: 5000, unit: 'kg' },
+    { name: 'Banana', quantity: 1500, unit: 'kg' },
+    { name: 'Black Pepper', quantity: 150, unit: 'kg' },
     { name: 'Ginger', quantity: 80, unit: 'kg' },
-    { name: 'Okra', quantity: 120, unit: 'kg' },
   ],
   farmInputs: [
       { name: 'Urea', type: 'Fertilizer', quantity: 50, unit: 'kg' },

@@ -341,7 +341,7 @@ function FarmProfileForm() {
                     </div>
                     <div className="space-y-2">
                     <Label htmlFor="location">{t.location}</Label>
-                    <Input id="location" value={profile.location} placeholder="e.g., Tamilnadu, Tenkasi" />
+                    <Input id="location" value={profile.location} placeholder="e.g., Kuttanad, Kerala" />
                     </div>
                     <div className="space-y-2">
                     <Label htmlFor="farmSize">{t.farmSize}</Label>

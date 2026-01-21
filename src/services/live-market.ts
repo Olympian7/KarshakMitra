@@ -14,13 +14,13 @@ export interface LiveMarketRecord {
 // --- CONFIG ---
 const API_KEY = '579b464db66ec23bdd000001fafcf228efd042c75a7d9ea9384e5b79';
 const RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070';
-const STATE = 'Tamil Nadu';
+const STATE = 'Kerala';
 
-// Mock data for Tenkasi to use as a fallback or for demonstration
-const mockTenkasiTomatoData: LiveMarketRecord[] = [
+// Mock data for Ernakulam to use as a fallback or for demonstration
+const mockErnakulamTomatoData: LiveMarketRecord[] = [
     {
         "arrival_date": new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toLocaleDateString('en-GB').split('/').reverse().join('/'),
-        "market": "Tenkasi",
+        "market": "Ernakulam",
         "variety": "Local",
         "min_price": "2200",
         "max_price": "2400",
@@ -28,7 +28,7 @@ const mockTenkasiTomatoData: LiveMarketRecord[] = [
     },
     {
         "arrival_date": new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toLocaleDateString('en-GB').split('/').reverse().join('/'),
-        "market": "Sivagiri (Tenkasi)",
+        "market": "Angamaly",
         "variety": "Hybrid",
         "min_price": "2500",
         "max_price": "2700",
@@ -36,7 +36,7 @@ const mockTenkasiTomatoData: LiveMarketRecord[] = [
     },
     {
         "arrival_date": new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toLocaleDateString('en-GB').split('/').reverse().join('/'),
-        "market": "Tenkasi",
+        "market": "Kochi",
         "variety": "Local",
         "min_price": "2100",
         "max_price": "2300",
@@ -46,8 +46,8 @@ const mockTenkasiTomatoData: LiveMarketRecord[] = [
 
 export async function getLiveCropPrices(commodity: string): Promise<LiveMarketRecord[]> {
     if (commodity.toLowerCase() === 'tomato') {
-        // For tomato, return our specific mock data for Tenkasi
-        return mockTenkasiTomatoData;
+        // For tomato, return our specific mock data for Ernakulam
+        return mockErnakulamTomatoData;
     }
 
     const url = new URL(`https://api.data.gov.in/resource/${RESOURCE_ID}`);

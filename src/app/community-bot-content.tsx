@@ -16,7 +16,7 @@ export default function CommunityBotContent() {
         <iframe
           src="https://karshakmitra-bot.vercel.app/"
           className="w-full h-full border-0"
-          title="உழவர் நண்பன் Community Bot"
+          title="Karshak Mitra Community Bot"
           allow="microphone"
         ></iframe>
       </main>
