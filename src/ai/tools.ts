@@ -1,7 +1,7 @@
 
 'use server';
 /**
- * @fileOverview Defines AI tools for Karshak Mitra to interact with external services.
+ * @fileOverview Defines AI tools for Uzhavan Nanban to interact with external services.
  *
  * - getWeatherForecastTool - Fetches the current weather forecast.
  * - getMarketTrendsTool - Fetches the latest market prices for crops.
@@ -28,7 +28,7 @@ export const getWeatherForecastTool = ai.defineTool(
     name: 'getWeatherForecast',
     description: 'Returns the current weather forecast for a specific location.',
     inputSchema: z.object({
-      location: z.string().describe("The user's location, e.g., 'Kuttanad, Kerala'"),
+      location: z.string().describe("The user's location, e.g., 'Coimbatore, Tamil Nadu'"),
     }),
     outputSchema: z.custom<WeatherData>(),
   },

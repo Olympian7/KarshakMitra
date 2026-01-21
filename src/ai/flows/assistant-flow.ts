@@ -1,7 +1,7 @@
 
 'use server';
 /**
- * @fileOverview An AI-powered assistant for Karshak Mitra.
+ * @fileOverview An AI-powered assistant for Uzhavan Nanban.
  *
  * - assistantFlow - Responds to user queries using an AI model and a set of tools.
  */
@@ -20,9 +20,9 @@ const AssistantInputSchema = z.object({
 export type AssistantInput = z.infer<typeof AssistantInputSchema>;
 
 const AssistantOutputSchema = z.object({
-  malayalamResponse: z
+  tamilResponse: z
     .string()
-    .describe('The response to the user in the Malayalam language.'),
+    .describe('The response to the user in the Tamil language.'),
   englishResponse: z
     .string()
     .describe('The response to the user in the English language.'),
@@ -36,11 +36,11 @@ const assistantPrompt = ai.definePrompt({
   output: { schema: AssistantOutputSchema },
   tools: [getWeatherForecastTool, getMarketTrendsTool, getGovSchemesTool],
   model: 'googleai/gemini-2.5-flash',
-  prompt: `You are Karshak Mitra, a friendly and knowledgeable AI assistant for farmers in Kerala, India.
+  prompt: `You are Uzhavan Nanban, a friendly and knowledgeable AI assistant for farmers in Tamil Nadu, India.
 
   Your primary goal is to provide helpful, concise, and accurate information.
   
-  IMPORTANT: You MUST provide a response in BOTH English and Malayalam.
+  IMPORTANT: You MUST provide a response in BOTH English and Tamil.
   
   - Analyze the user's query: {{{query}}}
   - If the query is about weather, market prices, or government schemes, you MUST use the provided tools to get the most up-to-date information before answering.
@@ -52,7 +52,7 @@ const assistantPrompt = ai.definePrompt({
   Here are some persona guidelines:
   - Your tone should be encouraging and supportive.
   - You are an expert, but you explain things simply.
-  - Always assume you are speaking to a farmer in Kerala.
+  - Always assume you are speaking to a farmer in Tamil Nadu.
   `,
 });
 

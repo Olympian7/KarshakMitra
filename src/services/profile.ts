@@ -8,7 +8,7 @@ import { unstable_noStore as noStore } from 'next/cache';
 export interface PlotType {
     value: number;
     color: string;
-    label: { en: string; ml: string };
+    label: { en: string; ta: string };
 }
 
 export interface CropStock {
@@ -39,48 +39,48 @@ export interface FarmProfile {
 
 // For this demo, we'll use a single, hardcoded user profile document.
 // In a real app, this ID would be dynamic based on the logged-in user.
-const USER_PROFILE_ID = 'user_narayanan';
+const USER_PROFILE_ID = 'user_muthu';
 
 // Default/mock data to initialize the profile if it doesn't exist
 const defaultProfile: FarmProfile = {
-  farmerName: 'Narayanan',
-  farmName: 'Narayanan Farms',
-  location: 'Kuttanad, Kerala',
-  farmSize: '15',
-  soilType: 'Alluvial Soil',
-  mainCrops: 'Paddy, Coconuts, Bananas, Black Pepper',
+  farmerName: 'Muthu',
+  farmName: 'Muthu Pannai',
+  location: 'Thanjavur, Tamil Nadu',
+  farmSize: '20',
+  soilType: 'Alluvial Soil (Cauvery Delta)',
+  mainCrops: 'Paddy, Sugarcane, Banana, Turmeric',
   farmGrid: [
-    [100, 100, 100, 100, 100, 80, 80, 80, 0, 0],
-    [100, 100, 100, 100, 100, 80, 80, 80, 0, 0],
-    [100, 100, 100, 100, 100, 80, 80, 80, 60, 60],
-    [100, 100, 100, 100, 100, 90, 90, 90, 60, 60],
-    [100, 100, 100, 100, 100, 90, 90, 90, 60, 60],
-    [100, 100, 100, 100, 100, 90, 90, 90, 60, 60],
-    [100, 100, 100, 100, 100, 0, 0, 40, 40, 40],
-    [100, 100, 100, 100, 100, 0, 0, 40, 40, 40],
-    [0, 0, 0, 0, 0, 0, 0, 40, 40, 40],
+    [100, 100, 100, 100, 100, 90, 90, 90, 0, 0],
+    [100, 100, 100, 100, 100, 90, 90, 90, 0, 0],
+    [100, 100, 100, 100, 100, 90, 90, 80, 80, 80],
+    [100, 100, 100, 100, 100, 90, 90, 80, 80, 80],
+    [100, 100, 100, 100, 100, 60, 60, 80, 80, 80],
+    [100, 100, 100, 100, 100, 60, 60, 40, 40, 0],
+    [100, 100, 100, 100, 100, 60, 60, 40, 40, 0],
+    [100, 100, 100, 100, 100, 60, 60, 40, 40, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ],
   plotTypes: [
-    { value: 0, color: 'hsl(0, 0%, 85%)', label: { en: 'Empty', ml: 'ഒഴിഞ്ഞ' } },
-    { value: 100, color: 'hsl(205, 90%, 60%)', label: { en: 'Paddy', ml: 'നെല്ല്' } },
-    { value: 90, color: 'hsl(80, 80%, 40%)', label: { en: 'Pepper', ml: 'കുരുമുളക്' } },
-    { value: 80, color: 'hsl(45, 95%, 55%)', label: { en: 'Bananas', ml: 'വാഴ' } },
-    { value: 60, color: 'hsl(30, 60%, 50%)', label: { en: 'Coconut', ml: 'തെങ്ങ്' } },
-    { value: 40, color: 'hsl(0, 80%, 60%)', label: { en: 'Ginger / Turmeric', ml: 'ഇഞ്ചി / മഞ്ഞൾ' } },
+    { value: 0, color: 'hsl(0, 0%, 85%)', label: { en: 'Empty', ta: 'காலி' } },
+    { value: 100, color: 'hsl(205, 90%, 60%)', label: { en: 'Paddy', ta: 'நெல்' } },
+    { value: 90, color: 'hsl(40, 50%, 60%)', label: { en: 'Sugarcane', ta: 'கரும்பு' } },
+    { value: 80, color: 'hsl(45, 95%, 55%)', label: { en: 'Banana', ta: 'வாழை' } },
+    { value: 60, color: 'hsl(80, 80%, 40%)', label: { en: 'Cotton', ta: 'பருத்தி' } },
+    { value: 40, color: 'hsl(30, 90%, 50%)', label: { en: 'Turmeric', ta: 'மஞ்சள்' } },
   ],
   cropStock: [
-    { name: 'Paddy', quantity: 2500, unit: 'kg' },
-    { name: 'Coconut', quantity: 5000, unit: 'kg' },
-    { name: 'Banana', quantity: 1500, unit: 'kg' },
-    { name: 'Black Pepper', quantity: 150, unit: 'kg' },
-    { name: 'Ginger', quantity: 80, unit: 'kg' },
+    { name: 'Paddy', quantity: 5000, unit: 'kg' },
+    { name: 'Sugarcane', quantity: 10000, unit: 'kg' },
+    { name: 'Banana', quantity: 2000, unit: 'kg' },
+    { name: 'Turmeric', quantity: 500, unit: 'kg' },
+    { name: 'Cotton', quantity: 1000, unit: 'kg' },
   ],
   farmInputs: [
-      { name: 'Urea', type: 'Fertilizer', quantity: 50, unit: 'kg' },
-      { name: 'Neem Oil', type: 'Pesticide', quantity: 5, unit: 'litres' },
-      { name: 'Uma (Paddy)', type: 'Seed', quantity: 200, unit: 'kg' },
-      { name: 'Glyphosate', type: 'Herbicide', quantity: 2, unit: 'litres' },
+      { name: 'Urea', type: 'Fertilizer', quantity: 150, unit: 'kg' },
+      { name: 'Potash', type: 'Fertilizer', quantity: 75, unit: 'kg' },
+      { name: 'Neem Cake', type: 'Pesticide', quantity: 20, unit: 'kg' },
+      { name: 'ADT 45 (Paddy)', type: 'Seed', quantity: 300, unit: 'kg' },
   ]
 };
 

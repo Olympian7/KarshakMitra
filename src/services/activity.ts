@@ -21,13 +21,13 @@ export type Activity = {
 // Starting with some mock data to make the timeline look populated.
 // This will only be used if the database is empty.
 const mockActivities: Omit<Activity, 'id' | 'date'>[] = [
-    { text: 'Finished weeding the okra patch. Crop looks healthy.' },
-    { text: 'Applied organic fertilizer to the banana plantation.' },
-    { text: 'Checked the irrigation system for the vegetable patch. All sprinklers are working correctly.'},
-    { text: 'Harvested coconuts from the northern section.' },
-    { text: 'Noticed some minor pest activity on the lentil crops. Applied a neem oil solution.' },
-    { text: 'Prepared soil in the new plot for ginger planting next week.' },
-    { text: 'Planted high-yield paddy variety in the main field.' },
+    { text: 'Finished weeding the sugarcane field.' },
+    { text: 'Applied fertilizer to the banana plantation.' },
+    { text: 'Checked irrigation for the paddy fields.'},
+    { text: 'Harvested turmeric from the southern plot.' },
+    { text: 'Noticed some pest activity on the cotton plants. Applied a neem oil solution.' },
+    { text: 'Prepared soil for the next batch of groundnuts.' },
+    { text: 'Planted new paddy saplings in the main field.' },
 ];
 
 

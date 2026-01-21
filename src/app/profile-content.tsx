@@ -35,7 +35,6 @@ import { cn } from '@/lib/utils';
 
 function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile, onPaletteUpdate: (newPlotTypes: PlotType[]) => void }) {
     const { language } = useLanguage();
-    const t = translations[language];
     const { toast } = useToast();
     const [localPlotTypes, setLocalPlotTypes] = useState<PlotType[]>(JSON.parse(JSON.stringify(profile.plotTypes)));
     const [newCropName, setNewCropName] = useState('');
@@ -60,7 +59,7 @@ function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile,
         const newPlotType: PlotType = {
             value: Math.max(0, ...localPlotTypes.map(pt => pt.value)) + 1, // Ensure unique value
             color: generateRandomColor(),
-            label: { en: newCropName.trim(), ml: newCropName.trim() },
+            label: { en: newCropName.trim(), ta: newCropName.trim() },
         };
 
         setLocalPlotTypes(current => [...current, newPlotType]);
@@ -341,11 +340,11 @@ function FarmProfileForm() {
                     </div>
                     <div className="space-y-2">
                     <Label htmlFor="location">{t.location}</Label>
-                    <Input id="location" value={profile.location} placeholder="e.g., Kuttanad, Kerala" />
+                    <Input id="location" value={profile.location} placeholder="e.g., Thanjavur, Tamil Nadu" />
                     </div>
                     <div className="space-y-2">
                     <Label htmlFor="farmSize">{t.farmSize}</Label>
-                    <Input id="farmSize" type="number" value={profile.farmSize} onChange={handleChange} placeholder="e.g., 15" />
+                    <Input id="farmSize" type="number" value={profile.farmSize} onChange={handleChange} placeholder="e.g., 20" />
                     </div>
                     <div className="space-y-2">
                     <Label htmlFor="soilType">{t.soilType}</Label>
@@ -485,7 +484,7 @@ function FarmProfileForm() {
                         {t.aiInsightText1(paddyPercentage)}{' '}
                         <span className="font-semibold text-foreground">{profile.location}</span>{' '}
                         {t.aiInsightText2}{' '}
-                        <span className="font-semibold text-foreground">{profile.soilType}</span>
+                        <span className="font-semibold text-foreground">{profile.soilType}</span>,{' '}
                         {t.aiInsightText3}
                    </p>
                 </CardContent>

@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A text-to-speech (TTS) flow using Genkit.
@@ -14,7 +15,7 @@ import { googleAI } from '@genkit-ai/googleai';
 
 const TtsInputSchema = z.object({
   text: z.string().describe('The text to be converted to speech.'),
-  language: z.enum(['en', 'ml']).describe('The language of the text.'),
+  language: z.enum(['en', 'ta']).describe('The language of the text.'),
 });
 export type TtsInput = z.infer<typeof TtsInputSchema>;
 
@@ -41,7 +42,7 @@ const generateSpeechFlow = ai.defineFlow(
   async ({ text, language }) => {
     // Select a voice based on the language
     // Note: Voice availability may change. These are examples.
-    const voiceName = language === 'ml' ? 'Taresh' : 'Algenib';
+    const voiceName = language === 'ta' ? 'Nallan' : 'Algenib'; // Using a plausible name for Tamil
 
     const { media } = await ai.generate({
       model: googleAI.model('gemini-2.5-flash-preview-tts'),

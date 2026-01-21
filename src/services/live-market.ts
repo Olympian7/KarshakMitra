@@ -14,40 +14,40 @@ export interface LiveMarketRecord {
 // --- CONFIG ---
 const API_KEY = '579b464db66ec23bdd000001fafcf228efd042c75a7d9ea9384e5b79';
 const RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070';
-const STATE = 'Kerala';
+const STATE = 'Tamil Nadu';
 
-// Mock data for Ernakulam to use as a fallback or for demonstration
-const mockErnakulamTomatoData: LiveMarketRecord[] = [
+// Mock data for Chennai to use as a fallback or for demonstration
+const mockChennaiTomatoData: LiveMarketRecord[] = [
     {
         "arrival_date": new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toLocaleDateString('en-GB').split('/').reverse().join('/'),
-        "market": "Ernakulam",
+        "market": "Koyambedu",
         "variety": "Local",
-        "min_price": "2200",
-        "max_price": "2400",
-        "modal_price": "2300"
+        "min_price": "1800",
+        "max_price": "2000",
+        "modal_price": "1900"
     },
     {
         "arrival_date": new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toLocaleDateString('en-GB').split('/').reverse().join('/'),
-        "market": "Angamaly",
+        "market": "Koyambedu",
         "variety": "Hybrid",
-        "min_price": "2500",
-        "max_price": "2700",
-        "modal_price": "2600"
-    },
-    {
-        "arrival_date": new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toLocaleDateString('en-GB').split('/').reverse().join('/'),
-        "market": "Kochi",
-        "variety": "Local",
         "min_price": "2100",
         "max_price": "2300",
         "modal_price": "2200"
+    },
+    {
+        "arrival_date": new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toLocaleDateString('en-GB').split('/').reverse().join('/'),
+        "market": "Koyambedu",
+        "variety": "Local",
+        "min_price": "1700",
+        "max_price": "1900",
+        "modal_price": "1800"
     }
 ];
 
 export async function getLiveCropPrices(commodity: string): Promise<LiveMarketRecord[]> {
     if (commodity.toLowerCase() === 'tomato') {
-        // For tomato, return our specific mock data for Ernakulam
-        return mockErnakulamTomatoData;
+        // For tomato, return our specific mock data for Chennai
+        return mockChennaiTomatoData;
     }
 
     const url = new URL(`https://api.data.gov.in/resource/${RESOURCE_ID}`);
@@ -58,7 +58,7 @@ export async function getLiveCropPrices(commodity: string): Promise<LiveMarketRe
     url.searchParams.set('filters[commodity]', commodity);
     
     try {
-        console.log(`Fetching live data for: ${commodity}`);
+        console.log(`Fetching live data for: ${commodity} in ${STATE}`);
         const res = await fetch(url.toString(), {
           // Revalidate cache every hour to get fresh data without hitting API on every request
           next: { revalidate: 3600 } 

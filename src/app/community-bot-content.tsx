@@ -14,9 +14,9 @@ export default function CommunityBotContent() {
     <AppShell title={t.communityBot} activePage="community-bot">
       <main className="flex flex-1 flex-col">
         <iframe
-          src="https://karshakmitra-bot.vercel.app/"
+          src="https://uzhavan-nanban-bot.vercel.app/"
           className="w-full h-full border-0"
-          title="Mitra Community Bot"
+          title="Nanban Community Bot"
           allow="microphone"
         ></iframe>
       </main>

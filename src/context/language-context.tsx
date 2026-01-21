@@ -1,8 +1,9 @@
+
 'use client';
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-type Language = 'en' | 'ml';
+type Language = 'en' | 'ta';
 
 interface LanguageContextType {
   language: Language;
@@ -15,7 +16,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>('en');
 
   const toggleLanguage = () => {
-    setLanguage((prevLang) => (prevLang === 'en' ? 'ml' : 'en'));
+    setLanguage((prevLang) => (prevLang === 'en' ? 'ta' : 'en'));
   };
 
   return (

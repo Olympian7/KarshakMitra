@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -6,19 +7,19 @@ import { Keyboard, X, Delete, ArrowUp, Type } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useKeyboard } from '@/context/keyboard-context';
 
-// Simplified Malayalam Keyboard Layout
-const malayalamLayout = [
-  ['്', 'ാ', 'ി', 'ീ', 'ു', 'ൂ', 'ൃ', 'െ', 'േ', 'ൈ', 'ൊ', 'ോ', 'ൌ'],
-  ['ക', 'ഖ', 'ഗ', 'ഘ', 'ങ', 'ച', 'ഛ', 'ജ', 'ഝ', 'ഞ', 'ട', 'ഠ', 'ഡ', 'ഢ', 'ണ'],
-  ['ത', 'ഥ', 'ദ', 'ധ', 'ന', 'പ', 'ഫ', 'ബ', 'ഭ', 'മ'],
-  ['യ', 'ര', 'ല', 'വ', 'ശ', 'ഷ', 'സ', 'ഹ', 'ള', 'ഴ', 'റ'],
+// Standard Tamil 99 Keyboard Layout (Simplified)
+const tamilLayout = [
+  ['க', 'ங', 'ச', 'ஞ', 'ட', 'ண', 'த', 'ந', 'ப', 'ம', 'ய', 'ர'],
+  ['வ', 'ள', 'ழ', 'ற', 'ன', 'ஜ', 'ஷ', 'ஸ', 'ஹ', 'ஸ்ரீ'],
+  ['ா', 'ி', 'ீ', 'ு', 'ூ', 'ெ', 'ே', 'ை', 'ப்', 'க்', 'ச்', 'ஞ்', 'ட்', 'ண்'],
+  ['த்', 'ந்', 'ப்', 'ம்', 'ய்', 'ர்', 'ல்', 'வ்', 'ழ்', 'ள்', 'ற்', 'ன்'],
 ];
 
 const shiftedLayout = [
+  ['அ', 'ஆ', 'இ', 'ஈ', 'உ', 'ஊ', 'எ', 'ஏ', 'ஐ', 'ஒ', 'ஓ', 'ஔ', 'ஃ'],
+  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
   ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+'],
-  ['അ', 'ആ', 'ഇ', 'ഈ', 'ഉ', 'ഊ', 'ഋ', 'എ', 'ഏ', 'ഐ', 'ഒ', 'ഓ', 'ഔ'],
-  ['ൺ', 'ൻ', 'ർ', 'ൽ', 'ൾ', 'ക്ക', 'ങ്ക', 'ങ്ങ', 'ച്ച', 'ഞ്ച', 'ഞ്ഞ'],
-  ['ട്ട', 'ണ്ട', 'ണ്ണ', 'ത്ത', 'ന്ത', 'ന്ന', 'പ്പ', 'മ്പ', 'മ്മ', 'യ്യ'],
+  ['-', '=', '{', '}', '[', ']', '|', '\\', ';', ':', "'", '"', ',', '.', '/'],
 ];
 
 export default function VirtualKeyboard() {
@@ -92,20 +93,20 @@ export default function VirtualKeyboard() {
 
   if (!isClient) return null;
 
-  const currentLayout = isShifted ? shiftedLayout : malayalamLayout;
+  const currentLayout = isShifted ? shiftedLayout : tamilLayout;
 
   return (
     <>
       <div
         className={cn(
           'fixed z-[60] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-muted/95 backdrop-blur-sm border border-border shadow-2xl rounded-lg transition-opacity duration-300 ease-in-out',
-          'min-w-min max-w-2xl',
+          'min-w-min max-w-3xl', // Increased max-width for better layout
           isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         )}
       >
         <div className="flex justify-between items-center p-1 border-b">
             <h3 className="font-semibold text-sm text-foreground pl-2">
-                Virtual Malayalam Keyboard
+                Virtual Tamil Keyboard
             </h3>
             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setIsOpen(false)}>
                 <X className="h-4 w-4" />

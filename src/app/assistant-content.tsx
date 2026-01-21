@@ -19,15 +19,15 @@ interface Message {
   id: string;
   sender: 'user' | 'assistant';
   englishText: string;
-  malayalamText: string;
+  tamilText: string;
   link?: string;
 }
 
 const initialMessage: Message = {
   id: `assistant-initial-${Date.now()}`,
   sender: 'assistant',
-  englishText: "Hello! I am your Karshak Mitra assistant. How can I help you today?",
-  malayalamText: "നമസ്കാരം! ഞാൻ നിങ്ങളുടെ കർഷക മിത്ര. ഇന്ന് ഞാൻ നിങ്ങളെ എങ്ങനെ സഹായിക്കും?",
+  englishText: "Hello! I am your Uzhavan Nanban assistant. How can I help you today?",
+  tamilText: "வணக்கம்! நான் உங்கள் உழவன் நண்பன். இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?",
 };
 
 
@@ -87,7 +87,7 @@ function AdvancedAssistantChat() {
       id: `user-${Date.now()}`,
       sender: 'user',
       englishText: input,
-      malayalamText: input,
+      tamilText: input,
     };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
@@ -100,7 +100,7 @@ function AdvancedAssistantChat() {
                 id: `assistant-${Date.now()}`,
                 sender: 'assistant',
                 englishText: offlineResponse.en,
-                malayalamText: offlineResponse.ml,
+                tamilText: offlineResponse.ta,
             };
         } else {
             const result: AssistantOutput = await assistantFlow({ query: input });
@@ -108,7 +108,7 @@ function AdvancedAssistantChat() {
                 id: `assistant-${Date.now()}`,
                 sender: 'assistant',
                 englishText: result.englishResponse,
-                malayalamText: result.malayalamText,
+                tamilText: result.tamilResponse,
                 link: result.link,
             };
         }
@@ -150,7 +150,7 @@ function AdvancedAssistantChat() {
     });
   };
 
-  const handlePlayAudio = async (messageId: string, text: string, lang: 'en' | 'ml') => {
+  const handlePlayAudio = async (messageId: string, text: string, lang: 'en' | 'ta') => {
     stopAudio();
     const uniqueId = `${messageId}-${lang}`;
 
@@ -199,8 +199,8 @@ function AdvancedAssistantChat() {
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => {
             const isTranslated = translatedMessages[message.id];
-            const currentLang = language === 'en' ? (isTranslated ? 'ml' : 'en') : (isTranslated ? 'en' : 'ml');
-            const currentText = currentLang === 'en' ? message.englishText : message.malayalamText;
+            const currentLang = language === 'en' ? (isTranslated ? 'ta' : 'en') : (isTranslated ? 'en' : 'ta');
+            const currentText = currentLang === 'en' ? message.englishText : message.tamilText;
             const uniqueId = `${message.id}-${currentLang}`;
             const currentAudioState = audioState[uniqueId] || 'idle';
 
@@ -240,7 +240,7 @@ function AdvancedAssistantChat() {
                         <div className="flex items-center gap-2 -mt-1 ml-12">
                             <Button variant="ghost" size="sm" onClick={() => toggleTranslation(message.id)} className="flex items-center gap-1 text-xs h-auto py-1 px-2 text-muted-foreground">
                                <Languages className="h-3 w-3" />
-                               {language === 'en' ? (isTranslated ? 'Show in English' : 'Malayalam') : (isTranslated ? 'Show in Malayalam' : 'English')}
+                               {language === 'en' ? (isTranslated ? 'Show in English' : 'Tamil') : (isTranslated ? 'Show in Tamil' : 'English')}
                             </Button>
                             <Button 
                                 variant="ghost" 
