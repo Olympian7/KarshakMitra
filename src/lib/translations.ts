@@ -174,6 +174,10 @@ export const translations = {
       modalPrice: 'Modal Price (Rs/qtl)',
       noDataFound: 'No data found for this crop. Please try another.',
       dataSource: 'Data source:',
+
+      // Admin Menu
+      adminMenu: 'Admin Menu',
+      adminAnalytics: 'Model Analytics',
     },
     ml: {
       // App Shell & Navigation
@@ -350,5 +354,9 @@ aiInsightText3: 'மண்ணின் தன்மையால், நெல்
       modalPrice: 'மாதிரி விலை (ரூ/குவிண்டால்)',
       noDataFound: 'இந்த பயிர்க்கு எந்த தரவும் கிடைக்கவில்லை. தயவுசெய்து மற்றொன்றை முயற்சிக்கவும்.',
       dataSource: 'தரவு ஆதாரம்:',
+      
+      // Admin Menu
+      adminMenu: 'நிர்வாகி பட்டி',
+      adminAnalytics: 'மாடல் பகுப்பாய்வு',
     },
   };

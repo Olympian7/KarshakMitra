@@ -17,6 +17,7 @@ import {
   FlaskConical,
   BarChart,
   TrendingDown,
+  BrainCircuit,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,15 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { useKeyboard } from '@/context/keyboard-context';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -41,9 +51,6 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
     { id: 'assistant', href: '/assistant', icon: MessageCircle, label: t.conversationalAssistant },
     { id: 'community-bot', href: '/community-bot', icon: Bot, label: t.communityBot },
     { id: 'diagnosis', href: '/diagnosis', icon: Stethoscope, label: t.diagnosis },
-    { id: 'diagnosis-training-graph', href: '/diagnosis-training-graph', icon: BarChart, label: t.diagnosisTrainingGraph },
-    { id: 'diagnosis-training-loss-graph', href: '/diagnosis-training-loss-graph', icon: TrendingDown, label: t.diagnosisTrainingLossGraph },
-    { id: 'lstm-loss-graph', href: '/lstm-loss-graph', icon: LineChart, label: t.lstmLossGraph },
     { id: 'soil-analysis', href: '/soil-analysis', icon: FlaskConical, label: t.soilAnalysis },
     { id: 'farm-viewer', href: '/farm-viewer', icon: Tractor, label: t.farmViewer },
     { id: 'profile', href: '/profile', icon: User, label: t.farmProfile },
@@ -133,6 +140,29 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
             <Keyboard className="h-4 w-4" />
             <span className="sr-only">Toggle Virtual Keyboard</span>
           </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" className="h-8 w-8">
+                <BrainCircuit className="h-4 w-4" />
+                <span className="sr-only">{t.adminMenu}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>{t.adminAnalytics}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/diagnosis-training-graph">{t.diagnosisTrainingGraph}</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/diagnosis-training-loss-graph">{t.diagnosisTrainingLossGraph}</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/lstm-loss-graph">{t.lstmLossGraph}</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Button variant="outline" size="icon" className="h-8 w-8">
             <Bell className="h-4 w-4" />
             <span className="sr-only">Toggle notifications</span>
