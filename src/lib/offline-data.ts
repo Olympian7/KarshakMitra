@@ -147,8 +147,8 @@ const offlineResponses: OfflineResponse[] = [
 ];
 
 const defaultOfflineResponse = {
-  en: "I'm sorry, I can't answer that question while offline. Please connect to the internet for a full response from the AI assistant.",
-  ml: 'ക്ഷമിക്കണം, ഓഫ്‌ലൈനിലായിരിക്കുമ്പോൾ എനിക്ക് ആ ചോദ്യത്തിന് ഉത്തരം നൽകാൻ കഴിയില്ല. AI അസിസ്റ്റന്റിൽ നിന്ന് പൂർണ്ണമായ പ്രതികരണത്തിനായി ദയവായി ഇന്റർനെറ്റുമായി ബന്ധിപ്പിക്കുക.',
+  en: "I'm sorry, I can't provide a detailed answer for that while offline. You can ask me general questions about common Kerala crops (like paddy, coconut), farming practices, or major government schemes. For live data on weather or market prices, please connect to the internet.",
+  ml: 'ക്ഷമിക്കണം, ഓഫ്‌ലൈനിലായിരിക്കുമ്പോൾ എനിക്ക് അതിന് വിശദമായ ഉത്തരം നൽകാൻ കഴിയില്ല. കേരളത്തിലെ സാധാരണ വിളകൾ (നെല്ല്, തെങ്ങ് പോലുള്ളവ), കൃഷിരീതികൾ, അല്ലെങ്കിൽ പ്രധാന സർക്കാർ പദ്ധതികൾ എന്നിവയെക്കുറിച്ച് നിങ്ങൾക്ക് പൊതുവായ ചോദ്യങ്ങൾ ചോദിക്കാം. കാലാവസ്ഥയുടെയോ വിപണി വിലയുടെയോ തത്സമയ ഡാറ്റയ്ക്കായി, ദയവായി ഇന്റർനെറ്റുമായി ബന്ധിപ്പിക്കുക.',
 };
 
 export function getOfflineResponse(query: string): { en: string; ml: string } {

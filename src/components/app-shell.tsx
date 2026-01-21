@@ -133,6 +133,7 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
               {title}
             </h1>
           </div>
+
           <Button variant="outline" size="icon" className="h-8 w-8" onClick={toggleLanguage}>
             <Languages className="h-4 w-4" />
             <span className="sr-only">Toggle Language</span>
