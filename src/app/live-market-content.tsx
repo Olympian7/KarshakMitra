@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -20,11 +21,22 @@ import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Cable, RefreshCw } from 'lucide-react';
 
-// List of commodities for the dropdown
+// List of commodities for the dropdown, focused on Tamil Nadu
 const COMMODITIES = [
-  'Tomato', 'Onion', 'Paddy', 'Coconut', 'Banana', 'Rubber', 
-  'Rice', 'Arecanut', 'Mango', 'Potato', 'Black Pepper', 'Cardamom',
-  'Ginger', 'Tapioca'
+  'Paddy', 
+  'Sugarcane', 
+  'Cotton', 
+  'Groundnut', 
+  'Banana', 
+  'Turmeric', 
+  'Maize', 
+  'Cumbu', // Pearl Millet
+  'Ragi', // Finger Millet
+  'Black Gram',
+  'Green Gram',
+  'Tomato', 
+  'Onion', 
+  'Coconut'
 ];
 
 
@@ -159,3 +171,5 @@ export default function LiveMarketContent() {
     </AppShell>
   );
 }
+
+    
