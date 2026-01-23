@@ -2,10 +2,10 @@
 export const translations = {
     en: {
       // App Shell & Navigation
-      appName: 'Uzhavan Nanban',
+      appName: 'KarshakMitra',
       dashboard: 'Dashboard',
       conversationalAssistant: 'Conversational Assistant',
-      communityBot: 'Nanban',
+      communityBot: 'Mitra Bot',
       farmProfile: 'Farm Profile',
       activityTracking: 'Activity Tracking',
       governmentSchemes: 'Government Schemes',
@@ -37,7 +37,7 @@ export const translations = {
       featuredGovernmentSchemes: 'Featured Government Schemes',
   
       // Assistant Page
-      assistantWelcome: "Hello! I am your Uzhavan Nanban assistant. How can I help you today? You can ask me about the weather, market prices, or government schemes.",
+      assistantWelcome: "Hello! I am your KarshakMitra assistant. How can I help you today? You can ask me about the weather, market prices, or government schemes.",
       askYourAssistant: 'Ask your assistant...',
       assistantError: "Sorry, I'm having trouble connecting. Please try again later.",
       translate: 'Translate',
@@ -183,10 +183,10 @@ export const translations = {
     },
     ta: {
       // App Shell & Navigation
-      appName: 'உழவன் நண்பன்',
+      appName: 'கர்ஷக் மித்ரா',
       dashboard: 'முகப்பு',
       conversationalAssistant: 'உரையாடல் உதவியாளர்',
-      communityBot: 'நண்பன்',
+      communityBot: 'மித்ரா பாட்',
       farmProfile: 'பண்ணை விவரக்குறிப்பு',
       activityTracking: 'செயல்பாட்டைக் கண்காணித்தல்',
       governmentSchemes: 'அரசு திட்டங்கள்',
@@ -218,7 +218,7 @@ export const translations = {
       featuredGovernmentSchemes: 'சிறப்பு அரசு திட்டங்கள்',
   
       // Assistant Page
-      assistantWelcome: "வணக்கம்! நான் உங்கள் உழவன் நண்பன். இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்? வானிலை, சந்தை விலை அல்லது அரசாங்க திட்டங்கள் பற்றி நீங்கள் என்னிடம் கேட்கலாம்.",
+      assistantWelcome: "வணக்கம்! நான் உங்கள் கர்ஷக் மித்ரா. இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்? வானிலை, சந்தை விலை அல்லது அரசாங்க திட்டங்கள் பற்றி நீங்கள் என்னிடம் கேட்கலாம்.",
       askYourAssistant: 'உங்கள் உதவியாளரிடம் கேளுங்கள்...',
       assistantError: 'மன்னிக்கவும், என்னால் இணைப்பதில் சிக்கல் உள்ளது. దయచేసి మళ్లీ ప్రయత్నించండి.',
       translate: 'மொழிபெயர்',

@@ -12,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Karshak Mitra',
+  title: 'KarshakMitra',
   description: "An AI-powered personal farming assistant for Kerala's farmers.",
 };
 

@@ -1,7 +1,7 @@
 
 'use server';
 /**
- * @fileOverview An AI-powered assistant for Uzhavan Nanban.
+ * @fileOverview An AI-powered assistant for KarshakMitra.
  *
  * - assistantFlow - Responds to user queries using an AI model and a set of tools.
  */
@@ -36,7 +36,7 @@ const assistantPrompt = ai.definePrompt({
   output: { schema: AssistantOutputSchema },
   tools: [getWeatherForecastTool, getMarketTrendsTool, getGovSchemesTool],
   model: 'googleai/gemini-2.5-flash',
-  prompt: `You are Uzhavan Nanban, a friendly and knowledgeable AI assistant for farmers in Tamil Nadu, India.
+  prompt: `You are KarshakMitra, a friendly and knowledgeable AI assistant for farmers in Tamil Nadu, India.
 
   Your primary goal is to provide helpful, concise, and accurate information.
   

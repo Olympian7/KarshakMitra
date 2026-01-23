@@ -47,7 +47,7 @@ export default function CommunityBotContent() {
           ref={iframeRef}
           src="https://mitra-ai-antibot.vercel.app/"
           className="w-full h-full border-0"
-          title="Nanban Community Bot"
+          title="Mitra Community Bot"
           allow="microphone; fullscreen"
         ></iframe>
       </main>

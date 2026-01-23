@@ -26,8 +26,8 @@ interface Message {
 const initialMessage: Message = {
   id: `assistant-initial-${Date.now()}`,
   sender: 'assistant',
-  englishText: "Hello! I am your Uzhavan Nanban assistant. How can I help you today?",
-  tamilText: "வணக்கம்! நான் உங்கள் உழவன் நண்பன். இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?",
+  englishText: "Hello! I am your KarshakMitra assistant. How can I help you today?",
+  tamilText: "வணக்கம்! நான் உங்கள் கர்ஷக் மித்ரா. இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?",
 };
 
 

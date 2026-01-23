@@ -9,8 +9,8 @@ const offlineResponses: OfflineResponse[] = [
   // General
   {
     keywords: ['hello', 'hi', 'hai', 'good morning', 'good evening', 'vanakkam'],
-    en: 'Hello! I am Uzhavan Nanban. Please connect to the internet for full functionality.',
-    ta: 'வணக்கம்! நான் உழவன் நண்பன். முழுமையான செயல்பாட்டிற்கு இணையத்துடன் இணைக்கவும்.',
+    en: 'Hello! I am KarshakMitra. Please connect to the internet for full functionality.',
+    ta: 'வணக்கம்! நான் கர்ஷக் மித்ரா. முழுமையான செயல்பாட்டிற்கு இணையத்துடன் இணைக்கவும்.',
   },
   {
     keywords: ['how are you', 'what can you do', 'help', 'uthavi'],
