@@ -1,4 +1,3 @@
-
 'use server';
 
 // This service fetches live agricultural market data.
@@ -15,18 +14,20 @@ export type MarketTrend = {
 // --- CONFIG ---
 // Mock data relevant to Tamil Nadu
 const MOCK_MARKET_DATA: MarketTrend[] = [
-    { name: "Paddy", variety: "ADT 43", price: 21.00, market: "Thanjavur", district: "Thanjavur" },
-    { name: "Coconut", variety: "Tall", price: 28.00, market: "Coimbatore", district: "Coimbatore" },
-    { name: "Sugarcane", variety: "Co 86032", price: 2.95, market: "Erode", district: "Erode" },
     { name: "Banana", variety: "Poovan", price: 25.00, market: "Madurai", district: "Madurai" },
-    { name: "Turmeric", variety: "Erode", price: 150.00, market: "Erode", district: "Erode" },
-    { name: "Cotton", variety: "MCU-5", price: 65.00, market: "Salem", district: "Salem" },
-    { name: "Mango", variety: "Alphonso", price: 120.00, market: "Krishnagiri", district: "Krishnagiri" },
-    { name: "Tapioca", variety: "H-226", price: 15.00, market: "Namakkal", district: "Namakkal" },
-    { name: "Okra", variety: "Hybrid", price: 30.00, market: "Dindigul", district: "Dindigul" },
     { name: "Brinjal", variety: "Local", price: 28.00, market: "Chennai", district: "Chennai" },
-    { name: "Tomato", variety: "PKM 1", price: 20.00, market: "Coimbatore", district: "Coimbatore" },
+    { name: "Coconut", variety: "Tall", price: 28.00, market: "Coimbatore", district: "Coimbatore" },
+    { name: "Cotton", variety: "MCU-5", price: 65.00, market: "Salem", district: "Salem" },
+    { name: "Groundnut", variety: "TMV 7", price: 85.00, market: "Tiruvannamalai", district: "Tiruvannamalai"},
+    { name: "Maize", variety: "Hybrid", price: 22.00, market: "Dindigul", district: "Dindigul"},
+    { name: "Mango", variety: "Alphonso", price: 120.00, market: "Krishnagiri", district: "Krishnagiri" },
+    { name: "Okra", variety: "Hybrid", price: 30.00, market: "Dindigul", district: "Dindigul" },
     { name: "Onion", variety: "Bellary", price: 40.00, market: "Tirunelveli", district: "Tirunelveli" },
+    { name: "Paddy", variety: "ADT 43", price: 21.00, market: "Thanjavur", district: "Thanjavur" },
+    { name: "Sugarcane", variety: "Co 86032", price: 2.95, market: "Erode", district: "Erode" },
+    { name: "Tapioca", variety: "H-226", price: 15.00, market: "Namakkal", district: "Namakkal" },
+    { name: "Tomato", variety: "PKM 1", price: 20.00, market: "Coimbatore", district: "Coimbatore" },
+    { name: "Turmeric", variety: "Erode", price: 150.00, market: "Erode", district: "Erode" },
 ];
 
 
