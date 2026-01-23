@@ -48,7 +48,7 @@ const defaultProfile: FarmProfile = {
   location: 'Thanjavur, Tamil Nadu',
   farmSize: '20',
   soilType: 'Alluvial Soil (Cauvery Delta)',
-  mainCrops: 'Paddy, Sugarcane, Banana, Turmeric',
+  mainCrops: 'Paddy, Sugarcane, Groundnut, Maize, Cotton',
   farmGrid: [
     [100, 100, 100, 100, 100, 90, 90, 90, 0, 0],
     [100, 100, 100, 100, 100, 90, 90, 90, 0, 0],
@@ -65,22 +65,22 @@ const defaultProfile: FarmProfile = {
     { value: 0, color: 'hsl(0, 0%, 85%)', label: { en: 'Empty', ta: 'காலி' } },
     { value: 100, color: 'hsl(205, 90%, 60%)', label: { en: 'Paddy', ta: 'நெல்' } },
     { value: 90, color: 'hsl(40, 50%, 60%)', label: { en: 'Sugarcane', ta: 'கரும்பு' } },
-    { value: 80, color: 'hsl(45, 95%, 55%)', label: { en: 'Banana', ta: 'வாழை' } },
+    { value: 80, color: 'hsl(50, 85%, 60%)', label: { en: 'Groundnut', ta: 'நிலக்கடலை' } },
     { value: 60, color: 'hsl(80, 80%, 40%)', label: { en: 'Cotton', ta: 'பருத்தி' } },
-    { value: 40, color: 'hsl(30, 90%, 50%)', label: { en: 'Turmeric', ta: 'மஞ்சள்' } },
+    { value: 40, color: 'hsl(55, 90%, 55%)', label: { en: 'Maize', ta: 'மக்காச்சோளம்' } },
   ],
   cropStock: [
     { name: 'Paddy', quantity: 5000, unit: 'kg' },
     { name: 'Sugarcane', quantity: 10000, unit: 'kg' },
-    { name: 'Banana', quantity: 2000, unit: 'kg' },
-    { name: 'Turmeric', quantity: 500, unit: 'kg' },
+    { name: 'Groundnut', quantity: 1500, unit: 'kg' },
+    { name: 'Maize', quantity: 2000, unit: 'kg' },
     { name: 'Cotton', quantity: 1000, unit: 'kg' },
   ],
   farmInputs: [
       { name: 'Urea', type: 'Fertilizer', quantity: 150, unit: 'kg' },
-      { name: 'Potash', type: 'Fertilizer', quantity: 75, unit: 'kg' },
-      { name: 'Neem Cake', type: 'Pesticide', quantity: 20, unit: 'kg' },
-      { name: 'ADT 45 (Paddy)', type: 'Seed', quantity: 300, unit: 'kg' },
+      { name: 'DAP', type: 'Fertilizer', quantity: 100, unit: 'kg' },
+      { name: 'Neem Oil', type: 'Pesticide', quantity: 20, unit: 'litres' },
+      { name: 'CORH 3 (Maize Hybrid)', type: 'Seed', quantity: 15, unit: 'kg' },
   ]
 };
 

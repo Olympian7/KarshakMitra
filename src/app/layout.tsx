@@ -13,7 +13,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'KarshakMitra',
-  description: "An AI-powered personal farming assistant for Kerala's farmers.",
+  description: "An AI-powered personal farming assistant for Tamil Nadu's farmers.",
 };
 
 export default function RootLayout({
