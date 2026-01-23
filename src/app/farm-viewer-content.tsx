@@ -168,6 +168,17 @@ function EditStockDialog({ profile, onSave }: { profile: FarmProfile, onSave: (u
   );
 }
 
+const parseDate = (dateString: string) => {
+    if (!dateString) return new Date(0);
+    const parts = dateString.split('/');
+    if (parts.length === 3) {
+        // parts are [DD, MM, YYYY] from the API
+        return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    }
+    // Fallback for other formats, e.g. YYYY/MM/DD from mock data
+    return new Date(dateString);
+};
+
 
 export default function FarmViewerContent() {
   const { language } = useLanguage();
@@ -189,7 +200,7 @@ export default function FarmViewerContent() {
           // Find the most recent record with a valid modal price
           const latestRecord = prices
             .filter(p => p.modal_price && parseFloat(p.modal_price) > 0)
-            .sort((a, b) => new Date(b.arrival_date).getTime() - new Date(a.arrival_date).getTime())[0];
+            .sort((a, b) => parseDate(b.arrival_date).getTime() - parseDate(a.arrival_date).getTime())[0];
           
           if (latestRecord) {
             // Price is per quintal (100kg), convert to per kg
@@ -204,6 +215,7 @@ export default function FarmViewerContent() {
         setLivePrices(pricesMap);
       }
     } catch (error) {
+      console.error("Error loading farm data:", error);
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -452,5 +464,3 @@ export default function FarmViewerContent() {
     </AppShell>
   );
 }
-
-    

@@ -39,6 +39,17 @@ const COMMODITIES = [
   'Coconut'
 ];
 
+const parseDate = (dateString: string) => {
+    if (!dateString) return new Date(0);
+    const parts = dateString.split('/');
+    if (parts.length === 3) {
+        // parts are [DD, MM, YYYY] from the API
+        return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    }
+    // Fallback for other formats, e.g. YYYY/MM/DD from mock data
+    return new Date(dateString);
+};
+
 
 export default function LiveMarketContent() {
   const { language } = useLanguage();
@@ -54,7 +65,7 @@ export default function LiveMarketContent() {
     try {
       const data = await getLiveCropPrices(commodity);
       // Sort by date, most recent first
-      const sortedData = data.sort((a, b) => new Date(b.arrival_date).getTime() - new Date(a.arrival_date).getTime());
+      const sortedData = data.sort((a, b) => parseDate(b.arrival_date).getTime() - parseDate(a.arrival_date).getTime());
       setRecords(sortedData);
     } catch (error) {
       console.error('Failed to fetch live market data:', error);
@@ -171,5 +182,3 @@ export default function LiveMarketContent() {
     </AppShell>
   );
 }
-
-    
