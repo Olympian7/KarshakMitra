@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -14,7 +13,7 @@ export default function CommunityBotContent() {
     <AppShell title={t.communityBot} activePage="community-bot">
       <main className="flex flex-1 flex-col">
         <iframe
-          src="https://uzhavan-nanban-bot.vercel.app/"
+          src="https://mitra-ai-antibot.vercel.app/"
           className="w-full h-full border-0"
           title="Nanban Community Bot"
           allow="microphone"
