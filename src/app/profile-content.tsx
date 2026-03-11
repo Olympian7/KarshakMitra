@@ -1,10 +1,11 @@
 
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Bar, BarChart as RechartsBarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 import { useToast } from '@/components/ui/use-toast';
 import { getProfile, saveProfile, FarmProfile, PlotType } from '@/services/profile';
+import { getFarmInsights } from '@/ai/flows/farm-insight-flow';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,7 +29,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import AppShell from '@/components/app-shell';
-import { BarChart, Lightbulb, Pencil, Trash2, PlusCircle, Palette } from 'lucide-react';
+import { BarChart, Lightbulb, Pencil, Trash2, PlusCircle, Palette, Loader2, Sparkles } from 'lucide-react';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { cn } from '@/lib/utils';
@@ -57,7 +58,7 @@ function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile,
         }
 
         const newPlotType: PlotType = {
-            value: Math.max(0, ...localPlotTypes.map(pt => pt.value)) + 1, // Ensure unique value
+            value: Math.max(0, ...localPlotTypes.map(pt => pt.value)) + 1,
             color: generateRandomColor(),
             label: { en: newCropName.trim(), ta: newCropName.trim() },
         };
@@ -140,12 +141,28 @@ function FarmProfileForm() {
     const t = translations[language];
     const { toast } = useToast();
     const [profile, setProfile] = React.useState<FarmProfile | null>(null);
+    const [aiInsights, setAiInsights] = useState<string[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
     const [isSaving, setIsSaving] = React.useState(false);
+    const [isGeneratingInsights, setIsGeneratingInsights] = useState(false);
     const [isLayoutLocked, setIsLayoutLocked] = React.useState(true);
 
     const [selectedPlot, setSelectedPlot] = useState<number | null>(100);
     const [isPainting, setIsPainting] = useState(false);
+
+    const fetchInsights = useCallback(async (profileData: FarmProfile) => {
+        setIsGeneratingInsights(true);
+        try {
+            const result = await getFarmInsights(profileData);
+            setAiInsights(result.insights);
+        } catch (error) {
+            console.error("Failed to generate AI insights:", error);
+            // Fallback to empty if AI fails
+            setAiInsights([]);
+        } finally {
+            setIsGeneratingInsights(false);
+        }
+    }, []);
     
     const cropDistributionData = useMemo(() => {
         if (!profile) return [];
@@ -154,7 +171,7 @@ function FarmProfileForm() {
         let totalPlantedCells = 0;
 
         profile.farmGrid.flat().forEach(cellValue => {
-            if (cellValue !== 0) { // Exclude empty plots
+            if (cellValue !== 0) {
                 cellCounts[cellValue] = (cellCounts[cellValue] || 0) + 1;
                 totalPlantedCells++;
             }
@@ -173,15 +190,6 @@ function FarmProfileForm() {
     }, [profile, language]);
 
 
-    const paddyPercentage = useMemo(() => {
-        if (!profile) return 0;
-        const totalCells = profile.farmGrid.length * profile.farmGrid[0].length;
-        if (totalCells === 0) return 0;
-        const paddyCells = profile.farmGrid.flat().filter(cell => cell === 100).length;
-        return ((paddyCells / totalCells) * 100).toFixed(0);
-    }, [profile]);
-
-
     useEffect(() => {
         const fetchProfile = async () => {
             setIsLoading(true);
@@ -191,6 +199,8 @@ function FarmProfileForm() {
                 if(data.plotTypes.length > 0) {
                     setSelectedPlot(data.plotTypes.find(pt => pt.value === 100)?.value ?? data.plotTypes[0].value);
                 }
+                // Generate insights once profile is loaded
+                fetchInsights(data);
             } catch (error) {
                 toast({
                     variant: 'destructive',
@@ -202,7 +212,7 @@ function FarmProfileForm() {
             }
         };
         fetchProfile();
-    }, [toast]);
+    }, [toast, fetchInsights]);
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (!profile) return;
@@ -252,7 +262,9 @@ function FarmProfileForm() {
                 title: t.profileSavedTitle,
                 description: t.profileSavedDesc,
             });
-            setIsLayoutLocked(true); // Lock the layout after saving
+            setIsLayoutLocked(true);
+            // Refresh insights after save
+            fetchInsights(profile);
         } catch (error) {
              toast({
                 variant: 'destructive',
@@ -266,10 +278,9 @@ function FarmProfileForm() {
 
     const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (isLayoutLocked) {
-            e.preventDefault(); // Prevent form submission
+            e.preventDefault();
             setIsLayoutLocked(false);
         }
-        // If not locked, the default form submission will occur via handleSubmit
     };
 
     
@@ -340,7 +351,7 @@ function FarmProfileForm() {
                     </div>
                     <div className="space-y-2">
                     <Label htmlFor="location">{t.location}</Label>
-                    <Input id="location" value={profile.location} placeholder="e.g., Thanjavur, Tamil Nadu" />
+                    <Input id="location" value={profile.location} readOnly placeholder="e.g., Thanjavur, Tamil Nadu" />
                     </div>
                     <div className="space-y-2">
                     <Label htmlFor="farmSize">{t.farmSize}</Label>
@@ -383,9 +394,9 @@ function FarmProfileForm() {
                                         key={plot.value}
                                         onClick={() => !isLayoutLocked && setSelectedPlot(plot.value)}
                                         className={cn(
-                                            'w-full flex items-center gap-2 p-2 rounded-md border',
+                                            'w-full flex items-center gap-2 p-2 rounded-md border transition-all',
                                             !isLayoutLocked && 'cursor-pointer',
-                                            selectedPlot === plot.value && !isLayoutLocked ? 'ring-2 ring-primary' : 'hover:bg-muted/50',
+                                            selectedPlot === plot.value && !isLayoutLocked ? 'ring-2 ring-primary border-primary shadow-sm' : 'hover:bg-muted/50',
                                             isLayoutLocked && 'opacity-50 cursor-not-allowed'
                                         )}
                                     >
@@ -399,7 +410,7 @@ function FarmProfileForm() {
                             <Label>{t.yourFarmGrid}</Label>
                             <div 
                                 className={cn(
-                                    "grid grid-cols-10 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30",
+                                    "grid grid-cols-10 gap-1 w-full aspect-square max-w-md border-2 border-dashed rounded-lg p-2 bg-muted/30 transition-opacity",
                                     !isLayoutLocked ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'
                                 )}
                                 onMouseLeave={() => setIsPainting(false)}
@@ -408,7 +419,7 @@ function FarmProfileForm() {
                                     row.map((cellValue, colIndex) => (
                                         <div 
                                             key={`${rowIndex}-${colIndex}`}
-                                            className="aspect-square w-full h-full rounded-sm"
+                                            className="aspect-square w-full h-full rounded-sm transition-colors duration-150"
                                             style={{ backgroundColor: profile.plotTypes.find(p => p.value === cellValue)?.color || 'hsl(0, 0%, 80%)' }}
                                             onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                                             onMouseOver={() => handleMouseOver(rowIndex, colIndex)}
@@ -474,19 +485,36 @@ function FarmProfileForm() {
                     )}
                 </CardContent>
             </Card>
-             <Card>
+             <Card className="border-primary/20 bg-primary/5">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle>{t.aiPoweredInsight}</CardTitle>
-                    <Lightbulb className="h-5 w-5 text-muted-foreground" />
+                    <CardTitle className="flex items-center gap-2">
+                        <Sparkles className="h-5 w-5 text-primary" />
+                        {t.aiPoweredInsight}
+                    </CardTitle>
                 </CardHeader>
                 <CardContent>
-                   <p className="text-sm text-muted-foreground">
-                        {t.aiInsightText1(paddyPercentage)}{' '}
-                        <span className="font-semibold text-foreground">{profile.location}</span>{' '}
-                        {t.aiInsightText2}{' '}
-                        <span className="font-semibold text-foreground">{profile.soilType}</span>,{' '}
-                        {t.aiInsightText3}
-                   </p>
+                   {isGeneratingInsights ? (
+                       <div className="flex flex-col items-center justify-center py-6 gap-2">
+                            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                            <p className="text-sm text-muted-foreground">{t.generatingInsights}</p>
+                       </div>
+                   ) : aiInsights.length > 0 ? (
+                       <ul className="space-y-3">
+                           {aiInsights.map((insight, idx) => (
+                               <li key={idx} className="text-sm flex gap-2">
+                                   <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                                   <span>{insight}</span>
+                               </li>
+                           ))}
+                       </ul>
+                   ) : (
+                       <div className="flex items-start gap-3">
+                            <Lightbulb className="h-5 w-5 text-muted-foreground mt-1" />
+                            <p className="text-sm text-muted-foreground">
+                                {t.aiInsightFallback}
+                            </p>
+                       </div>
+                   )}
                 </CardContent>
             </Card>
         </div>

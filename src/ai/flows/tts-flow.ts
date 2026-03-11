@@ -11,7 +11,7 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import wav from 'wav';
-import { googleAI } from '@genkit-ai/googleai';
+import { googleAI } from '@genkit-ai/google-genai';
 
 const TtsInputSchema = z.object({
   text: z.string().describe('The text to be converted to speech.'),
@@ -41,8 +41,7 @@ const generateSpeechFlow = ai.defineFlow(
   },
   async ({ text, language }) => {
     // Select a voice based on the language
-    // Note: Voice availability may change. These are examples.
-    const voiceName = language === 'ta' ? 'Nallan' : 'Algenib'; // Using a plausible name for Tamil
+    const voiceName = language === 'ta' ? 'Nallan' : 'Algenib';
 
     const { media } = await ai.generate({
       model: googleAI.model('gemini-2.5-flash-preview-tts'),
@@ -61,7 +60,6 @@ const generateSpeechFlow = ai.defineFlow(
       throw new Error('No audio media was returned from the TTS model.');
     }
 
-    // The model returns raw PCM data in a base64 data URI. We need to convert it to a WAV file.
     const audioBuffer = Buffer.from(
       media.url.substring(media.url.indexOf(',') + 1),
       'base64'
@@ -75,14 +73,6 @@ const generateSpeechFlow = ai.defineFlow(
   }
 );
 
-/**
- * Converts raw PCM audio data into a WAV format encoded in base64.
- * @param pcmData Buffer containing the raw PCM audio data.
- * @param channels Number of audio channels.
- * @param rate Sample rate of the audio.
- * @param sampleWidth Bytes per sample.
- * @returns A promise that resolves with the base64-encoded WAV data.
- */
 async function toWav(
   pcmData: Buffer,
   channels = 1,
