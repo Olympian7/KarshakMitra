@@ -114,17 +114,23 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
             </nav>
           </div>
            <div className="mt-auto p-4 border-t">
-            <div className="flex items-center justify-between gap-3">
-              <div className='flex items-center gap-3'>
-                <Avatar>
-                    <AvatarFallback className="bg-primary text-primary-foreground">N</AvatarFallback>
-                </Avatar>
-                <div>
-                    <p className="font-semibold text-sm">Narayanan</p>
-                    <p className="text-xs text-muted-foreground">{t.farmer}</p>
+            {user && (
+              <div className="flex items-center justify-between gap-3">
+                <div className='flex items-center gap-3'>
+                  <Avatar>
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {(user.displayName ?? user.email ?? '?')[0].toUpperCase()}
+                      </AvatarFallback>
+                  </Avatar>
+                  <div>
+                      <p className="font-semibold text-sm">
+                        {user.displayName ?? (user.email ? user.email.split('@')[0] : t.farmer)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{t.farmer}</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
            </div>
         </div>
       </div>
