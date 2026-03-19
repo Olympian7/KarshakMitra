@@ -39,6 +39,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RequireAuth } from '@/components/require-auth';
 
 function EditStockDialog({ profile, onSave }: { profile: FarmProfile, onSave: (updatedProfile: FarmProfile) => void }) {
   const { language } = useLanguage();
@@ -259,6 +260,7 @@ export default function FarmViewerContent() {
   return (
     <AppShell title={t.farmViewer} activePage="farm-viewer">
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+        <RequireAuth>
         <div className="grid gap-6 md:grid-cols-2">
           {/* Left Column */}
           <div className="space-y-6">
@@ -460,6 +462,7 @@ export default function FarmViewerContent() {
             </Card>
           </div>
         </div>
+        </RequireAuth>
       </main>
     </AppShell>
   );

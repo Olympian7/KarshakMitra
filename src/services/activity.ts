@@ -1,7 +1,5 @@
-
-'use server';
-
 import { db } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import {
   collection,
   getDocs,
@@ -30,10 +28,19 @@ const mockActivities: Omit<Activity, 'id' | 'date'>[] = [
     { text: 'Planted new paddy saplings in the main field.' },
 ];
 
+function requireUid(): string {
+  const uid = auth.currentUser?.uid;
+  if (!uid) {
+    throw new Error('Not authenticated.');
+  }
+  return uid;
+}
+
 
 async function seedInitialActivities() {
     console.log("Seeding initial activities...");
-    const activitiesCollection = collection(db, 'activities');
+    const uid = requireUid();
+    const activitiesCollection = collection(db, 'users', uid, 'activities');
     for (const activity of mockActivities) {
         // Add a slight delay to ensure different timestamps
         await new Promise(resolve => setTimeout(resolve, 50));
@@ -45,7 +52,8 @@ async function seedInitialActivities() {
 }
 
 export async function getActivities(): Promise<Activity[]> {
-  const activitiesCollection = collection(db, 'activities');
+  const uid = requireUid();
+  const activitiesCollection = collection(db, 'users', uid, 'activities');
   const q = query(activitiesCollection, orderBy('date', 'desc'));
   
   try {
@@ -97,7 +105,8 @@ export async function getActivities(): Promise<Activity[]> {
 }
 
 export async function addActivity(text: string): Promise<Activity> {
-    const activitiesCollection = collection(db, 'activities');
+    const uid = requireUid();
+    const activitiesCollection = collection(db, 'users', uid, 'activities');
     
     const newActivityData = {
         text: text,

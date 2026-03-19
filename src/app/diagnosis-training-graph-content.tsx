@@ -122,7 +122,7 @@ export default function DiagnosisTrainingGraphContent() {
                 <Card className="w-full max-w-4xl mx-auto border-2 border-dashed">
                     <CardHeader>
                     <CardTitle className="text-2xl">Pest & Disease Diagnosis Model Performance</CardTitle>
-                    <CardDescription>Training & Validation Accuracy over 20 epochs. This chart visualizes how the model's accuracy improved on both the training data and unseen validation data.</CardDescription>
+                    <CardDescription>Training & Validation Accuracy over 20 epochs. This chart visualizes how the model&apos;s accuracy improved on both the training data and unseen validation data.</CardDescription>
                     </CardHeader>
                     <CardContent>
                     <DynamicAccuracyChart />

@@ -121,7 +121,7 @@ export default function DiagnosisTrainingLossGraphContent() {
                 <Card className="w-full max-w-4xl mx-auto border-2 border-dashed">
                     <CardHeader>
                     <CardTitle className="text-2xl">Pest & Disease Diagnosis Model Performance</CardTitle>
-                    <CardDescription>Training & Validation Loss over 20 epochs. This chart shows how the model's error rate decreased as it learned.</CardDescription>
+                    <CardDescription>Training & Validation Loss over 20 epochs. This chart shows how the model&apos;s error rate decreased as it learned.</CardDescription>
                     </CardHeader>
                     <CardContent>
                     <DynamicLossChart />

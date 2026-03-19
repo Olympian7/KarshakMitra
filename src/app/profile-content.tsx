@@ -33,6 +33,7 @@ import { BarChart, Lightbulb, Pencil, Trash2, PlusCircle, Palette, Loader2, Spar
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { cn } from '@/lib/utils';
+import { RequireAuth } from '@/components/require-auth';
 
 function EditPaletteDialog({ profile, onPaletteUpdate }: { profile: FarmProfile, onPaletteUpdate: (newPlotTypes: PlotType[]) => void }) {
     const { language } = useLanguage();
@@ -529,7 +530,9 @@ export default function ProfileContent() {
   return (
     <AppShell title={t.farmProfile} activePage="profile">
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <FarmProfileForm />
+          <RequireAuth>
+            <FarmProfileForm />
+          </RequireAuth>
         </main>
     </AppShell>
   );

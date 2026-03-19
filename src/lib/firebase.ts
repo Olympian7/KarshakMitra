@@ -1,22 +1,65 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { initializeApp, getApps } from 'firebase/app';
+import { getAuth, connectAuthEmulator } from 'firebase/auth';
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  "projectId": "studio-2014622910-298ff",
-  "appId": "1:313784984521:web:a76f05405604652e9d7e18",
-  "storageBucket": "studio-2014622910-298ff.firebasestorage.app",
-  "apiKey": "AIzaSyD0kJHKyQgk5qWq70nKcn8lqWZVMRXLLrs",
-  "authDomain": "studio-2014622910-298ff.firebaseapp.com",
-  "measurementId": "",
-  "messagingSenderId": "313784984521"
+type FirebaseWebConfig = {
+  apiKey: string;
+  authDomain: string;
+  projectId: string;
+  storageBucket: string;
+  messagingSenderId: string;
+  appId: string;
 };
 
-// Initialize Firebase
-export const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+function requirePublicEnv(name: string, value: string | undefined): string {
+  if (!value) {
+    throw new Error(
+      `Missing environment variable ${name}. Add it to .env.local (dev) or Vercel env (prod).`
+    );
+  }
+  return value;
+}
+
+const isBrowser = typeof window !== 'undefined';
+
+let firebaseConfig: FirebaseWebConfig | null = null;
+if (isBrowser) {
+  firebaseConfig = {
+    apiKey: requirePublicEnv('NEXT_PUBLIC_FIREBASE_API_KEY', process.env.NEXT_PUBLIC_FIREBASE_API_KEY),
+    authDomain: requirePublicEnv(
+      'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',
+      process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    ),
+    projectId: requirePublicEnv(
+      'NEXT_PUBLIC_FIREBASE_PROJECT_ID',
+      process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    ),
+    storageBucket: requirePublicEnv(
+      'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET',
+      process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    ),
+    messagingSenderId: requirePublicEnv(
+      'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID',
+      process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    ),
+    appId: requirePublicEnv('NEXT_PUBLIC_FIREBASE_APP_ID', process.env.NEXT_PUBLIC_FIREBASE_APP_ID),
+  };
+}
+
+export const app = isBrowser
+  ? (getApps().length ? getApps()[0]! : initializeApp(firebaseConfig!))
+  : (null as any);
+export const auth = isBrowser ? getAuth(app) : (null as any);
+export const db = isBrowser ? getFirestore(app) : (null as any);
+
+// Optional local emulators (set NEXT_PUBLIC_USE_FIREBASE_EMULATOR=true)
+const useEmulator = process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true';
+if (useEmulator && isBrowser) {
+  const authHost = process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST ?? 'localhost:9099';
+  const [authHostname, authPort] = authHost.split(':');
+  connectAuthEmulator(auth, `http://${authHostname}:${authPort}`, { disableWarnings: true });
+
+  const firestoreHost = process.env.NEXT_PUBLIC_FIREBASE_FIRESTORE_EMULATOR_HOST ?? 'localhost:8080';
+  const [fsHostname, fsPort] = firestoreHost.split(':');
+  connectFirestoreEmulator(db, fsHostname!, Number(fsPort));
+}

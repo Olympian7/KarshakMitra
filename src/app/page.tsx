@@ -3,7 +3,6 @@ import React from 'react';
 import { getWeatherForecast } from '@/services/weather';
 import { getMarketTrends } from '@/services/market';
 import { getGovSchemes } from '@/services/govSchemes';
-import { getActivities } from '@/services/activity';
 import { LanguageProvider } from '@/context/language-context';
 import DashboardContent from './dashboard-content';
 
@@ -13,7 +12,6 @@ export default async function Dashboard() {
   const weatherData = await getWeatherForecast();
   const marketData = await getMarketTrends();
   const schemesData = await getGovSchemes();
-  const activitiesData = await getActivities();
 
   // For the dashboard, we find the 3 most common crops to show a snapshot
   const cropFrequency = marketData.reduce((acc, trend) => {
@@ -31,7 +29,7 @@ export default async function Dashboard() {
 
 
   const govSchemes = schemesData.slice(0, 2);
-  const recentActivities = activitiesData.slice(0, 1);
+  const recentActivities: any[] = [];
 
   return (
     <LanguageProvider>

@@ -8,7 +8,7 @@
  */
 
 import { z } from 'zod';
-import { addActivity, Activity } from '@/services/activity';
+import type { Activity } from '@/services/activity';
 import { ai } from '@/ai/genkit';
 
 const LogActivityInputSchema = z.object({
@@ -54,10 +54,10 @@ const logActivityFlowInternal = ai.defineFlow(
       // Fallback: If the model fails to return a structured summary, log the original note.
       // This makes the system more robust.
       console.warn("AI summarization failed. Logging the original note.");
-      return await addActivity(note);
+      return { id: 'ai', text: note, date: new Date().toISOString() };
     }
     
-    return await addActivity(structuredNote);
+    return { id: 'ai', text: structuredNote, date: new Date().toISOString() };
   }
 );
 
