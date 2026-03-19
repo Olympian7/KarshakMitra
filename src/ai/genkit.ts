@@ -7,5 +7,4 @@ dotenv.config({ path: '.env' });
 
 export const ai = genkit({
   plugins: [googleAI()],
-  enableTracing: true,
 });

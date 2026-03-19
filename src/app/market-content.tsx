@@ -27,6 +27,7 @@ import { getProfile, FarmProfile } from '@/services/profile';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { Skeleton } from '@/components/ui/skeleton';
+import { RequireAuth } from '@/components/require-auth';
 
 const CropMarketTable: FC<{ trends: MarketTrend[] }> = ({ trends }) => {
   const { language } = useLanguage();
@@ -119,6 +120,7 @@ export default function MarketContent() {
   return (
     <AppShell title={t.marketTrends} activePage="market">
       <main className="flex flex-1 flex-col">
+        <RequireAuth>
         <div className="relative w-full h-48 bg-gradient-primary flex flex-col justify-end p-6">
             <div className="flex items-center gap-4">
                 <div className="bg-white/20 p-3 rounded-lg">
@@ -198,6 +200,7 @@ export default function MarketContent() {
           </CardContent>
         </Card>
         </div>
+        </RequireAuth>
       </main>
     </AppShell>
   );

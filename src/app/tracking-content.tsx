@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { getActivities, Activity } from '@/services/activity';
+import { addActivity, getActivities, Activity } from '@/services/activity';
 import { logActivityFlow } from '@/ai/flows/activity-flow';
 import { useToast } from '@/components/ui/use-toast';
 import AppShell from '@/components/app-shell';
@@ -24,6 +24,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { Textarea } from '@/components/ui/textarea';
+import { RequireAuth } from '@/components/require-auth';
 
 function ActivityTimeline() {
   const { language } = useLanguage();
@@ -73,7 +74,8 @@ function ActivityTimeline() {
 
     setIsSubmitting(true);
     try {
-      const newActivity = await logActivityFlow({ note: text });
+      const aiStructured = await logActivityFlow({ note: text });
+      const newActivity = await addActivity(aiStructured.text);
       // After logging, refetch all activities to ensure consistency
       await fetchActivities();
       toast({
@@ -241,7 +243,8 @@ export default function TrackingContent() {
   return (
     <AppShell title={t.activityTracking} activePage="tracking">
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          {isClient ? <ActivityTimeline /> : 
+          <RequireAuth>
+          {isClient ? <ActivityTimeline /> :
              <Card>
                 <CardHeader>
                   <Skeleton className="h-8 w-1/2" />
@@ -254,6 +257,7 @@ export default function TrackingContent() {
                 </CardContent>
               </Card>
           }
+          </RequireAuth>
         </main>
     </AppShell>
   );

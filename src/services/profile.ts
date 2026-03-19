@@ -1,9 +1,6 @@
-
-'use server';
-
 import { db } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { unstable_noStore as noStore } from 'next/cache';
+import { auth } from '@/lib/firebase';
 
 export interface PlotType {
     value: number;
@@ -37,9 +34,13 @@ export interface FarmProfile {
   farmInputs: FarmInput[];
 }
 
-// For this demo, we'll use a single, hardcoded user profile document.
-// In a real app, this ID would be dynamic based on the logged-in user.
-const USER_PROFILE_ID = 'user_muthu';
+function requireUid(): string {
+  const uid = auth.currentUser?.uid;
+  if (!uid) {
+    throw new Error('Not authenticated.');
+  }
+  return uid;
+}
 
 // Default/mock data to initialize the profile if it doesn't exist
 const defaultProfile: FarmProfile = {
@@ -85,10 +86,8 @@ const defaultProfile: FarmProfile = {
 };
 
 export async function getProfile(): Promise<FarmProfile> {
-  // Opt out of caching for this function.
-  noStore();
-  
-  const profileDocRef = doc(db, 'profiles', USER_PROFILE_ID);
+  const uid = requireUid();
+  const profileDocRef = doc(db, 'profiles', uid);
   
   try {
     const docSnap = await getDoc(profileDocRef);
@@ -110,7 +109,8 @@ export async function getProfile(): Promise<FarmProfile> {
 }
 
 export async function saveProfile(newProfile: FarmProfile): Promise<FarmProfile> {
-    const profileDocRef = doc(db, 'profiles', USER_PROFILE_ID);
+    const uid = requireUid();
+    const profileDocRef = doc(db, 'profiles', uid);
     
     try {
         await setDoc(profileDocRef, newProfile);

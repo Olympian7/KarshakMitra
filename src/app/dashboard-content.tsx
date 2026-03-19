@@ -24,20 +24,42 @@ import { translations } from '@/lib/translations';
 import { useLanguage } from '@/context/language-context';
 import Image from 'next/image';
 import imageData from '@/lib/placeholder-images.json';
+import { getActivities } from '@/services/activity';
+import { useAuth } from '@/context/auth-context';
 
 // A client component is needed to use the useLanguage hook.
 export default function DashboardContent({ weather, marketTrends, govSchemes, recentActivities }: any) {
   const { language } = useLanguage();
   const t = translations[language];
+  const { user } = useAuth();
   const [activityDate, setActivityDate] = useState('');
   const { dashboard_hero } = imageData;
+  const [latestActivity, setLatestActivity] = useState<any | null>(
+    Array.isArray(recentActivities) && recentActivities.length > 0 ? recentActivities[0] : null
+  );
 
   useEffect(() => {
-    if (recentActivities.length > 0 && recentActivities[0].date) {
+    if (latestActivity?.date) {
       // Format the date on the client side to avoid hydration mismatch
-      setActivityDate(new Date(recentActivities[0].date).toLocaleDateString());
+      setActivityDate(new Date(latestActivity.date).toLocaleDateString());
     }
-  }, [recentActivities]);
+  }, [latestActivity]);
+
+  useEffect(() => {
+    const load = async () => {
+      if (!user) {
+        setLatestActivity(null);
+        return;
+      }
+      try {
+        const acts = await getActivities();
+        setLatestActivity(Array.isArray(acts) && acts.length > 0 ? acts[0] : null);
+      } catch {
+        setLatestActivity(null);
+      }
+    };
+    load();
+  }, [user]);
 
   return (
     <AppShell title={t.dashboard} activePage="dashboard">
@@ -115,11 +137,11 @@ export default function DashboardContent({ weather, marketTrends, govSchemes, re
               </Link>
             </CardHeader>
             <CardContent>
-              {recentActivities.length > 0 ? (
+              {latestActivity ? (
                 <div className="flex items-start gap-4">
                   <ClipboardList className="h-6 w-6 text-muted-foreground mt-1" />
                   <div>
-                    <p className="font-medium">{recentActivities[0].text}</p>
+                    <p className="font-medium">{latestActivity.text}</p>
                     {activityDate && <p className="text-sm text-muted-foreground">{activityDate}</p>}
                   </div>
                 </div>

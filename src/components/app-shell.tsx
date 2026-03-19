@@ -26,6 +26,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useLanguage } from '@/context/language-context';
 import { translations } from '@/lib/translations';
 import { useKeyboard } from '@/context/keyboard-context';
+import { useAuth } from '@/context/auth-context';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,6 +46,7 @@ type AppShellProps = {
 export default function AppShell({ children, title, activePage }: AppShellProps) {
   const { language, toggleLanguage } = useLanguage();
   const { setIsOpen } = useKeyboard();
+  const { user, signOut } = useAuth();
   const t = translations[language];
 
   const navItems = [
@@ -173,6 +175,22 @@ export default function AppShell({ children, title, activePage }: AppShellProps)
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {user ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => signOut()}
+              className="hidden sm:inline-flex"
+              title={user.email ?? undefined}
+            >
+              Sign out
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm" asChild className="hidden sm:inline-flex">
+              <Link href="/login">Sign in</Link>
+            </Button>
+          )}
 
           <Button variant="outline" size="icon" className="h-8 w-8">
             <Bell className="h-4 w-4" />

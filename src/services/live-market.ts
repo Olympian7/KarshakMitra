@@ -1,5 +1,3 @@
-
-'use server';
 // This service fetches live agricultural market data from data.gov.in.
 
 import { getMarketTrends, MarketTrend } from './market';
@@ -75,8 +73,8 @@ export async function getLiveCropPrices(commodity: string): Promise<LiveMarketRe
     try {
         console.log(`Fetching live data for: ${commodity} in ${STATE}`);
         const res = await fetch(url.toString(), {
-          // Revalidate cache every hour to get fresh data without hitting API on every request
-          next: { revalidate: 3600 } 
+          // Keep browser caching reasonable; server caching can be added via API routes later.
+          cache: 'no-store',
         });
 
         if (!res.ok) {

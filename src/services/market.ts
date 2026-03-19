@@ -1,5 +1,3 @@
-'use server';
-
 // This service fetches live agricultural market data.
 // This is a mock service for demonstration.
 
